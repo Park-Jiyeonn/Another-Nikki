@@ -1,0 +1,14 @@
+version: '3'
+services:
+  # MySQL
+  mysql:
+    image: mysql:latest
+    #    volumes:
+    #      - ./pkg/configs/sql:/docker-entrypoint-initdb.d
+    ports:
+      - "3307:3306" #后者是docker中的端口
+    environment:
+      - MYSQL_DATABASE=Another_Nikki
+      - MYSQL_USER=jiyeon
+      - MYSQL_PASSWORD=1234
+      - MYSQL_RANDOM_ROOT_PASSWORD="yes"
