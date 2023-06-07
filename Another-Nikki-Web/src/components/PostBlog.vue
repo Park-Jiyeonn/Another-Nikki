@@ -11,7 +11,7 @@ const blogs = ref<Blog[]>()
 
 axios({
     method: 'get',
-    url: 'http://localhost:8888/api/get_all_blogs',
+    url: 'http://110.42.239.202:8888/api/get_all_blogs',
 })
     .then(function (resp) {
         console.log(resp.data.data)
