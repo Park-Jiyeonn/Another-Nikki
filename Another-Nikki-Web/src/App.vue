@@ -2,6 +2,8 @@
 import HelloWorld from './components/HelloWorld.vue'
 import PostBlog from './components/PostBlog.vue';
 // import ContentBase from './components/ContentBase.vue'
+
+console.log(import.meta.env.VITE_API_URL);
 </script>
 
 <template>

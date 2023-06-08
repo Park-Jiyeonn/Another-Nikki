@@ -2,6 +2,7 @@
 import axios from 'axios';
 import { ref } from 'vue'
 
+const TargetPath = import.meta.env.VITE_API_URL;
 interface Blog {
     ID: number;
     content: string;
@@ -16,7 +17,7 @@ const PostBlog = (content: string) => {
     loading.value = !loading.value
     axios({
         method: 'post',
-        url: 'http://localhost:8888/api/create_blog',
+        url: TargetPath+'/api/create_blog',
         data: {
             "content":content,
         }
@@ -33,7 +34,7 @@ const PostBlog = (content: string) => {
 
 axios({
     method: 'get',
-    url: 'http://110.42.239.202:8888/api/get_all_blogs',
+    url: TargetPath+'/api/get_all_blogs',
 })
     .then(function (resp) {
         console.log(resp.data.data)
