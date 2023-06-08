@@ -63,9 +63,9 @@ get_all_blogs()
     </div>
 
     <el-row>
-        <el-col :span="4">
+        <el-col :span="2">
         </el-col>
-        <el-col :span="16">
+        <el-col :span="20">
             <el-table :data="blogs" height="400" stripe style="width: 100%; margin-top: 20px;">
                 <el-table-column prop="ID" label="#" width="100" />
                 <el-table-column prop="content" label="留言" />
@@ -75,9 +75,9 @@ get_all_blogs()
     </el-row>
 
     <el-row>
-        <el-col :span="4">
+        <el-col :span="2">
         </el-col>
-        <el-col :span="16">
+        <el-col :span="20">
             <el-input v-model="textarea" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea" placeholder="Please input"
                 style="margin-top: 10px;" />
         </el-col>
