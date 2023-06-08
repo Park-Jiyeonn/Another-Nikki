@@ -24,6 +24,8 @@ const PostBlog = (content: string) => {
     })
         .then(function (resp) {
             console.log(resp.data)
+            
+            get_all_blogs()
         })
         .catch(function (error) {
             console.log(error)
@@ -31,24 +33,27 @@ const PostBlog = (content: string) => {
     loading.value = !loading.value
 }
 
-
-axios({
-    method: 'get',
-    url: TargetPath + '/api/get_all_blogs',
-})
-    .then(function (resp) {
-        console.log(resp.data.data)
-        blogs.value = resp.data.data
-        console.log(blogs.value)
-
-        // 遍历 blogs 数组并修改 CreatedAt 值的格式
-        blogs.value.forEach((blog) => {
-            blog.CreatedAt = blog.CreatedAt.substring(0, 10) + " " + blog.CreatedAt.substring(11, 16)
-        });
+const get_all_blogs = () => {
+    axios({
+        method: 'get',
+        url: TargetPath + '/api/get_all_blogs',
     })
-    .catch(function (error) {
-        console.log(error)
-    })
+        .then(function (resp) {
+            console.log(resp.data.data)
+            blogs.value = resp.data.data
+            console.log(blogs.value)
+
+            // 遍历 blogs 数组并修改 CreatedAt 值的格式
+            blogs.value.forEach((blog) => {
+                blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
+            });
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+}
+
+get_all_blogs()
 
 </script>
 
@@ -56,28 +61,25 @@ axios({
     <div style="text-align: center; margin-top: 10px;">
         东拉西扯留言板：（目前后端支持发博客了，前端还没有支持哈哈哈）
     </div>
-    <!-- <div>
-        <textarea></textarea>
-        <button>发表</button>
-    </div> -->
+
     <el-row>
-        <el-col :span="6">
+        <el-col :span="4">
         </el-col>
-        <el-col :span="12">
-            <el-table :data="blogs" stripe style="width: 100%; margin-top: 20px;">
+        <el-col :span="16">
+            <el-table :data="blogs" height="400" stripe style="width: 100%; margin-top: 20px;">
                 <el-table-column prop="ID" label="#" width="100" />
-                <el-table-column prop="content" label="留言" width="300" />
+                <el-table-column prop="content" label="留言" />
                 <el-table-column prop="CreatedAt" label="时间" />
             </el-table>
         </el-col>
     </el-row>
 
     <el-row>
-        <el-col :span="6">
+        <el-col :span="4">
         </el-col>
-        <el-col :span="12">
-            <el-input v-model="textarea" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
-                placeholder="Please input" />
+        <el-col :span="16">
+            <el-input v-model="textarea" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea" placeholder="Please input"
+                style="margin-top: 10px;" />
         </el-col>
     </el-row>
 
@@ -85,10 +87,7 @@ axios({
         <el-col :span="11">
         </el-col>
         <el-col :span="12">
-            <el-button class="button" 
-                type="primary" 
-                :loading="loading" 
-                @click="PostBlog(textarea)">
+            <el-button class="button" type="primary" :loading="loading" @click="PostBlog(textarea)">
                 发布
             </el-button>
         </el-col>

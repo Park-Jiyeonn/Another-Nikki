@@ -8,19 +8,12 @@ console.log(import.meta.env.VITE_API_URL);
 
 <template>
   <ContentBase>
-    <el-row>
-      <el-col :span="6">
-        <!-- <img src="/vite.svg" class="logo" alt="Vite logo" /> -->
-      </el-col>
-      <el-col :span="8">
-        <img src="/vite.svg" class="logo" alt="Vite logo" />
-      </el-col>
-      <el-col :span="8">
-        <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-      </el-col>
-    </el-row>
-
-    <HelloWorld msg="Another Nikki"/>
+    <div style="text-align: center;">
+      <img src="/vite.svg" class="logo" alt="Vite logo" />
+      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
+    </div>
+    
+    <HelloWorld msg="Another Nikki" />
 
     <PostBlog />
   </ContentBase>
@@ -28,7 +21,7 @@ console.log(import.meta.env.VITE_API_URL);
 
 <style scoped>
 .logo {
-  height: 6em;
+  height: 4em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
