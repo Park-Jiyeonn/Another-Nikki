@@ -3,15 +3,37 @@ import axios from 'axios';
 import { ref } from 'vue'
 
 interface Blog {
-    id: number;
-    title: string;
+    ID: number;
     content: string;
+    CreatedAt: string,
 }
 const blogs = ref<Blog[]>()
+const loading = ref(false);
+const textarea = ref('')
+
+const PostBlog = (content: string) => {
+    console.log(content)
+    loading.value = !loading.value
+    axios({
+        method: 'post',
+        url: 'http://localhost:8888/api/create_blog',
+        data: {
+            "content":content,
+        }
+    })
+        .then(function (resp) {
+            console.log(resp.data)
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
+    loading.value = !loading.value
+}
+
 
 axios({
     method: 'get',
-    url: 'http://110.42.239.202:8888/api/get_all_blogs',
+    url: 'http://localhost:8888/api/get_all_blogs',
 })
     .then(function (resp) {
         console.log(resp.data.data)
@@ -32,24 +54,26 @@ axios({
         <textarea></textarea>
         <button>发表</button>
     </div> -->
-    <table class="table table-hover">
-        <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">名字</th>
-                <th scope="col">博客</th>
-            </tr>
-        </thead>
-        <tbody>
-            <tr v-for="blog in blogs" :key="blog.id">
-                <th scope="row"> {{ blog.id }} </th>
-                <!-- <td>{{ user.username }}</td> -->
-                <td> Jiyeon </td>
-                <td>{{ blog.content }}</td>
-                <!-- <button @click="delete_a_post(blog.id)" type="button" class="btn btn-danger btn-sm">删除</button> -->
-            </tr>
-        </tbody>
-    </table>
+    <el-table :data="blogs" style="width: 100%">
+        <el-table-column prop="ID" label="#" width="180" />
+        <el-table-column prop="content" label="留言" width="180" />
+        <el-table-column prop="CreatedAt" label="时间" value-format="yyyy-MM-dd HH:mm:ss" />
+    </el-table>
+
+    <el-input
+        v-model="textarea"
+        :autosize="{ minRows: 2, maxRows: 4 }"
+        type="textarea"
+        placeholder="Please input"
+    />
+
+    <el-button class="button" type="primary" :loading="loading" @click="PostBlog(textarea)">
+        发布
+    </el-button>
 </template>
 
-<style scoped></style>
+<style scoped>
+.button {
+    margin-top: 10px;
+}
+</style>

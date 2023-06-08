@@ -1,10 +1,7 @@
 <script setup lang="ts">
-import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap/dist/ts/bootstrap';
-
 import HelloWorld from './components/HelloWorld.vue'
 import PostBlog from './components/PostBlog.vue';
-import ContentBase from './components/ContentBase.vue'
+// import ContentBase from './components/ContentBase.vue'
 </script>
 
 <template>
@@ -12,10 +9,10 @@ import ContentBase from './components/ContentBase.vue'
     <img src="/vite.svg" class="logo" alt="Vite logo" />
     <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
   </div>
-  <HelloWorld msg="网站雏形" />
-  <ContentBase>
+  <HelloWorld msg="Another Nikki" />
+  <!-- <ContentBase> -->
     <PostBlog/>
-  </ContentBase>
+  <!-- </ContentBase> -->
 </template>
 
 <style scoped>
