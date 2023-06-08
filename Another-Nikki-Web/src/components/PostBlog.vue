@@ -59,7 +59,7 @@ get_all_blogs()
 
 <template>
     <div style="text-align: center; margin-top: 10px;">
-        东拉西扯留言板：（目前后端支持发博客了，前端还没有支持哈哈哈）
+        东拉西扯留言板：（随便写写，以后还会更成其他的样子）
     </div>
 
     <el-row>
