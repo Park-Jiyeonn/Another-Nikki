@@ -68,8 +68,8 @@ get_all_blogs()
         <el-col :span="20">
             <el-table :data="blogs" height="400" stripe style="width: 100%; margin-top: 20px;">
                 <el-table-column prop="ID" label="#" width="100" />
-                <el-table-column prop="content" label="留言" />
-                <el-table-column prop="CreatedAt" label="时间" />
+                <el-table-column prop="content" label="留言" width="250"/>
+                <el-table-column prop="CreatedAt" label="时间" width="150"/>
             </el-table>
         </el-col>
     </el-row>
