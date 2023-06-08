@@ -18,7 +18,7 @@ func main() {
 			"success": "快要有前端啦",
 		})
 	})
-	r.POST("/github-webhook", router.GithubWebhook)
+	r.POST("/github_webhook", router.GithubWebhook)
 
 	r.POST("/api/create_blog", router.PostBlog)
 	r.GET("/api/get_all_blogs", router.GetAllBlogs)
