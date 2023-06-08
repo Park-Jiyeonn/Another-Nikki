@@ -58,7 +58,7 @@ axios({
     <el-table :data="blogs" style="width: 100%">
         <el-table-column prop="ID" label="#" width="180" />
         <el-table-column prop="content" label="留言" width="180" />
-        <el-table-column prop="CreatedAt" label="时间" value-format="yyyy-MM-dd HH:mm:ss" />
+        <el-table-column prop="CreatedAt" label="时间"/>
     </el-table>
 
     <el-input
