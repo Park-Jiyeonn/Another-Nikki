@@ -3,7 +3,10 @@
 
 <template>
     <div class="container">
-        
+        <el-card class="box-card">
+            <slot>
+            </slot>
+        </el-card>
     </div>
 </template>
   
