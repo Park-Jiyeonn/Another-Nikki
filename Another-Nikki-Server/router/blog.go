@@ -3,8 +3,10 @@ package router
 import (
 	"Another-Nikki/dal"
 	"context"
-	"github.com/gin-gonic/gin"
 	"net/http"
+	"strconv"
+
+	"github.com/gin-gonic/gin"
 )
 
 type Blog struct {
@@ -31,6 +33,24 @@ func PostBlog(c *gin.Context) {
 }
 func GetAllBlogs(c *gin.Context) {
 	ret, err := dal.GetBlogList(context.Background())
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "数据库查询记录失败：" + err.Error(),
+		})
+	}
+	c.JSON(http.StatusOK, gin.H{
+		"data": ret,
+	})
+}
+
+func GetLastSevenBlog(c *gin.Context) {
+	num, err := strconv.Atoi(c.Query("num"))	
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"message": "请填写合适的参数" + err.Error(),
+		})
+	}
+	ret, err := dal.GetLastSevenBlog(context.Background(), int64(num))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
 			"message": "数据库查询记录失败：" + err.Error(),

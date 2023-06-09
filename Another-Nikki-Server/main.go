@@ -20,9 +20,13 @@ func main() {
 	})
 	//r.POST("/github_webhook", router.GithubWebhook)
 
-	r.POST("/api/create_blog", router.PostBlog)
-	r.GET("/api/get_all_blogs", router.GetAllBlogs)
-
+	blogGroup := r.Group("/api/blog")
+	{
+		blogGroup.GET("/get_all_blogs", router.GetAllBlogs)
+		blogGroup.GET("/get_last_seven_blogs", router.GetLastSevenBlog)
+		blogGroup.POST("/create_blog", router.PostBlog)
+	}
+	
 	r.Run(":8888")
 }
 

@@ -17,7 +17,7 @@ const PostBlog = (content: string) => {
     loading.value = !loading.value
     axios({
         method: 'post',
-        url: TargetPath + '/api/create_blog',
+        url: TargetPath + '/api/blog/create_blog',
         data: {
             "content": content,
         }
@@ -25,18 +25,22 @@ const PostBlog = (content: string) => {
         .then(function (resp) {
             console.log(resp.data)
             
-            get_all_blogs()
+            get_last_seven_blogs()
         })
         .catch(function (error) {
             console.log(error)
         })
     loading.value = !loading.value
+    textarea.value = ''
 }
 
-const get_all_blogs = () => {
+const get_last_seven_blogs = () => {
     axios({
         method: 'get',
-        url: TargetPath + '/api/get_all_blogs',
+        url: TargetPath + '/api/blog/get_last_seven_blogs',
+        params:{
+            num:7,
+        },
     })
         .then(function (resp) {
             console.log(resp.data.data)
@@ -53,26 +57,23 @@ const get_all_blogs = () => {
         })
 }
 
-get_all_blogs()
+get_last_seven_blogs()
 
 </script>
 
 <template>
-    <div style="text-align: center; margin-top: 10px;">
-        东拉西扯留言板：（随便写写，以后还会更成其他的样子）
+    <div style=" margin-top: 10px; ">
+        留言板：
+        <el-table
+        :data="blogs" 
+        height="400" 
+        stripe style="margin-top: 20px;" 
+        >
+            <el-table-column prop="ID" label="#" width="70" />
+            <el-table-column prop="content" label="留言" width="300"/>
+            <el-table-column prop="CreatedAt" label="时间" width="150"/>
+        </el-table>
     </div>
-
-    <el-row>
-        <el-col :span="2">
-        </el-col>
-        <el-col :span="20">
-            <el-table :data="blogs" height="400" stripe style="width: 100%; margin-top: 20px;">
-                <el-table-column prop="ID" label="#" width="100" />
-                <el-table-column prop="content" label="留言" width="250"/>
-                <el-table-column prop="CreatedAt" label="时间" width="150"/>
-            </el-table>
-        </el-col>
-    </el-row>
 
     <el-row>
         <el-col :span="2">
@@ -83,15 +84,12 @@ get_all_blogs()
         </el-col>
     </el-row>
 
-    <el-row>
-        <el-col :span="11">
-        </el-col>
-        <el-col :span="12">
-            <el-button class="button" type="primary" :loading="loading" @click="PostBlog(textarea)">
-                发布
-            </el-button>
-        </el-col>
-    </el-row>
+
+    <div style="text-align: center; margin-top: 10px;">
+        <el-button class="button" type="primary" :loading="loading" @click="PostBlog(textarea)">
+            发布
+        </el-button>
+    </div>
 </template>
 
 <style scoped>
