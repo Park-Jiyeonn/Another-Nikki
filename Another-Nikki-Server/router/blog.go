@@ -5,6 +5,7 @@ import (
 	"context"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -25,6 +26,12 @@ func PostBlog(c *gin.Context) {
 	if blog.Content == "" {
 		c.JSON(http.StatusOK, gin.H{
 			"message":"不可以上传空的留言哦~",
+		})
+		return
+	}
+	if strings.TrimSpace(blog.Content) == "" {
+		c.JSON(http.StatusOK, gin.H{
+			"message":"全都是空格不行的呢~",
 		})
 		return
 	}

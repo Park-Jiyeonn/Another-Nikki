@@ -52,7 +52,7 @@ func GetRandomBlog(ctx context.Context) ([]model.Blog, error) {
 		return nil, err
 	}
 	
-	r := rand.New(rand.NewSource(time.Now().Unix()))
+	r := rand.New(rand.NewSource(time.Now().UnixNano()))
 	num := r.Intn(int(sum))
 
 	err := DB.WithContext(ctx).

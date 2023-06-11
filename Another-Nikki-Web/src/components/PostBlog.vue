@@ -12,13 +12,22 @@ interface Blog {
 const blogs = ref<Blog[]>([])
 const random_blogs = ref<Blog[]>([])
 const loading = ref(false);
+const laoding_random = ref(false)
 const textarea = ref('')
 
-const open = (message:string) => {
+const open_warning = (message:string) => {
   ElMessage({
     showClose: true,
     message: message,
     type: 'warning',
+  })
+}
+
+const open_success = (message:string) => {
+  ElMessage({
+    showClose: true,
+    message: message,
+    type: 'success',
   })
 }
 
@@ -36,11 +45,15 @@ const PostBlog = (content: string) => {
             console.log(resp.data)
             
             get_last_seven_blogs()
-            open(resp.data.message)
+            if (resp.data.message == 'success') {
+                open_success("发布成功咯～")
+            } else {
+                open_warning(resp.data.message)
+            }
         })
         .catch(function (error) {
             console.log(error)
-            open("发生了未知错误，请联系开发者～")
+            open_warning("发生了未知错误，请联系开发者～")
         })
     loading.value = !loading.value
     textarea.value = ''
@@ -70,12 +83,13 @@ const get_last_seven_blogs = () => {
 }
 
 const get_random_blogs = () => {
+    laoding_random.value = !laoding_random.value
     axios({
         method: 'get',
         url: TargetPath + '/api/blog/get_random_blog',
     })
         .then(function (resp) {
-            console.log(resp.data.data)
+            console.log(resp.data.data[0].content)
             random_blogs.value = resp.data.data
             console.log(blogs.value)
 
@@ -83,9 +97,13 @@ const get_random_blogs = () => {
             random_blogs.value.forEach((blog) => {
                 blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
             });
+
+            laoding_random.value = false
         })
         .catch(function (error) {
             console.log(error)
+
+            laoding_random.value = false
         })
 }
 
@@ -136,7 +154,7 @@ get_last_seven_blogs()
     </div>
 
     <div style="text-align: center; margin-top: 10px;">
-        <el-button class="button" type="primary" :loading="loading" @click="get_random_blogs">
+        <el-button class="button" type="primary" :loading="laoding_random" @click="get_random_blogs">
             点我随机
         </el-button>
     </div>
