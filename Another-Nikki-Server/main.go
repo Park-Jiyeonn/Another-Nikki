@@ -25,6 +25,7 @@ func main() {
 		blogGroup.GET("/get_all_blogs", router.GetAllBlogs)
 		blogGroup.GET("/get_last_seven_blogs", router.GetLastSevenBlog)
 		blogGroup.POST("/create_blog", router.PostBlog)
+		blogGroup.GET("/get_random_blog", router.GetRandomBlog)
 	}
 	
 	r.Run(":8888")

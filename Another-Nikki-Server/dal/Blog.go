@@ -4,7 +4,8 @@ import (
 	"Another-Nikki/dal/model"
 	"context"
 	"errors"
-	"fmt"
+	"math/rand"
+	"time"
 
 	"gorm.io/gorm"
 )
@@ -29,11 +30,35 @@ func GetLastSevenBlog(ctx context.Context, num int64) ([]model.Blog, error) {
 	if err := DB.WithContext(ctx).Model(model.Blog{}).Count(&sum).Error; err != nil {
 		return nil, err
 	}
-	fmt.Println("sum = ", sum)
+	
 	err := DB.WithContext(ctx).
 		Model(model.Blog{}).
 		Limit(int(num)).
 		Offset(int(sum - num)).
+		Find(&res).Error
+	if err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return res, nil
+		}
+		return nil, err
+	}
+	return res, nil
+}
+
+func GetRandomBlog(ctx context.Context) ([]model.Blog, error) {
+	res := make([]model.Blog, 0)
+	var sum int64
+	if err := DB.WithContext(ctx).Model(model.Blog{}).Count(&sum).Error; err != nil {
+		return nil, err
+	}
+	
+	r := rand.New(rand.NewSource(time.Now().Unix()))
+	num := r.Intn(int(sum))
+
+	err := DB.WithContext(ctx).
+		Model(model.Blog{}).
+		Limit(1).
+		Offset(num).
 		Find(&res).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
