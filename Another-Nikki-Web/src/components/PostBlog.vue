@@ -50,12 +50,14 @@ const PostBlog = (content: string) => {
             } else {
                 open_warning(resp.data.message)
             }
+            
+            loading.value = false
         })
         .catch(function (error) {
             console.log(error)
             open_warning("发生了未知错误，请联系开发者～")
+            loading.value = false
         })
-    loading.value = !loading.value
     textarea.value = ''
 }
 
