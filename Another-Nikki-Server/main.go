@@ -18,7 +18,6 @@ func main() {
 			"success": "快要有前端啦",
 		})
 	})
-	//r.POST("/github_webhook", router.GithubWebhook)
 
 	blogGroup := r.Group("/api/blog")
 	{
@@ -30,5 +29,3 @@ func main() {
 	
 	r.Run(":8888")
 }
-
-// test webhook 1
