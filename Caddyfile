@@ -1,0 +1,31 @@
+{
+  http_port 80
+  https_port 443
+}
+
+
+jiyeon.club {
+  @api {
+    expression path('/api/*')
+  }
+  
+  # tls /home/ubuntu/server/jiyeon.club_bundle.pem /home/ubuntu/server/jiyeon.club.key
+  encode zstd gzip # 启用压缩
+  
+  handle @api {
+	reverse_proxy 127.0.0.1:8888
+  }
+
+  handle {
+    root * /home/ubuntu/dox/Another-Nikki/Another-Nikki-Web/dist
+    file_server
+    # try_files {path}  /index.html
+  }
+  
+  handle_errors {
+    	redir https://jiyeon.club/#/error/{err.status_code}
+  }
+  log {
+      output file /home/ubuntu/server/caddy.log
+  }
+}
