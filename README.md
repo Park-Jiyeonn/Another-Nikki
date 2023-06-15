@@ -17,8 +17,10 @@
  import Router from './router'
  app.use(router)
  ```
- 嗯，就这些
 
+$webhook.py$ 修改了下，现在返回消息给 $github$ 比较及时了，用了 $python$ 的 $asyncio$，这个用来创建一个异步的任务。
+
+ 嗯，就这些
 
 ### 6.14
 买了域名 [jiyeon.club](jiyeon.club)。给服务器配了 $caddy$，但是网站似乎要备案，目前正在备案中，感觉有点麻烦。不知道是不是这个原因，所以现在还不能通过域名访问网站。
