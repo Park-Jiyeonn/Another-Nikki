@@ -1,9 +1,9 @@
 <script setup lang="ts">
-console.log("kkk")
+import ContentBase from '../../components/ContentBase.vue';
 </script>
 
 <template>
-	<div>
-		你好
-	</div>
+	<ContentBase>
+		403咯
+	</ContentBase>
 </template>

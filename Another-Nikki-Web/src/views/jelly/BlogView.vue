@@ -2,7 +2,7 @@
 import axios from 'axios';
 import { ref } from 'vue'
 import { ElMessage } from "element-plus"
-import HelloWorld from "./HelloWorld.vue"
+import HelloWorld from "../../components/HelloWorld.vue"
 
 const TargetPath = import.meta.env.VITE_API_URL;
 interface Blog {

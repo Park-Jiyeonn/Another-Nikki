@@ -2,6 +2,10 @@ import { createRouter, createWebHistory,  } from 'vue-router'
 
 const systemRoutes = [
 	{
+		path:'/',
+		component: () => import('../views/HomeView.vue'),
+	},
+	{
 		path:'/jelly',
 		children: [
 			{

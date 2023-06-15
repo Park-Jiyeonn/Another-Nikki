@@ -10,6 +10,8 @@ import (
 	"gorm.io/gorm"
 )
 
+var rx *rand.Rand	// 给 GetRandomBlog 使用，原来的写法是每次创建对象，总感觉这样浪费资源，现在这样只创建一次
+
 func GetBlogList(ctx context.Context) ([]model.Blog, error) {
 	res := make([]model.Blog, 0)
 	err := DB.WithContext(ctx).
@@ -52,8 +54,10 @@ func GetRandomBlog(ctx context.Context) ([]model.Blog, error) {
 		return nil, err
 	}
 	
-	r := rand.New(rand.NewSource(time.Now().UnixNano()))
-	num := r.Intn(int(sum))
+	if rx == nil {
+		rx = rand.New(rand.NewSource(time.Now().UnixNano()))
+	}
+	num := rx.Intn(int(sum))
 
 	err := DB.WithContext(ctx).
 		Model(model.Blog{}).
