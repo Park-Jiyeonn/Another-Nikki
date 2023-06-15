@@ -12,7 +12,9 @@ services:
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
 
   cpp_environment:
-    image: gcc:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ./code:/dox       # 后者是 docker 中的
     working_dir: /dox     # docker 的工作目录

@@ -36,3 +36,5 @@ _testmain.go
 *.local.yml
 dumped_hertz_remote_config.json
 /upload
+
+/Another-Nikki-Server/code/c++

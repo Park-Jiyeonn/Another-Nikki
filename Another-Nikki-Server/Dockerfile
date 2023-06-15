@@ -1,7 +1,12 @@
-FROM g++:latest
+FROM alpine:latest
 
-# WORKDIR /dox    # docker 中的目录
+RUN apk update && apk add --no-cache \
+    g++
+    # python3 \
+    # python3-dev \
+    # py3-pip
 
-# COPY ./code /dox     # 当前目录下的所有文件复制到容器的/dox目录中
 
-# CMD ["g++", "-o", "c++", "c++.cpp", "&&", "./c++", ">", "a.out"] 
+# RUN g++ -o c++ c++.cpp && ./c++ > a.out
+
+# CMD ["/bin/sh"]
