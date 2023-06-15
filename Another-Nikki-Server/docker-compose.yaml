@@ -3,12 +3,17 @@ services:
   # MySQL
   mysql:
     image: mysql:latest
-    #    volumes:
-    #      - ./pkg/configs/sql:/docker-entrypoint-initdb.d
     ports:
-      - "3307:3306" #后者是docker中的端口
+      - "3307:3306"       #后者是docker中的端口
     environment:
       - MYSQL_DATABASE=Another_Nikki
       - MYSQL_USER=jiyeon
       - MYSQL_PASSWORD=1234
       - MYSQL_RANDOM_ROOT_PASSWORD="yes"
+
+  cpp_environment:
+    image: gcc:latest
+    volumes:
+      - ./code:/dox       # 后者是 docker 中的
+    working_dir: /dox     # docker 的工作目录
+    command: sh -c "g++ -o c++ c++.cpp && ./c++ > a.out"
