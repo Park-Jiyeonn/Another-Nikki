@@ -1,22 +1,10 @@
 <script setup lang="ts">
-import HelloWorld from './components/HelloWorld.vue'
-import PostBlog from './components/PostBlog.vue';
-import ContentBase from './components/ContentBase.vue'
 
 console.log(import.meta.env.VITE_API_URL);
 </script>
 
 <template>
-  <ContentBase>
-    <div style="text-align: center;">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </div>
-    
-    <HelloWorld msg="Another Nikki" />
-
-    <PostBlog />
-  </ContentBase>
+  <router-view></router-view>
 </template>
 
 <style scoped>
