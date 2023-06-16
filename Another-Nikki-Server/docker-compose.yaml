@@ -1,6 +1,5 @@
 version: '3'
 services:
-  # MySQL
   mysql:
     image: mysql:latest
     ports:
@@ -16,6 +15,5 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./code:/dox       # 后者是 docker 中的
-    working_dir: /dox     # docker 的工作目录
-    command: sh -c "g++ -o c++ c++.cpp && ./c++ > a.out"
+      - ./code:/dox       # 后者是 docker 中的，表示 code 和 dox 共享
+    command: sh -c "g++ -o cpp c++.cpp && ./cpp > a.out"

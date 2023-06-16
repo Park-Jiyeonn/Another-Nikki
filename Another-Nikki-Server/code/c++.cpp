@@ -3,7 +3,7 @@ using namespace std;
 #define int long long
 void solve()
 {
-    cout << "Hello Docker, you can make a online judge\n";
+    cout << "Hello Docker, you can make a online judge !!!";
 }
 signed main()
 {

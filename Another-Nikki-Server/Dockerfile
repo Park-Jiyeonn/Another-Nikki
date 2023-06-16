@@ -2,11 +2,9 @@ FROM alpine:latest
 
 RUN apk update && apk add --no-cache \
     g++
-    # python3 \
-    # python3-dev \
-    # py3-pip
 
+WORKDIR /dox
 
-# RUN g++ -o c++ c++.cpp && ./c++ > a.out
-
-# CMD ["/bin/sh"]
+# 这样会直接让 shell解释器来运行，但是考虑到日后还要运行其他的容器，所以就注释掉吧。
+# CMD 命令有且只能有一个，在 Dockerfile 中
+# CMD g++ -o cpp c++.cpp && ./cpp > a.out   
