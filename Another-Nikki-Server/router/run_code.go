@@ -53,12 +53,11 @@ func RunCode(c *gin.Context) {
 		return
 	}
 
-	test1, _:= os.Getwd()
-	test := fmt.Sprintf("%s:/dox", os.Getenv("PWD")+"/code")
-	_, _ = io.WriteString(f, test + "---------"+ test1)
+	cur_path, _ := os.Getwd()
+	cur_path += "/code"
 
-	compileCmd := exec.Command("docker", "run", "--rm", "--name", "cpp_compile", "-v", fmt.Sprintf("%s:/dox", os.Getenv("PWD")+"/code"), "cpp_env:1", "sh", "-c", "g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log")
-	runCmd := exec.Command("docker", "run", "--rm", "--name", "cpp_run", "-v", fmt.Sprintf("%s:/dox", os.Getenv("PWD")+"/code"), "cpp_env:1", "sh", "-c", "./calc ./cpp > a.out")
+	compileCmd := exec.Command("docker", "run", "--rm", "--name", "cpp_compile", "-v", fmt.Sprintf("%s:/dox", cur_path), "cpp_env:1", "sh", "-c", "g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log")
+	runCmd := exec.Command("docker", "run", "--rm", "--name", "cpp_run", "-v", fmt.Sprintf("%s:/dox", cur_path), "cpp_env:1", "sh", "-c", "./calc ./cpp > a.out")
 
 	err = compileCmd.Run()
 	if err != nil {
