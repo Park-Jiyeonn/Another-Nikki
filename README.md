@@ -3,13 +3,37 @@
 ## 记录
 
 ### 6.17
-#### 早 11:22:
+#### 晚21:27
+服务器在```build``` $docker$ 镜像的时候，一直很慢，我觉得不对啊，我配置了 $clash$ 的，然后一检查 ```curl google.com```也能通，为什么下载的这么慢呢，然后 $google$ 打算给 $docker$ 换源，但是换了还是很慢。。。，
 
-昨晚拆分出了编译和运行，用了两个不同的容器，然后关于运行时间和内存使用 ```docker inspect``` 就可以做到。
+过了很久才意识到，我加载出了一层 $alpine$，然后 ```RUN apt-install```都是在 $alpine$ 里的了，所以 $alpine$ 得换源。。。光是给 $docker$ 换源是不够的。
 
-现在的问题是，每次都用```docker-compose up -d``` 来启动服务，这样子不好，一是因为以后肯定要加其他的语言的容器，每次都全部启动一遍肯定不行；二来是 ```docker-compose```并没有保证启动的顺序。。。很有可能编译没完，运行的容器就启动了，这样肯定不行。
+现在开始着手打包后端的 ```go run .```为一个系统服务：
+```
+[Unit]
+Description=Another Nikki Server
+After=network.target
 
-关于第二点，查了下要结合 ```depends_on``` 和自己写命令行，等待编译完成。可这样既麻烦，又让我测量出的容器运行时间远大于程序运行时间。
+[Service]
+ExecStart=/usr/bin/go run .
+WorkingDirectory=/home/ubuntu/dox/Another-Nikki/Another-Nikki-Server
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
+```
+
+#### 下午 16:42
+接口实现起来很 $easy$，主要是用 $go$ 的读写文件。这里用的是 $io$。
+
+关键代码：
+```
+f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+_, err = io.WriteString(f, code.Code)
+```
+其中```OpenFile```填的第二个参数很有趣，用了或运算，代表着这三种需求同时满足，估计是为了代码的可读性考虑的吧。```O_TRUNC```表示如果文件已存在，则将其截断为空。如果没有它，那么只会从开头写数据，后面的内容不会被删除。真有趣。
+
+接下来该把服务器上的后端打包成系统服务了，否则他是无法进行```docker```的系列命令的。
 
 #### 下午 14：12
 看着窗外下着雨，一辆辆车从马路上开过，想起了上周这时候打完蓝桥杯，从上大赶去上海站，这会儿应该还没开始检票。
@@ -48,17 +72,14 @@ docker run --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./cpp > a.out"
 docker run --rm --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./calc ./cpp > a.out"
 ```
 
-#### 下午 16:42
-接口实现起来很 $easy$，主要是用 $go$ 的读写文件。这里用的是 $io$。
+#### 早 11:22:
 
-关键代码：
-```
-f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
-_, err = io.WriteString(f, code.Code)
-```
-其中```OpenFile```填的第二个参数很有趣，用了或运算，代表着这三种需求同时满足，估计是为了代码的可读性考虑的吧。```O_TRUNC```表示如果文件已存在，则将其截断为空。如果没有它，那么只会从开头写数据，后面的内容不会被删除。真有趣。
+昨晚拆分出了编译和运行，用了两个不同的容器，然后关于运行时间和内存使用 ```docker inspect``` 就可以做到。
 
-接下来该把服务器上的后端打包成系统服务了，否则他是无法进行```docker```的系列命令的。
+现在的问题是，每次都用```docker-compose up -d``` 来启动服务，这样子不好，一是因为以后肯定要加其他的语言的容器，每次都全部启动一遍肯定不行；二来是 ```docker-compose```并没有保证启动的顺序。。。很有可能编译没完，运行的容器就启动了，这样肯定不行。
+
+关于第二点，查了下要结合 ```depends_on``` 和自己写命令行，等待编译完成。可这样既麻烦，又让我测量出的容器运行时间远大于程序运行时间。
+
 
 ### 6.16
 今天公司的活少，下午领导也走了，于是开始放心摸鱼。请教了旁边一起和我实习的交大的实习生，他告诉我正确使用 $Dockerfile$ 的姿势：
