@@ -20,6 +20,7 @@ func RunCode(c *gin.Context) {
 	err := c.BindJSON(&code)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
 			"message": "参数错误",
 		})
 		return
@@ -27,6 +28,7 @@ func RunCode(c *gin.Context) {
 
 	if code.Lang != "c++" {
 		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
 			"message": "暂不支持这种语言呢～",
 		})
 		return
@@ -36,6 +38,7 @@ func RunCode(c *gin.Context) {
 	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666) //打开文件
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
 			"message":"打开c++.cpp失败！请检查文件是否存在",
 		})
 		return
@@ -44,6 +47,7 @@ func RunCode(c *gin.Context) {
 	_, err = io.WriteString(f, code.Code) //写入文件(字符串)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
 			"message":"写入c++.cpp失败: " + err.Error(),
 		})
 		return
@@ -83,6 +87,7 @@ func RunCode(c *gin.Context) {
 	err = compileCmd.Run()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
 			"message":"compile failed: " + err.Error(),
 		})
 		return
@@ -91,6 +96,7 @@ func RunCode(c *gin.Context) {
 	err = runCmd.Run()
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
 			"message":"run failed!" + err.Error(),
 		})
 		return
@@ -99,11 +105,13 @@ func RunCode(c *gin.Context) {
 	ret, err:= os.ReadFile("./code/a.out")
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
 			"message":"read a.out failed!" + err.Error(),
 		})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"state":"success",
 		"message":string(ret),
 	})
 }

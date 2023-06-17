@@ -52,6 +52,13 @@ const systemRoutes = [
 	// },
 ]
 
+const RunCodeRoutes = [
+	{
+		path:'/runcode',
+		component: () => import('../views/runCode/RunCodeView.vue'),
+	},
+]
+
 const fallbackRoutes = [{
 	path: '/:any+',
 	redirect: '/error/404',
@@ -62,6 +69,7 @@ const router = createRouter({
 	routes: [
 		...systemRoutes,
 		...fallbackRoutes,
+		...RunCodeRoutes,
 	],
 })
 

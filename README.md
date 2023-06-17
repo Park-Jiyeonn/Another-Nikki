@@ -37,7 +37,7 @@ docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'c++
 docker run --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./cpp > a.out"
 ```
 
-### 下午 15:31
+#### 下午 15:31
 在网上看到，可以用 $linux$ 的系统调用做到。思路是 $fork$ 一个子进程，然后再用 $wait4$ 函数去获取 $CPU$ 时间和内存占用。不过内存使用并不准确，因为会预分配一些空间，但是对于 $acm$ 来说，这个测量精度并不需要太高。
 
 我在本地预先编译了一个 ```.c``` 文件，文件名是 ```calc```，暂时用它来获得运行时间。
