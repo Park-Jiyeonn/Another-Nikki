@@ -23,7 +23,7 @@ docker build -t cpp_env:1 .
 ```
 再启动容器：
 ```
-docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'c++.cpp' -o 'cpp' -O2 -m64 -std=c++11 2> compile.log"
+docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log"
 ```
 稍微解释一下：
  * ```--rm``` 是容器运行完就删除
@@ -43,6 +43,22 @@ docker run --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./cpp > a.out"
 我在本地预先编译了一个 ```.c``` 文件，文件名是 ```calc```，暂时用它来获得运行时间。
 
 到这里，可以开始写后端的接口，和前端的界面了。虽然暂时只支持编译 $cpp$。不过 $py$ 和 $Java$ 也无非是在 $Dockerfile$ 里面 $install$ 一下。
+
+```
+docker run --rm --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./calc ./cpp > a.out"
+```
+
+#### 下午 16:42
+接口实现起来很 $easy$，主要是用 $go$ 的读写文件。这里用的是 $io$。
+
+关键代码：
+```
+f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
+_, err = io.WriteString(f, code.Code)
+```
+其中```OpenFile```填的第二个参数很有趣，用了或运算，代表着这三种需求同时满足，估计是为了代码的可读性考虑的吧。```O_TRUNC```表示如果文件已存在，则将其截断为空。如果没有它，那么只会从开头写数据，后面的内容不会被删除。真有趣。
+
+接下来该把服务器上的后端打包成系统服务了，否则他是无法进行```docker```的系列命令的。
 
 ### 6.16
 今天公司的活少，下午领导也走了，于是开始放心摸鱼。请教了旁边一起和我实习的交大的实习生，他告诉我正确使用 $Dockerfile$ 的姿势：

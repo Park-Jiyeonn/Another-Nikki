@@ -20,6 +20,11 @@ func main() {
 		blogGroup.POST("/create_blog", router.PostBlog)
 		blogGroup.GET("/get_random_blog", router.GetRandomBlog)
 	}
+
+	runCode := r.Group("/api/runcode")
+	{
+		runCode.POST("", router.RunCode)
+	}
 	
 	r.Run(":8888")
 }
