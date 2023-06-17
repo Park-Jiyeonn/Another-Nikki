@@ -3,6 +3,15 @@
 ## 记录
 
 ### 6.17
+#### 晚0:20
+服务器上的这些搞来搞的也太恶心了。。。
+
+首先是解决了 $docker$ 每次都要 ```sudo```的问题，这个 $gpt$ 教我的，比 $google$ 的简单：
+```
+sudo usermod -aG docker $USER
+```
+执行完退出再登录就完事了。
+
 #### 晚21:27
 服务器在```build``` $docker$ 镜像的时候，一直很慢，我觉得不对啊，我配置了 $clash$ 的，然后一检查 ```curl google.com```也能通，为什么下载的这么慢呢，然后 $google$ 打算给 $docker$ 换源，但是换了还是很慢。。。，
 
@@ -17,8 +26,9 @@ Description=Another Nikki Server
 After=network.target
 
 [Service]
-WorkingDirectory=/home/ubuntu/dox/Another-Nikki/Another-Nikki-Server
 ExecStart=/usr/local/go/bin/go run main.go
+WorkingDirectory=/home/ubuntu/dox/Another-Nikki/Another-Nikki-Server
+Restart=always
 User=ubuntu
 Group=ubuntu
 
