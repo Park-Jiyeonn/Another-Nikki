@@ -9,15 +9,18 @@
 过了很久才意识到，我加载出了一层 $alpine$，然后 ```RUN apt-install```都是在 $alpine$ 里的了，所以 $alpine$ 得换源。。。光是给 $docker$ 换源是不够的。
 
 现在开始着手打包后端的 ```go run .```为一个系统服务：
+
+又踩坑了反正，没写```User=ubuntu Group=ubuntu```，服务就以```root```身份启动。。。然后```root```没配置 $golang$ 的环境，寄。
 ```
 [Unit]
 Description=Another Nikki Server
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/go run .
 WorkingDirectory=/home/ubuntu/dox/Another-Nikki/Another-Nikki-Server
-Restart=always
+ExecStart=/usr/local/go/bin/go run main.go
+User=ubuntu
+Group=ubuntu
 
 [Install]
 WantedBy=multi-user.target
