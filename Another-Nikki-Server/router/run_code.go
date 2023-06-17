@@ -53,36 +53,8 @@ func RunCode(c *gin.Context) {
 		return
 	}
 
-	compileCommand := "docker"
-	args := []string{
-		"run",
-		"--rm",
-		"--name",
-		"cpp_compile",
-		"-v",
-		fmt.Sprintf("%s/code:/dox", os.Getenv("PWD")),
-		"cpp_env:1",
-		"sh",
-		"-c",
-		"g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log",
-	}
-
-	runCommand := "docker"
-	runArgs := []string{
-		"run",
-		"--rm",
-		"--name",
-		"cpp_run",
-		"-v",
-		fmt.Sprintf("%s/code:/dox", os.Getenv("PWD")),
-		"cpp_env:1",
-		"sh",
-		"-c",
-		"./calc ./cpp > a.out",
-	}
-
-	compileCmd := exec.Command(compileCommand, args...)
-	runCmd := exec.Command(runCommand, runArgs...)
+	compileCmd := exec.Command("sudo", "docker", "run", "--rm", "--name", "cpp_compile", "-v", fmt.Sprintf("%s:/dox", os.Getenv("PWD")+"/code"), "cpp_env:1", "sh", "-c", "g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log")
+	runCmd := exec.Command("sudo", "docker", "run", "--rm", "--name", "cpp_run", "-v", fmt.Sprintf("%s:/dox", os.Getenv("PWD")+"/code"), "cpp_env:1", "sh", "-c", "./calc ./cpp > a.out")
 
 	err = compileCmd.Run()
 	if err != nil {

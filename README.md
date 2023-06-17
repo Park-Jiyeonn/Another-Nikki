@@ -38,6 +38,17 @@ _, err = io.WriteString(f, code.Code)
 
 接下来该把服务器上的后端打包成系统服务了，否则他是无法进行```docker```的系列命令的。
 
+#### 下午 15:31
+在网上看到，可以用 $linux$ 的系统调用做到。思路是 $fork$ 一个子进程，然后再用 $wait4$ 函数去获取 $CPU$ 时间和内存占用。不过内存使用并不准确，因为会预分配一些空间，但是对于 $acm$ 来说，这个测量精度并不需要太高。
+
+我在本地预先编译了一个 ```.c``` 文件，文件名是 ```calc```，暂时用它来获得运行时间。
+
+到这里，可以开始写后端的接口，和前端的界面了。虽然暂时只支持编译 $cpp$。不过 $py$ 和 $Java$ 也无非是在 $Dockerfile$ 里面 $install$ 一下。
+
+```
+docker run --rm --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./calc ./cpp > a.out"
+```
+
 #### 下午 14：12
 看着窗外下着雨，一辆辆车从马路上开过，想起了上周这时候打完蓝桥杯，从上大赶去上海站，这会儿应该还没开始检票。
 
@@ -62,17 +73,6 @@ docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'c++
 编译完成后，另起一个容器，运行程序：
 ```
 docker run --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./cpp > a.out"
-```
-
-#### 下午 15:31
-在网上看到，可以用 $linux$ 的系统调用做到。思路是 $fork$ 一个子进程，然后再用 $wait4$ 函数去获取 $CPU$ 时间和内存占用。不过内存使用并不准确，因为会预分配一些空间，但是对于 $acm$ 来说，这个测量精度并不需要太高。
-
-我在本地预先编译了一个 ```.c``` 文件，文件名是 ```calc```，暂时用它来获得运行时间。
-
-到这里，可以开始写后端的接口，和前端的界面了。虽然暂时只支持编译 $cpp$。不过 $py$ 和 $Java$ 也无非是在 $Dockerfile$ 里面 $install$ 一下。
-
-```
-docker run --rm --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./calc ./cpp > a.out"
 ```
 
 #### 早 11:22:
