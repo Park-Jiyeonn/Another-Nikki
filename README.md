@@ -17,6 +17,11 @@
 嗯，经过进一步的学习，发现 ```docker-compose``` 并不是那么适合我的需求。因为之前写的那些配置，都会创建一个新的镜像，然后再创建容器，这样并不好。
 
 现在的实现是：
+先创建镜像：
+```
+docker build -t cpp_env:1 .
+```
+再启动容器：
 ```
 docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'c++.cpp' -o 'cpp' -O2 -m64 -std=c++11 2> compile.log"
 ```
@@ -32,6 +37,12 @@ docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'c++
 docker run --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c "./cpp > a.out"
 ```
 
+### 下午 15:31
+在网上看到，可以用 $linux$ 的系统调用做到。思路是 $fork$ 一个子进程，然后再用 $wait4$ 函数去获取 $CPU$ 时间和内存占用。不过内存使用并不准确，因为会预分配一些空间，但是对于 $acm$ 来说，这个测量精度并不需要太高。
+
+我在本地预先编译了一个 ```.c``` 文件，文件名是 ```calc```，暂时用它来获得运行时间。
+
+到这里，可以开始写后端的接口，和前端的界面了。虽然暂时只支持编译 $cpp$。不过 $py$ 和 $Java$ 也无非是在 $Dockerfile$ 里面 $install$ 一下。
 
 ### 6.16
 今天公司的活少，下午领导也走了，于是开始放心摸鱼。请教了旁边一起和我实习的交大的实习生，他告诉我正确使用 $Dockerfile$ 的姿势：

@@ -3,6 +3,8 @@ FROM alpine:latest
 RUN apk update && apk add --no-cache \
     g++
 
+# COPY ./code /dox
+
 WORKDIR /dox
 
 # 这样会直接让 shell解释器来运行，但是考虑到日后还要运行其他的容器，所以就注释掉吧。
