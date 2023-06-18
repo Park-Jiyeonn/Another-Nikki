@@ -120,7 +120,6 @@ void solve()
 }
 signed main()
 {
-    // freopen("data.out", "w", stdout);
     ios::sync_with_stdio(0);
     cin.tie(0);
     int tt = 1;
