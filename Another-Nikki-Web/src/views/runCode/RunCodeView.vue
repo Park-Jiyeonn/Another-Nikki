@@ -2,12 +2,12 @@
 import ContentBase from '../../components/ContentBase.vue';
 
 import axios from 'axios';
-import { ref, watch } from 'vue'
+import { ref } from 'vue'
 import { ElMessage } from "element-plus"
 
 const textarea = ref('')
 const loading = ref(false);
-const switch_value = ref(false)
+const inputArea = ref("")
 
 const TargetPath = import.meta.env.VITE_API_URL;
 
@@ -42,7 +42,7 @@ const open_success = (message: string) => {
     })
 }
 
-const runCode = (code: string) => {
+const runCode = (code: string, input: string) => {
     loading.value = !loading.value
     codeMsg.value = {
         state: "",
@@ -56,6 +56,7 @@ const runCode = (code: string) => {
         method: 'post',
         url: TargetPath + '/api/runcode',
         data: {
+            "input": input,
             "lang": "c++",
             "code": code,
         }
@@ -78,9 +79,8 @@ const runCode = (code: string) => {
         })
 }
 
-watch(switch_value, (newValue: boolean) => {
-    if (newValue === true) {
-        textarea.value = `#include <stdio.h>
+const codeInit1 = () => {
+    textarea.value = `#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
 
@@ -97,10 +97,46 @@ int main() {
     printf("你掷的两个骰子点数分别为 %d 和 %d，点数之和为 %d\\n", dice1, dice2, sum);
     return 0;
 }`
-    } else {
-        textarea.value = ""
+    inputArea.value = ""
+}
+
+const codeInit2 = () => {
+    textarea.value = `#include <bits/stdc++.h>
+using namespace std;
+#define int long long
+const int N = 1e6 + 5, mod = 998244353;
+int a[N];
+void solve()
+{
+    int n;
+    cin >> n;
+    for (int i = 1; i <= n; i++) {
+        cin >> a[i];
     }
-})
+    for (int i = 1; i <= n; i++) {
+        cout << a[i] * 10 << " ";
+    }
+    cout << "\\n";
+}
+signed main()
+{
+    // freopen("data.out", "w", stdout);
+    ios::sync_with_stdio(0);
+    cin.tie(0);
+    int tt = 1;
+    // cin >> tt;
+    while (tt--) solve();
+    return 0;
+}`
+    inputArea.value = `5
+5 4 3 2 1`
+}
+
+const codeClear = () => {
+    textarea.value = ""
+    inputArea.value = ""
+}
+
 </script>
 
 <template>
@@ -110,18 +146,29 @@ int main() {
             <el-col :span="2">
             </el-col>
             <el-col :span="20">
-                <el-input v-model="textarea" :autosize="{ minRows: 20, maxRows: 50 }" type="textarea"
+                <el-input v-model="textarea" :autosize="{ minRows: 20, maxRows: 20 }" type="textarea"
                     placeholder="Please input" style="margin-top: 10px;" />
             </el-col>
         </el-row>
 
         <div style="margin-top: 10px;">
-            <el-button class="button" type="primary" :loading="loading" @click="runCode(textarea)">
+            <el-input v-model="inputArea" :autosize="{ minRows: 3, maxRows: 3 }" type="textarea" placeholder="自测输入"
+                style="margin-top: 10px; margin-bottom: 10px;" />
+
+            <el-button class="button" type="primary" :loading="loading" @click="runCode(textarea, inputArea)">
                 运行
             </el-button>
-            <el-switch style="margin-left: 20px;" v-model="switch_value" active-text="点我尝试默认代码" />
-            <div class="message-container">{{ codeMsg.message }}</div>
+            <el-button class="button" type="primary" @click="codeInit1()">
+                默认代码 -- 骰子
+            </el-button>
+            <el-button class="button" type="primary" @click="codeInit2()">
+                默认代码 -- 自测输入
+            </el-button>
+            <el-button class="button" type="primary" @click="codeClear()">
+                清空
+            </el-button>
 
+            <div class="message-container">{{ codeMsg.message }}</div>
 
             <div style="margin: 20px" />
             <el-form label-width="100px" style="max-width: 460px">

@@ -14,8 +14,9 @@ import (
 )
 
 type Code struct {
-	Code string `json:"code"`
-	Lang string `json:"lang"`
+	Input	string `json:"input"`
+	Code 	string `json:"code"`
+	Lang 	string `json:"lang"`
 }
 
 func writeCodeInFile(code *Code, ID int64) error {
@@ -24,13 +25,24 @@ func writeCodeInFile(code *Code, ID int64) error {
 	if err != nil {
 		return err
 	}
-	filename := dirPath + "/c++.cpp"
-	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666) //打开文件
+	cppFileName := dirPath + "/c++.cpp"
+	f, err := os.OpenFile(cppFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666) //打开文件
 	if err != nil {
 		return err
 	}
 	defer f.Close()
 	_, err = io.WriteString(f, code.Code) //写入文件(字符串)
+	if err != nil {
+		return err
+	}
+
+	inputFileName := dirPath + "/data.in"
+	f1, err := os.OpenFile(inputFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666) //打开文件
+	if err != nil {
+		return err
+	}
+	defer f1.Close()
+	_, err = io.WriteString(f1, code.Input) //写入文件(字符串)
 	return err
 }
 
@@ -63,13 +75,13 @@ func RunCode(c *gin.Context) {
 	ID := time.Now().UnixNano()
 	err = writeCodeInFile(&code, ID)
 	defer deleteFile(ID)
-	if util.HandleError(c, err, "写入c++.cpp失败") {
+	if util.HandleError(c, err, "写入 c++.cpp 或 data.in 失败") {
 		return
 	}
 
 
 	cmd1 := fmt.Sprintf("docker run --rm -m 256m --name cpp_compile-%d -v $(pwd)/code/tmp-%d:/dox cpp_env:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'", ID,ID)
-	cmd2 := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%d -v $(pwd)/code/tmp-%d:/dox cpp_env:1 sh -c 'ls ./.. && ./../calc/calc ./cpp > a.out'", ID,ID)
+	cmd2 := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%d -v $(pwd)/code/tmp-%d:/dox cpp_env:1 sh -c 'ls ./.. && ./../calc/calc ./cpp < data.in > data.out'", ID,ID)
 	// fmt.Println(cmd1)
 	// fmt.Println(cmd2)
 
@@ -84,8 +96,8 @@ func RunCode(c *gin.Context) {
 		return
 	}
 
-	ret, err:= os.ReadFile(fmt.Sprintf("./code/tmp-%d/a.out", ID))
-	if util.HandleError(c, err, "read a.out failed") {
+	ret, err:= os.ReadFile(fmt.Sprintf("./code/tmp-%d/data.out", ID))
+	if util.HandleError(c, err, "read data.out failed") {
 		return
 	}
 
