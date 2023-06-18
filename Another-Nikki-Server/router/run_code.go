@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"os/exec"
+	"strings"
 
 	"github.com/gin-gonic/gin"
 )
@@ -53,7 +54,9 @@ func RunCode(c *gin.Context) {
 	}
 
 	err = runCommand("docker run --rm -m 256m --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'")
-	if util.HandleError(c, err, "compile failed") {
+	if err != nil {
+		compile_log, _ := os.ReadFile("./code/compile.log")
+		util.HandleError(c, err, string(compile_log))
 		return
 	}
 	err = runCommand("docker run --rm -m 256m --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c './calc ./cpp > a.out'")
@@ -65,8 +68,14 @@ func RunCode(c *gin.Context) {
 	if util.HandleError(c, err, "read a.out failed") {
 		return
 	}
+
+	ans := strings.Split(string(ret), "\n")
+	n := len(ans)
 	c.JSON(http.StatusOK, gin.H{
 		"state":"success",
-		"message":string(ret),
+		"message":strings.Join(ans[:n-3], ""),
+		"cpu_time_used":ans[n-3],
+		"memory_used":ans[n-2],
+		"exit_code":ans[n-1],
 	})
 }

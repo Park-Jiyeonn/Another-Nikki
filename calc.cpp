@@ -47,9 +47,9 @@ int main(int argc, char *argv[]) {
         signum = 0;
     }
 
-    printf("time used:     %6d ms\n", time_used);
-    printf("cpu time used: %6d ms\n", cpu_time_used);
-    printf("memory used:   %6d kb\n", memory_used);
-    printf("exit code:     %6d\n", signum);
+    printf("\n");
+    printf("%dms\n", cpu_time_used);
+    printf("%dkb\n", memory_used);
+    printf("%d", signum);
     return 0;
 }
