@@ -2,11 +2,12 @@
 import ContentBase from '../../components/ContentBase.vue';
 
 import axios from 'axios';
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 import { ElMessage } from "element-plus"
 
 const textarea = ref('')
 const loading = ref(false);
+const switch_value = ref(false)
 
 const TargetPath = import.meta.env.VITE_API_URL;
 
@@ -76,6 +77,30 @@ const runCode = (code: string) => {
             loading.value = false
         })
 }
+
+watch(switch_value, (newValue: boolean) => {
+    if (newValue === true) {
+        textarea.value = `#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+int roll_dice() {
+    return rand() % 6 + 1;
+}
+
+int main() {
+    int dice1, dice2, sum;
+    srand(time(0));
+    dice1 = roll_dice();
+    dice2 = roll_dice();
+    sum = dice1 + dice2;
+    printf("你掷的两个骰子点数分别为 %d 和 %d，点数之和为 %d\\n", dice1, dice2, sum);
+    return 0;
+}`
+    } else {
+        textarea.value = ""
+    }
+})
 </script>
 
 <template>
@@ -94,6 +119,7 @@ const runCode = (code: string) => {
             <el-button class="button" type="primary" :loading="loading" @click="runCode(textarea)">
                 运行
             </el-button>
+            <el-switch style="margin-left: 20px;" v-model="switch_value" active-text="点我尝试默认代码" />
             <div class="message-container">{{ codeMsg.message }}</div>
 
 
@@ -115,6 +141,7 @@ const runCode = (code: string) => {
 
 <style scoped>
 .message-container {
-  white-space: pre-line;
+    margin-top: 20px;
+    white-space: pre-line;
 }
 </style>
