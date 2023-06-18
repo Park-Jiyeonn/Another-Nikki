@@ -2,6 +2,7 @@ package router
 
 import (
 	"Another-Nikki/dal"
+	"Another-Nikki/util"
 	"context"
 	"net/http"
 	"strconv"
@@ -18,10 +19,7 @@ type Blog struct {
 func PostBlog(c *gin.Context) {
 	var blog Blog
 	err := c.ShouldBindJSON(&blog)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "参数错误",
-		})
+	if util.HandleError(c, err, "参数错误") {
 		return
 	}
 	if blog.Content == "" {
@@ -37,10 +35,7 @@ func PostBlog(c *gin.Context) {
 		return
 	}
 	err = dal.CreateBolg(context.Background(), blog.Content)
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "数据库创建记录失败：" + err.Error(),
-		})
+	if util.HandleError(c, err, "数据库创建记录失败") {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -49,10 +44,7 @@ func PostBlog(c *gin.Context) {
 }
 func GetAllBlogs(c *gin.Context) {
 	ret, err := dal.GetBlogList(context.Background())
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "数据库查询记录失败：" + err.Error(),
-		})
+	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -61,18 +53,12 @@ func GetAllBlogs(c *gin.Context) {
 }
 
 func GetLastSevenBlog(c *gin.Context) {
-	num, err := strconv.Atoi(c.Query("num"))	
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "请填写合适的参数" + err.Error(),
-		})
+	num, err := strconv.Atoi(c.Query("num"))
+	if util.HandleError(c, err, "参数错误") {
 		return
 	}
 	ret, err := dal.GetLastSevenBlog(context.Background(), int64(num))
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "数据库查询记录失败：" + err.Error(),
-		})
+	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
@@ -82,10 +68,7 @@ func GetLastSevenBlog(c *gin.Context) {
 
 func GetRandomBlog(c *gin.Context) {
 	ret, err := dal.GetRandomBlog(context.Background())
-	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"message": "数据库查询记录失败：" + err.Error(),
-		})
+	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{

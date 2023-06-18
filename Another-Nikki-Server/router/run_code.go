@@ -1,6 +1,7 @@
 package router
 
 import (
+	"Another-Nikki/util"
 	"io"
 	"net/http"
 	"os"
@@ -34,11 +35,7 @@ func runCommand(s string) error {
 func RunCode(c *gin.Context) {
 	var code Code
 	err := c.BindJSON(&code)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"state":"error",
-			"message": "参数错误",
-		})
+	if util.HandleError(c, err, "参数错误") {
 		return
 	}
 
@@ -51,37 +48,21 @@ func RunCode(c *gin.Context) {
 	}
 
 	err = writeCodeInFile(&code)
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"state":"error",
-			"message":"写入c++.cpp失败: " + err.Error(),
-		})
+	if util.HandleError(c, err, "写入c++.cpp失败") {
 		return
 	}
 
-	err = runCommand("docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'")
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"state":"error",
-			"message":"compile failed: " + err.Error(),
-		})
+	err = runCommand("docker run --rm -m 256m --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'")
+	if util.HandleError(c, err, "compile failed") {
 		return
 	}
-	err = runCommand("docker run --rm --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c './calc ./cpp > a.out'")
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"state":"error",
-			"message":"run failed!" + err.Error(),
-		})
+	err = runCommand("docker run --rm -m 256m --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c './calc ./cpp > a.out'")
+	if util.HandleError(c, err, "run failed") {
 		return
 	}
 
 	ret, err:= os.ReadFile("./code/a.out")
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"state":"error",
-			"message":"read a.out failed!" + err.Error(),
-		})
+	if util.HandleError(c, err, "read a.out failed") {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
