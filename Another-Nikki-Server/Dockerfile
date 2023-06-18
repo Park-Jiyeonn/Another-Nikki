@@ -5,7 +5,7 @@ RUN echo "https://mirrors.ustc.edu.cn/alpine/latest-stable/main" > /etc/apk/repo
     && apk update \
     && apk add --no-cache g++
 
-# COPY ./code /dox
+COPY ./code /calc
 
 WORKDIR /dox
 
