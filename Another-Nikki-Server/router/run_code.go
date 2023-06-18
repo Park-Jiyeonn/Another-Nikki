@@ -1,7 +1,6 @@
 package router
 
 import (
-	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -13,6 +12,23 @@ import (
 type Code struct {
 	Code string `json:"code"`
 	Lang string `json:"lang"`
+}
+
+func writeCodeInFile(code *Code) error {
+	var filename = "./code/c++.cpp"
+	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666) //打开文件
+	if err != nil {
+		return err
+	}
+	defer f.Close()
+	_, err = io.WriteString(f, code.Code) //写入文件(字符串)
+	return err
+}
+
+func runCommand(s string) error {
+	cmd := exec.Command("bash", "-c", s)
+	err := cmd.Run()
+	return err
 }
 
 func RunCode(c *gin.Context) {
@@ -34,17 +50,7 @@ func RunCode(c *gin.Context) {
 		return
 	}
 
-	var filename = "./code/c++.cpp"
-	f, err := os.OpenFile(filename, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666) //打开文件
-	if err != nil {
-		c.JSON(http.StatusOK, gin.H{
-			"state":"error",
-			"message":"打开c++.cpp失败！请检查文件是否存在",
-		})
-		return
-	}
-	defer f.Close()
-	_, err = io.WriteString(f, code.Code) //写入文件(字符串)
+	err = writeCodeInFile(&code)
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"state":"error",
@@ -53,13 +59,7 @@ func RunCode(c *gin.Context) {
 		return
 	}
 
-	cur_path, _ := os.Getwd()
-	cur_path += "/code"
-
-	compileCmd := exec.Command("docker", "run", "--rm", "--name", "cpp_compile", "-v", fmt.Sprintf("%s:/dox", cur_path), "cpp_env:1", "sh", "-c", "g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log")
-	runCmd := exec.Command("docker", "run", "--rm", "--name", "cpp_run", "-v", fmt.Sprintf("%s:/dox", cur_path), "cpp_env:1", "sh", "-c", "./calc ./cpp > a.out")
-
-	err = compileCmd.Run()
+	err = runCommand("docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'")
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"state":"error",
@@ -67,8 +67,7 @@ func RunCode(c *gin.Context) {
 		})
 		return
 	}
-
-	err = runCmd.Run()
+	err = runCommand("docker run --rm --name cpp_run -v $(pwd)/code:/dox cpp_env:1 sh -c './calc ./cpp > a.out'")
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
 			"state":"error",
