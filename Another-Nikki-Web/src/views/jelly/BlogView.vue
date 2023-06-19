@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import axios from 'axios';
 import { ref } from 'vue'
-import { ElMessage } from "element-plus"
 import HelloWorld from "../../components/HelloWorld.vue"
+import { send_warning, send_success } from "@/components/utils/sendElMsg"
 
 const TargetPath = import.meta.env.VITE_API_URL;
 interface Blog {
@@ -15,22 +15,6 @@ const random_blogs = ref<Blog[]>([])
 const loading = ref(false);
 const laoding_random = ref(false)
 const textarea = ref('')
-
-const open_warning = (message:string) => {
-  ElMessage({
-    showClose: true,
-    message: message,
-    type: 'warning',
-  })
-}
-
-const open_success = (message:string) => {
-  ElMessage({
-    showClose: true,
-    message: message,
-    type: 'success',
-  })
-}
 
 const PostBlog = (content: string) => {
     console.log(content)
@@ -47,16 +31,16 @@ const PostBlog = (content: string) => {
             
             get_last_seven_blogs()
             if (resp.data.message == 'success') {
-                open_success("发布成功咯～")
+                send_success("发布成功咯～")
             } else {
-                open_warning(resp.data.message)
+                send_warning(resp.data.message)
             }
             
             loading.value = false
         })
         .catch(function (error) {
             console.log(error)
-            open_warning("发生了未知错误，请联系开发者～")
+            send_warning("发生了未知错误，请联系开发者～")
             loading.value = false
         })
     textarea.value = ''

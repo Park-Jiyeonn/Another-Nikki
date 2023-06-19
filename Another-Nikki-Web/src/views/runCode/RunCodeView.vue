@@ -1,9 +1,9 @@
 <script setup lang="ts">
-import ContentBase from '../../components/ContentBase.vue';
+import ContentBase from '@/components/ContentBase.vue';
 
 import axios from 'axios';
 import { ref } from 'vue'
-import { ElMessage } from "element-plus"
+import { send_warning, send_success } from "@/components/utils/sendElMsg"
 
 const textarea = ref('')
 const loading = ref(false);
@@ -26,21 +26,6 @@ const codeMsg = ref<CodeRet>({
     exit_code: "",
 })
 
-const open_warning = (message: string) => {
-    ElMessage({
-        showClose: true,
-        message: message,
-        type: 'warning',
-    })
-}
-
-const open_success = (message: string) => {
-    ElMessage({
-        showClose: true,
-        message: message,
-        type: 'success',
-    })
-}
 
 const runCode = (code: string, input: string) => {
     loading.value = !loading.value
@@ -65,16 +50,16 @@ const runCode = (code: string, input: string) => {
             console.log(resp.data)
             codeMsg.value = resp.data
             if (resp.data.state == 'success') {
-                open_success("编译运行成功～")
+                send_success("编译运行成功～")
             } else {
                 codeMsg.value.state = "编译错误"
-                open_warning("编译失败！")
+                send_warning("编译失败！")
             }
             loading.value = false
         })
         .catch(function (error) {
             console.log(error)
-            open_warning("发生了未知错误，请联系开发者～")
+            send_warning("发生了未知错误，请联系开发者～")
             loading.value = false
         })
 }
@@ -151,43 +136,54 @@ const codeClear = () => {
         </el-row>
 
         <div style="margin-top: 10px;">
-            <el-input v-model="inputArea" :autosize="{ minRows: 3, maxRows: 3 }" type="textarea" placeholder="自测输入"
-                style="margin-top: 10px; margin-bottom: 10px;" />
-
-            <el-button class="button" type="primary" :loading="loading" @click="runCode(textarea, inputArea)">
-                运行
-            </el-button>
-            <el-button class="button" type="primary" @click="codeInit1()">
-                默认代码 -- 骰子
-            </el-button>
-            <el-button class="button" type="primary" @click="codeInit2()">
-                默认代码 -- 自测输入
-            </el-button>
-            <el-button class="button" type="primary" @click="codeClear()">
-                清空
-            </el-button>
-
-            <div class="message-container">{{ codeMsg.message }}</div>
-
-            <div style="margin: 20px" />
-            <el-form label-width="100px" style="max-width: 460px">
-                <el-form-item label="运行时间: ">
-                    {{ codeMsg.cpu_time_used }}
-                </el-form-item>
-                <el-form-item label="占用内存: ">
-                    {{ codeMsg.memory_used }}
-                </el-form-item>
-                <el-form-item label="运行状态: ">
-                    {{ codeMsg.state }}
-                </el-form-item>
-            </el-form>
+            <el-row>
+                <el-col :span="2"></el-col>
+                <el-col :span="10">
+                    <el-input v-model="inputArea" :autosize="{ minRows: 8, maxRows: 8 }" type="textarea" placeholder="自测输入"
+                                style="margin-top: 10px; margin-bottom: 10px;" />
+                </el-col>
+                <el-col :span="10">
+                    <div style="margin: 20px" />
+                    <el-form label-width="100px" style="max-width: 460px">
+                        <el-form-item label="运行结果: " class="limit-text">
+                            {{ codeMsg.message }}
+                        </el-form-item>
+                        <el-form-item label="运行时间: ">
+                            {{ codeMsg.cpu_time_used }}
+                        </el-form-item>
+                        <el-form-item label="占用内存: ">
+                            {{ codeMsg.memory_used }}
+                        </el-form-item>
+                        <el-form-item label="运行状态: ">
+                            {{ codeMsg.state }}
+                        </el-form-item>
+                    </el-form>
+                </el-col>
+            </el-row>
+            
+            
+            <el-row>
+                <el-col :span="2"></el-col>
+                <el-button class="button" type="primary" :loading="loading" @click="runCode(textarea, inputArea)">
+                    运行
+                </el-button>
+                <el-button class="button" type="primary" @click="codeInit1()">
+                    默认代码 -- 骰子
+                </el-button>
+                <el-button class="button" type="primary" @click="codeInit2()">
+                    默认代码 -- 自测输入
+                </el-button>
+                <el-button class="button" type="primary" @click="codeClear()">
+                    清空
+                </el-button>
+            </el-row>
         </div>
     </ContentBase>
 </template>
 
 <style scoped>
-.message-container {
-    margin-top: 20px;
-    white-space: pre-line;
+.limit-text {
+  max-height: 50px; /* 设置最大宽度 */
+  overflow: auto; /* 显示滚动条 */
 }
 </style>
