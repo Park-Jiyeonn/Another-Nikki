@@ -5,6 +5,10 @@ import axios from 'axios';
 import { ref } from 'vue'
 import { send_warning, send_success } from "@/components/utils/sendElMsg"
 
+import {
+  Delete,
+} from '@element-plus/icons-vue'
+
 const textarea = ref('')
 const loading = ref(false);
 const inputArea = ref("")
@@ -140,50 +144,59 @@ const codeClear = () => {
                 <el-col :span="2"></el-col>
                 <el-col :span="10">
                     <el-input v-model="inputArea" :autosize="{ minRows: 8, maxRows: 8 }" type="textarea" placeholder="自测输入"
-                                style="margin-top: 10px; margin-bottom: 10px;" />
+                        style="margin-top: 10px; margin-bottom: 10px;" />
                 </el-col>
+                <el-col :span="1"></el-col>
                 <el-col :span="10">
-                    <div style="margin: 20px" />
-                    <el-form label-width="100px" style="max-width: 460px">
-                        <el-form-item label="运行结果: " class="limit-text">
-                            {{ codeMsg.message }}
-                        </el-form-item>
-                        <el-form-item label="运行时间: ">
-                            {{ codeMsg.cpu_time_used }}
-                        </el-form-item>
-                        <el-form-item label="占用内存: ">
-                            {{ codeMsg.memory_used }}
-                        </el-form-item>
-                        <el-form-item label="运行状态: ">
-                            {{ codeMsg.state }}
-                        </el-form-item>
-                    </el-form>
+                    <el-row style="margin-top: 10px;">
+                        <el-button class="button" type="success" :loading="loading" @click="runCode(textarea, inputArea)">
+                            运行
+                        </el-button>
+                    </el-row>
+
+                    <el-row style="margin-top: 10px;">
+                        <el-button class="button" type="primary" @click="codeInit1()">
+                            默认代码 -- 骰子
+                        </el-button>
+                    </el-row>
+
+                    <el-row style="margin-top: 10px;">
+                        <el-button class="button" type="primary" @click="codeInit2()">
+                            默认代码 -- 自测输入
+                        </el-button>
+                    </el-row>
+
+                    <el-row style="margin-top: 10px;">
+                        <el-button class="button" :icon="Delete" type="danger" @click="codeClear()">
+                            清空
+                        </el-button>
+                    </el-row>
                 </el-col>
             </el-row>
-            
-            
-            <el-row>
-                <el-col :span="2"></el-col>
-                <el-button class="button" type="primary" :loading="loading" @click="runCode(textarea, inputArea)">
-                    运行
-                </el-button>
-                <el-button class="button" type="primary" @click="codeInit1()">
-                    默认代码 -- 骰子
-                </el-button>
-                <el-button class="button" type="primary" @click="codeInit2()">
-                    默认代码 -- 自测输入
-                </el-button>
-                <el-button class="button" type="primary" @click="codeClear()">
-                    清空
-                </el-button>
-            </el-row>
+
+
+            <el-form label-width="100px" style="max-width: 460px">
+                <el-form-item label="运行结果: " class="limit-text">
+                    {{ codeMsg.message }}
+                </el-form-item>
+                <el-form-item label="运行时间: ">
+                    {{ codeMsg.cpu_time_used }}
+                </el-form-item>
+                <el-form-item label="占用内存: ">
+                    {{ codeMsg.memory_used }}
+                </el-form-item>
+                <el-form-item label="运行状态: ">
+                    {{ codeMsg.state }}
+                </el-form-item>
+            </el-form>
+
         </div>
     </ContentBase>
 </template>
 
 <style scoped>
 .limit-text {
-  max-height: 50px; /* 设置最大宽度 */
-  overflow: auto; /* 显示滚动条 */
+    max-height: 100px; /* 设置最大高度 */
+    overflow: auto; /* 显示滚动条 */
 }
 </style>
