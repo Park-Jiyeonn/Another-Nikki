@@ -19,13 +19,13 @@ type Code struct {
 	Lang 	string `json:"lang"`
 }
 
-func writeCodeInFile(code *Code, ID int64) error {
+func writeCodeInFile(code *Code, ID int64, FileName string) error {
 	dirPath := fmt.Sprintf("./code/tmp-%d", ID)
 	err := os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
 		return err
 	}
-	cppFileName := dirPath + "/c++.cpp"
+	cppFileName := dirPath + "/" + FileName
 	f, err := os.OpenFile(cppFileName, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666) //打开文件
 	if err != nil {
 		return err
@@ -57,31 +57,23 @@ func runCommand(s string) error {
 	return err
 }
 
-func RunCode(c *gin.Context) {
-	var code Code
-	err := c.BindJSON(&code)
-	if util.HandleError(c, err, "参数错误") {
-		return
+func python(c *gin.Context, code *Code, ID int64) bool {
+	err := writeCodeInFile(code, ID, "py.py")
+	if util.HandleError(c, err, "写入 py.py 或 data.in 失败") {
+		return false
 	}
+	cmd := fmt.Sprintf("docker run --rm -m 256m --name py_run-%d -v $(pwd)/code/tmp-%d:/dox oj:1 sh -c 'ls ./.. && ./../calc/calc2 python3 py.py < data.in > data.out'", ID,ID)
+	err = runCommand(cmd)
+	return !util.HandleError(c, err, "run faild")
+}
 
-	if code.Lang != "c++" {
-		c.JSON(http.StatusOK, gin.H{
-			"state":"error",
-			"message": "暂不支持这种语言呢～",
-		})
-		return
-	}
-
-	ID := time.Now().UnixNano()
-	err = writeCodeInFile(&code, ID)
-	defer deleteFile(ID)
+func cpp(c *gin.Context, code *Code, ID int64) bool {
+	err := writeCodeInFile(code, ID, "c++.cpp")
 	if util.HandleError(c, err, "写入 c++.cpp 或 data.in 失败") {
-		return
+		return false
 	}
-
-
-	cmd1 := fmt.Sprintf("docker run --rm -m 256m --name cpp_compile-%d -v $(pwd)/code/tmp-%d:/dox cpp_env:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'", ID,ID)
-	cmd2 := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%d -v $(pwd)/code/tmp-%d:/dox cpp_env:1 sh -c 'ls ./.. && ./../calc/calc ./cpp < data.in > data.out'", ID,ID)
+	cmd1 := fmt.Sprintf("docker run --rm -m 256m --name cpp_compile-%d -v $(pwd)/code/tmp-%d:/dox oj:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'", ID,ID)
+	cmd2 := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%d -v $(pwd)/code/tmp-%d:/dox oj:1 sh -c 'ls ./.. && ./../calc/calc1 ./cpp < data.in > data.out'", ID,ID)
 	// fmt.Println(cmd1)
 	// fmt.Println(cmd2)
 
@@ -89,10 +81,35 @@ func RunCode(c *gin.Context) {
 	if err != nil {
 		compile_log, _ := os.ReadFile("./code/compile.log")
 		util.HandleError(c, err, string(compile_log))
-		return
+		return false
 	}
 	err = runCommand(cmd2)
-	if util.HandleError(c, err, "run failed") {
+	return !util.HandleError(c, err, "run faild")
+}
+
+func RunCode(c *gin.Context) {
+	var code Code
+	err := c.BindJSON(&code)
+	if util.HandleError(c, err, "参数错误") {
+		return
+	}
+
+	ID := time.Now().UnixNano()
+	defer deleteFile(ID)
+	
+	if code.Lang == "c++" {
+		if !cpp(c, &code, ID) {
+			return
+		}
+	} else if code.Lang == "python" {
+		if !python(c, &code, ID) {
+			return
+		}
+	} else {
+		c.JSON(http.StatusOK, gin.H{
+			"state":"error",
+			"message": "暂不支持这种语言呢～",
+		})
 		return
 	}
 

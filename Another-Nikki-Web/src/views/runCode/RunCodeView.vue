@@ -12,6 +12,7 @@ import {
 const textarea = ref('')
 const loading = ref(false);
 const inputArea = ref("")
+const language = ref('c++')
 
 const TargetPath = import.meta.env.VITE_API_URL;
 
@@ -31,6 +32,18 @@ const codeMsg = ref<CodeRet>({
 })
 
 
+const options = [
+  {
+    value: 'c++',
+    label: 'c++',
+  },
+  {
+    value: 'python',
+    label: 'python',
+  },
+]
+
+
 const runCode = (code: string, input: string) => {
     loading.value = !loading.value
     codeMsg.value = {
@@ -46,7 +59,7 @@ const runCode = (code: string, input: string) => {
         url: TargetPath + '/api/runcode',
         data: {
             "input": input,
-            "lang": "c++",
+            "lang": language.value,
             "code": code,
         }
     })
@@ -69,6 +82,7 @@ const runCode = (code: string, input: string) => {
 }
 
 const codeInit1 = () => {
+    language.value = "c++"
     textarea.value = `#include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -90,6 +104,7 @@ int main() {
 }
 
 const codeInit2 = () => {
+    language.value = "c++"
     textarea.value = `#include <bits/stdc++.h>
 using namespace std;
 #define int long long
@@ -129,7 +144,15 @@ const codeClear = () => {
 
 <template>
     <ContentBase>
-        这里可以编译代码：（目前只支持c++）
+        选择语言： 
+        <el-select v-model="language" class="m-2" placeholder="Select" size="large">
+            <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value"
+            />
+        </el-select>
         <el-row>
             <el-col :span="2">
             </el-col>

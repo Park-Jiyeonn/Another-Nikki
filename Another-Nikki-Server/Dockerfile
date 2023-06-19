@@ -1,9 +1,9 @@
-FROM alpine:latest
+FROM alpine:3.17
 
 RUN echo "https://mirrors.ustc.edu.cn/alpine/latest-stable/main" > /etc/apk/repositories \
     && echo "https://mirrors.ustc.edu.cn/alpine/latest-stable/community" >> /etc/apk/repositories \
     && apk update \
-    && apk add --no-cache g++
+    && apk add --no-cache g++ python3
 
 COPY ./code /calc
 
