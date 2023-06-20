@@ -2,6 +2,7 @@ package router
 
 import (
 	"Another-Nikki/dal"
+	"Another-Nikki/router/model"
 	"Another-Nikki/util"
 	"context"
 	"net/http"
@@ -12,12 +13,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type Blog struct {
-	Content string `json:"content"`
-}
-
 func PostBlog(c *gin.Context) {
-	var blog Blog
+	var blog model.Blog
 	err := c.ShouldBindJSON(&blog)
 	if util.HandleError(c, err, "参数错误") {
 		return
