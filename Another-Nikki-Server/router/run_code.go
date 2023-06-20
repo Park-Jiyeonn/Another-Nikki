@@ -46,7 +46,7 @@ func RunCode(c *gin.Context) {
 	n := len(ans)
 	c.JSON(http.StatusOK, gin.H{
 		"state":"success",
-		"message":strings.Join(ans[:n-3], ""),
+		"message":strings.Join(ans[:n-3], "\n"),
 		"cpu_time_used":ans[n-3],
 		"memory_used":ans[n-2],
 		"exit_code":ans[n-1],

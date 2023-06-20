@@ -221,5 +221,6 @@ const codeClear = () => {
 .limit-text {
     max-height: 100px; /* 设置最大高度 */
     overflow: auto; /* 显示滚动条 */
+    white-space: pre-wrap;
 }
 </style>
