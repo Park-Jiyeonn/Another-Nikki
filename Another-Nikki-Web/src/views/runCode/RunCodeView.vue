@@ -35,11 +35,19 @@ const codeMsg = ref<CodeRet>({
 const options = [
   {
     value: 'c++',
-    label: 'c++',
+    label: 'c++11 (g++ 12.2.1)',
   },
   {
     value: 'python',
-    label: 'python',
+    label: 'python3 (3.11.4)',
+  },
+  {
+    value: 'java',
+    label: 'java 11',
+  },
+  {
+    value: 'go',
+    label: 'golang (1.20.5)',
   },
 ]
 

@@ -29,6 +29,14 @@ func RunCode(c *gin.Context) {
 		if !service.Python(c, &code, ID) {
 			return
 		}
+	} else if code.Lang == "java" {
+		if !service.Java(c, &code, ID) {
+			return
+		}
+	} else if code.Lang == "go" {
+		if !service.Go(c, &code, ID) {
+			return
+		}
 	} else {
 		c.JSON(http.StatusOK, gin.H{
 			"state":"error",
