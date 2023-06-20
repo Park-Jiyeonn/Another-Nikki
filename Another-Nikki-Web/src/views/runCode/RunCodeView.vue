@@ -13,6 +13,7 @@ const textarea = ref('')
 const loading = ref(false);
 const inputArea = ref("")
 const language = ref('c++')
+const codeLoading = ref(false)
 
 const TargetPath = import.meta.env.VITE_API_URL;
 
@@ -90,6 +91,7 @@ const runCode = (code: string, input: string) => {
 }
 
 const codeInit1 = () => {
+    codeLoading.value = true
     axios({
         method: 'get',
         url: TargetPath + '/api/runcode/default_code',
@@ -101,9 +103,11 @@ const codeInit1 = () => {
             console.log(resp.data)
             textarea.value = resp.data.code
             inputArea.value = resp.data.input
-        })
+            codeLoading.value = false
+       })
         .catch(function (error) {
             console.log(error)
+            codeLoading.value = false
         })
 }
 
@@ -116,7 +120,7 @@ const codeClear = () => {
 
 <template>
     <ContentBase>
-        选择语言： 
+        选择语言：
         <el-select v-model="language" class="m-2" placeholder="Select" size="large">
             <el-option
             v-for="item in options"
@@ -125,6 +129,7 @@ const codeClear = () => {
             :value="item.value"
             />
         </el-select>
+        （可以生成默认代码与随机入参）
         <el-row>
             <el-col :span="2">
             </el-col>
@@ -150,7 +155,7 @@ const codeClear = () => {
                     </el-row>
 
                     <el-row style="margin-top: 30px;">
-                        <el-button class="button" type="primary" @click="codeInit1()">
+                        <el-button class="button" type="primary" :loading="codeLoading" @click="codeInit1()">
                             默认代码
                         </el-button>
                     </el-row>
