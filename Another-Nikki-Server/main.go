@@ -24,6 +24,7 @@ func main() {
 	runCode := r.Group("/api/runcode")
 	{
 		runCode.POST("", router.RunCode)
+		runCode.GET("/default_code", router.DefaultCode)
 	}
 	
 	r.Run(":8888")

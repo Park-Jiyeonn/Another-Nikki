@@ -90,57 +90,21 @@ const runCode = (code: string, input: string) => {
 }
 
 const codeInit1 = () => {
-    language.value = "c++"
-    textarea.value = `#include <stdio.h>
-#include <stdlib.h>
-#include <time.h>
-
-int roll_dice() {
-    return rand() % 6 + 1;
-}
-
-int main() {
-    int dice1, dice2, sum;
-    srand(time(0));
-    dice1 = roll_dice();
-    dice2 = roll_dice();
-    sum = dice1 + dice2;
-    printf("你掷的两个骰子点数分别为 %d 和 %d，点数之和为 %d\\n", dice1, dice2, sum);
-    return 0;
-}`
-    inputArea.value = ""
-}
-
-const codeInit2 = () => {
-    language.value = "c++"
-    textarea.value = `#include <bits/stdc++.h>
-using namespace std;
-#define int long long
-const int N = 1e6 + 5, mod = 998244353;
-int a[N];
-void solve()
-{
-    int n;
-    cin >> n;
-    for (int i = 1; i <= n; i++) {
-        cin >> a[i];
-    }
-    for (int i = 1; i <= n; i++) {
-        cout << a[i] * 10 << " ";
-    }
-    cout << "\\n";
-}
-signed main()
-{
-    ios::sync_with_stdio(0);
-    cin.tie(0);
-    int tt = 1;
-    // cin >> tt;
-    while (tt--) solve();
-    return 0;
-}`
-    inputArea.value = `5
-5 4 3 2 1`
+    axios({
+        method: 'get',
+        url: TargetPath + '/api/runcode/default_code',
+        params:{
+            "lang":language.value,
+        },
+    })
+        .then(function (resp) {
+            console.log(resp.data)
+            textarea.value = resp.data.code
+            inputArea.value = resp.data.input
+        })
+        .catch(function (error) {
+            console.log(error)
+        })
 }
 
 const codeClear = () => {
@@ -179,25 +143,19 @@ const codeClear = () => {
                 </el-col>
                 <el-col :span="1"></el-col>
                 <el-col :span="10">
-                    <el-row style="margin-top: 10px;">
+                    <el-row style="margin-top: 20px;">
                         <el-button class="button" type="success" :loading="loading" @click="runCode(textarea, inputArea)">
                             运行
                         </el-button>
                     </el-row>
 
-                    <el-row style="margin-top: 10px;">
+                    <el-row style="margin-top: 30px;">
                         <el-button class="button" type="primary" @click="codeInit1()">
-                            默认代码 -- 骰子
+                            默认代码
                         </el-button>
                     </el-row>
 
-                    <el-row style="margin-top: 10px;">
-                        <el-button class="button" type="primary" @click="codeInit2()">
-                            默认代码 -- 自测输入
-                        </el-button>
-                    </el-row>
-
-                    <el-row style="margin-top: 10px;">
+                    <el-row style="margin-top: 30px;">
                         <el-button class="button" :icon="Delete" type="danger" @click="codeClear()">
                             清空
                         </el-button>
@@ -205,18 +163,17 @@ const codeClear = () => {
                 </el-col>
             </el-row>
 
-
             <el-form label-width="100px" style="max-width: 460px">
-                <el-form-item label="运行结果: " class="limit-text">
+                <el-form-item label="运行结果:" class="limit-text">
                     {{ codeMsg.message }}
                 </el-form-item>
-                <el-form-item label="运行时间: ">
+                <el-form-item label="运行时间:">
                     {{ codeMsg.cpu_time_used }}
                 </el-form-item>
-                <el-form-item label="占用内存: ">
+                <el-form-item label="占用内存:">
                     {{ codeMsg.memory_used }}
                 </el-form-item>
-                <el-form-item label="运行状态: ">
+                <el-form-item label="运行状态:">
                     {{ codeMsg.state }}
                 </el-form-item>
             </el-form>
