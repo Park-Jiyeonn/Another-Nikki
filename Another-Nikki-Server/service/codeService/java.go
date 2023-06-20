@@ -19,7 +19,8 @@ func Java(c *gin.Context, code *model.Code, ID int64) bool {
 
 	err = RunCommand(cmd1)
 	if err != nil {
-		compile_log, _ := os.ReadFile("./code/compile.log")
+		compile_log, _ := os.ReadFile(fmt.Sprintf("./code/tmp-%d/compile.log", ID))
+		// fmt.Println("compile_log = ", compile_log)
 		util.HandleError(c, err, string(compile_log))
 		return false
 	}

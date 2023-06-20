@@ -19,7 +19,7 @@ func Go(c *gin.Context, code *model.Code, ID int64) bool {
 
 	err = RunCommand(cmd1)
 	if err != nil {
-		compile_log, _ := os.ReadFile("./code/compile.log")
+		compile_log, _ := os.ReadFile(fmt.Sprintf("./code/tmp-%d/compile.log", ID))
 		util.HandleError(c, err, string(compile_log))
 		return false
 	}

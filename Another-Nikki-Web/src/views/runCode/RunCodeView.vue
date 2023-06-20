@@ -43,7 +43,7 @@ const options = [
   },
   {
     value: 'java',
-    label: 'java 11',
+    label: 'Java 11',
   },
   {
     value: 'go',
