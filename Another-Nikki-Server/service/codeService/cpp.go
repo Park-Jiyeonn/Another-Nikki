@@ -15,7 +15,7 @@ func Cpp(c *gin.Context, code *model.Code, ID int64) bool {
 		return false
 	}
 	cmd1 := fmt.Sprintf("docker run --rm -m 256m --name cpp_compile-%d -v $(pwd)/code/tmp-%d:/dox oj:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'", ID,ID)
-	cmd2 := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%d -v $(pwd)/code/tmp-%d:/dox oj:1 sh -c 'ls ./.. && ./../calc/calc1 ./cpp < data.in > data.out'", ID,ID)
+	cmd2 := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%d -v $(pwd)/code/tmp-%d:/dox oj:1 sh -c './../calc/calc1 ./cpp < data.in > data.out'", ID,ID)
 	// fmt.Println(cmd1)
 	// fmt.Println(cmd2)
 
