@@ -12,6 +12,7 @@ func main() {
 	dal.Init()
 
 	r.Use(mw.Cors())
+	r.Use(mw.Logger())
 
 	blogGroup := r.Group("/api/blog")
 	{

@@ -20,6 +20,7 @@ func Init() {
 	}
 	err = DB.AutoMigrate(
 		&model.Blog{},
+		&model.Log{},
 	)
 	if err != nil {
 		panic(err)
