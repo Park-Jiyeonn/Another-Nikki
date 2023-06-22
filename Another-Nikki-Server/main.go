@@ -12,6 +12,13 @@ func main() {
 	dal.Init()
 
 	r.Use(mw.Cors())
+
+	logGroup := r.Group("/api/log")
+	{
+		logGroup.GET("/get_page_que", router.GetPageQue)
+		logGroup.GET("/count", router.GetLogCount)
+	}
+
 	r.Use(mw.Logger())
 
 	blogGroup := r.Group("/api/blog")

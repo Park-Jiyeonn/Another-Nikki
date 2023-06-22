@@ -6,15 +6,6 @@ const systemRoutes = [
 		component: () => import('../views/HomeView.vue'),
 	},
 	{
-		path:'/jelly',
-		children: [
-			{
-				path: '',
-				component: () => import('../views/jelly/BlogView.vue'),
-			},
-		],
-	},
-	{
 		path: '/error',
 		children: [
 			{
@@ -59,6 +50,22 @@ const RunCodeRoutes = [
 	},
 ]
 
+const privateRoutes = [
+	{
+		path:'/jelly',
+		children: [
+			{
+				path: '',
+				component: () => import('../views/jelly/BlogView.vue'),
+			},
+		],
+	},
+	{
+		path:"/logs",
+		component: () => import('@/views/LogView.vue'),
+	}
+]
+
 const fallbackRoutes = [{
 	path: '/:any+',
 	redirect: '/error/404',
@@ -70,6 +77,7 @@ const router = createRouter({
 		...systemRoutes,
 		...fallbackRoutes,
 		...RunCodeRoutes,
+		...privateRoutes,
 	],
 })
 
