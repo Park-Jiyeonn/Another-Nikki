@@ -27,7 +27,7 @@ const PostBlog = (content: string) => {
         }
     })
         .then(function (resp) {
-            console.log(resp.data)
+            // console.log(resp.data)
             
             get_last_seven_blogs()
             if (resp.data.message == 'success') {
@@ -55,9 +55,9 @@ const get_last_seven_blogs = () => {
         },
     })
         .then(function (resp) {
-            console.log(resp.data.data)
+            // console.log(resp.data.data)
             blogs.value = resp.data.data
-            console.log(blogs.value)
+            // console.log(blogs.value)
 
             // 遍历 blogs 数组并修改 CreatedAt 值的格式
             blogs.value.forEach((blog) => {
@@ -76,7 +76,7 @@ const get_random_blogs = () => {
         url: TargetPath + '/api/blog/get_random_blog',
     })
         .then(function (resp) {
-            console.log(resp.data.data[0].content)
+            // console.log(resp.data.data[0].content)
             random_blogs.value = resp.data.data
             console.log(blogs.value)
 

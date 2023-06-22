@@ -42,7 +42,7 @@ const get_count = () => {
         .then(function (resp) {
             sum.value = resp.data.sum
             // sum.value = ((sum.value + 20 - 1) / 20 | 0) * 20
-            console.log(sum.value)
+            // console.log(sum.value)
         })
         .catch(function (error) {
             console.log(error)

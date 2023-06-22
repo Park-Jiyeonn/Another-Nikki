@@ -73,7 +73,7 @@ const runCode = (code: string, input: string) => {
         }
     })
         .then(function (resp) {
-            console.log(resp.data)
+            // console.log(resp.data)
             codeMsg.value = resp.data
             if (resp.data.state == 'success') {
                 send_success("编译运行成功～")
@@ -100,7 +100,7 @@ const codeInit1 = () => {
         },
     })
         .then(function (resp) {
-            console.log(resp.data)
+            // console.log(resp.data)
             textarea.value = resp.data.code
             inputArea.value = resp.data.input
             codeLoading.value = false

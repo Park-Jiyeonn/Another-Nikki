@@ -25,6 +25,7 @@ func GetPageQue(ctx context.Context, page int) ([]model.Log, error) {
 		Model(model.Log{}).
 		Limit(20).
 		Offset((page - 1) * 20).
+		Order("ID DESC").
 		Find(&res).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
