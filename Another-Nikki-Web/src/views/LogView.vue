@@ -13,7 +13,7 @@ interface Log {
 }
 const logs = ref<Log[]>([])
 const sum = ref(0)
-const currentPage = ref(2)
+const currentPage = ref(1)
 
 const get_page_que = (page:number) => {
     axios({
