@@ -1,52 +1,26 @@
 <script setup lang="ts">
-import axios from 'axios';
 import { ref } from 'vue'
 
-const TargetPath = import.meta.env.VITE_API_URL;
-interface Log {
-    ID: number
-    IP: number
-    api: string
-    status: number
-    response:string
-    CreatedAt:string
-}
-const logs = ref<Log[]>([])
+import { LogsType } from '@/types/Logs';
+import { page_que, count } from '@/api/logs'; 
+
+const logs = ref<LogsType[]>([])
 const sum = ref(0)
 const currentPage = ref(1)
 
-const get_page_que = (page:number) => {
-    axios({
-        method: 'get',
-        url: TargetPath + '/api/log/get_page_que',
-        params:{
-            page:page,
-        },
-    })
-        .then(function (resp) {
-            logs.value = resp.data.data 
-            logs.value.forEach((log) => {
-                log.CreatedAt = log.CreatedAt.substring(5, 10) + " " + log.CreatedAt.substring(11, 16)
-            });
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
+const get_page_que = async (page:number) => {
+    const ret = await page_que({page:page})
+    // console.log(ret.data.data.logs)
+    logs.value =  ret.data.data.logs
+    logs.value.forEach((log) => {
+        log.CreatedAt = log.CreatedAt.substring(5, 10) + " " + log.CreatedAt.substring(11, 16)
+    });
 }
 
-const get_count = () => {
-    axios({
-        method:"get",
-        url: TargetPath + '/api/log/count',
-    })
-        .then(function (resp) {
-            sum.value = resp.data.sum
-            // sum.value = ((sum.value + 20 - 1) / 20 | 0) * 20
-            // console.log(sum.value)
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
+const get_count = async() => {
+    const ret = await count()
+    // console.log(ret.data)
+    sum.value = ret.data.data.sum
 }
 
 get_count()

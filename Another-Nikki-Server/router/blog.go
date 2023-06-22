@@ -36,6 +36,8 @@ func PostBlog(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code":  200,
+		// "data": err.Error(),
 		"message": "success",
 	})
 }
@@ -45,7 +47,9 @@ func GetAllBlogs(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code":  200,
 		"data": ret,
+		"message": "success",
 	})
 }
 
@@ -59,7 +63,9 @@ func GetLastSevenBlog(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code":  200,
 		"data": ret,
+		"message": "success",
 	})
 }
 
@@ -69,7 +75,9 @@ func GetRandomBlog(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
+		"code":  200,
 		"data": ret,
+		"message": "success",
 	})
 	time.Sleep(time.Millisecond * 100)
 }

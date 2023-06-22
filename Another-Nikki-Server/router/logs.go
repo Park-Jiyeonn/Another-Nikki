@@ -23,7 +23,11 @@ func GetLogCount(c *gin.Context) {
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"sum": sum,
+		"code":200,
+		"data": gin.H{
+			"sum":sum,
+		},
+		"message":"success",
 	})
 }
 
@@ -40,6 +44,10 @@ func GetPageQue(c *gin.Context) {
 		ret[i].Response = ret[i].Response[:min(50, len(ret[i].Response))]
 	}
 	c.JSON(http.StatusOK, gin.H{
-		"data": ret,
+		"code":200,
+		"data": gin.H{
+			"logs":ret,
+		},
+		"message":"success",
 	})
 }

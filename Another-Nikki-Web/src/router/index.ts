@@ -1,4 +1,5 @@
 import { createRouter, createWebHistory,  } from 'vue-router'
+import { useIsLoggedIn } from '@/hooks/userIsLogin'
 
 const systemRoutes = [
 	{
@@ -25,22 +26,22 @@ const systemRoutes = [
 			},
 		],
 	},
-	// {
-	// 	path: '/auth',
-	// 	meta: { hideSidebar: true },
-	// 	children: [
-	// 		{
-	// 			name: 'Login',
-	// 			path: 'login',
-	// 			component: () => import('@/views/auth/LoginView.vue'),
-	// 		},
-	// 		{
-	// 			name: 'Logout',
-	// 			path: 'logout',
-	// 			component: () => import('@/views/auth/LogoutView.vue'),
-	// 		},
-	// 	],
-	// },
+	{
+		path: '/auth',
+		meta: { hideSidebar: true },
+		children: [
+			{
+				name: 'Login',
+				path: 'login',
+				component: () => import('@/views/auth/LoginView.vue'),
+			},
+			{
+				name: 'register',
+				path: 'register',
+				component: () => import('@/views/auth/Register.vue'),
+			},
+		],
+	},
 ]
 
 const RunCodeRoutes = [
@@ -53,16 +54,17 @@ const RunCodeRoutes = [
 const privateRoutes = [
 	{
 		path:'/jelly',
-		children: [
-			{
-				path: '',
-				component: () => import('../views/jelly/BlogView.vue'),
-			},
-		],
+		component: () => import('../views/jelly/BlogView.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	{
 		path:"/logs",
 		component: () => import('@/views/LogView.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	}
 ]
 
@@ -79,6 +81,20 @@ const router = createRouter({
 		...RunCodeRoutes,
 		...privateRoutes,
 	],
+})
+
+router.beforeEach(to => {
+	const isLoggedIn = useIsLoggedIn()
+	if (to.meta.requiresAuth && !isLoggedIn.value) {
+		// let query
+		// 通过 redirect 参数保存当前所在的位置，以便登录后返回
+		// 如果当前是首页，就不用存了，因为登录后默认回首页
+		// if (to.fullPath !== '/') query = { redirect: to.fullPath }
+		return {
+			path: '/error/404',
+			// query,
+		}
+	}
 })
 
 export default router

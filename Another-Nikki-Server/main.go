@@ -13,7 +13,10 @@ func main() {
 
 	r.Use(mw.Cors())
 
+	// log 不走 log 记录哈哈哈
 	logGroup := r.Group("/api/log")
+	// log 要鉴权
+	logGroup.Use(mw.JwtAuth())
 	{
 		logGroup.GET("/get_page_que", router.GetPageQue)
 		logGroup.GET("/count", router.GetLogCount)
@@ -21,7 +24,9 @@ func main() {
 
 	r.Use(mw.Logger())
 
+	// blog 要鉴权
 	blogGroup := r.Group("/api/blog")
+	blogGroup.Use(mw.JwtAuth())
 	{
 		blogGroup.GET("/get_all_blogs", router.GetAllBlogs)
 		blogGroup.GET("/get_last_seven_blogs", router.GetLastSevenBlog)
@@ -33,6 +38,12 @@ func main() {
 	{
 		runCode.POST("", router.RunCode)
 		runCode.GET("/default_code", router.DefaultCode)
+	}
+
+	user := r.Group("/api/user")
+	{
+		user.POST("/login", router.Login)
+		user.POST("/register", router.Register)
 	}
 	
 	r.Run(":8888")

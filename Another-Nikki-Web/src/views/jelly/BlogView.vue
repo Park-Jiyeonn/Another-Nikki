@@ -1,97 +1,44 @@
 <script setup lang="ts">
-import axios from 'axios';
 import { ref } from 'vue'
 import HelloWorld from "../../components/HelloWorld.vue"
-import { send_warning, send_success } from "@/components/utils/sendElMsg"
 
-const TargetPath = import.meta.env.VITE_API_URL;
-interface Blog {
-    ID: number;
-    content: string;
-    CreatedAt: string,
-}
+import { Blog } from '@/types/Blog';
+import {BlogApi} from '@/api'
+
 const blogs = ref<Blog[]>([])
 const random_blogs = ref<Blog[]>([])
 const loading = ref(false);
 const laoding_random = ref(false)
 const textarea = ref('')
 
-const PostBlog = (content: string) => {
-    console.log(content)
+const PostBlog = async (content: string) => {
     loading.value = !loading.value
-    axios({
-        method: 'post',
-        url: TargetPath + '/api/blog/create_blog',
-        data: {
-            "content": content,
-        }
-    })
-        .then(function (resp) {
-            // console.log(resp.data)
-            
-            get_last_seven_blogs()
-            if (resp.data.message == 'success') {
-                send_success("发布成功咯～")
-            } else {
-                send_warning(resp.data.message)
-            }
-            
-            loading.value = false
-        })
-        .catch(function (error) {
-            console.log(error)
-            send_warning("发生了未知错误，请联系开发者～")
-            loading.value = false
-        })
     textarea.value = ''
+
+    const ret = await BlogApi.PostBlog({content:content})
+
+    loading.value = false
+    get_last_seven_blogs()
+    console.log(ret.data.message)
 }
 
-const get_last_seven_blogs = () => {
-    axios({
-        method: 'get',
-        url: TargetPath + '/api/blog/get_last_seven_blogs',
-        params:{
-            num:7,
-        },
-    })
-        .then(function (resp) {
-            // console.log(resp.data.data)
-            blogs.value = resp.data.data
-            // console.log(blogs.value)
-
-            // 遍历 blogs 数组并修改 CreatedAt 值的格式
-            blogs.value.forEach((blog) => {
-                blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
-            });
-        })
-        .catch(function (error) {
-            console.log(error)
-        })
+const get_last_seven_blogs = async () => {
+    const ret = await BlogApi.get_last_seven_blogs({num:7})
+    blogs.value = ret.data.data
+    blogs.value.forEach((blog) => {
+        blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
+    });
 }
 
-const get_random_blogs = () => {
+const get_random_blogs = async () => {
     laoding_random.value = !laoding_random.value
-    axios({
-        method: 'get',
-        url: TargetPath + '/api/blog/get_random_blog',
-    })
-        .then(function (resp) {
-            // console.log(resp.data.data[0].content)
-            random_blogs.value = resp.data.data
-            console.log(blogs.value)
+    const ret = await BlogApi.get_random_blogs()
+    laoding_random.value = false
 
-            // 遍历 blogs 数组并修改 CreatedAt 值的格式
-            random_blogs.value.forEach((blog) => {
-                blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
-            });
-
-            laoding_random.value = false
-        })
-        .catch(function (error) {
-            console.log(error)
-
-            laoding_random.value = false
-        })
+    random_blogs.value = ret.data.data
+    random_blogs.value.forEach((blog) => {
+        blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
+    });
 }
 
 get_last_seven_blogs()

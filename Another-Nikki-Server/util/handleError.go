@@ -9,7 +9,7 @@ import (
 func HandleError(c *gin.Context, err error, message string) bool {
 	if err != nil {
 		c.JSON(http.StatusOK, gin.H{
-			"state":   "error",
+			"code":   "404",
 			"message": message +": " + err.Error(),
 		})
 		return true
