@@ -1,13 +1,15 @@
 <script setup lang="ts">
 import ContentBase from '@/components/ContentBase.vue';
+import { ElMessage } from 'element-plus';
 
-import axios from 'axios';
 import { ref } from 'vue'
-import { send_warning, send_success } from "@/components/utils/sendElMsg"
 
 import {
   Delete,
 } from '@element-plus/icons-vue'
+
+import { CodeRet } from '@/types/runCode';
+import {RunCode} from '@/api'
 
 const textarea = ref('')
 const loading = ref(false);
@@ -15,15 +17,7 @@ const inputArea = ref("")
 const language = ref('c++')
 const codeLoading = ref(false)
 
-const TargetPath = import.meta.env.VITE_API_URL;
 
-interface CodeRet {
-    "state": string,
-    "message": string,
-    "cpu_time_used": string,
-    "memory_used": string,
-    "exit_code": string,
-}
 const codeMsg = ref<CodeRet>({
     state: "",
     message: "空",
@@ -53,7 +47,7 @@ const options = [
 ]
 
 
-const runCode = (code: string, input: string) => {
+const runCode = async (code: string, input: string) => {
     loading.value = !loading.value
     codeMsg.value = {
         state: "",
@@ -63,52 +57,30 @@ const runCode = (code: string, input: string) => {
         exit_code: "",
     }
 
-    axios({
-        method: 'post',
-        url: TargetPath + '/api/runcode',
-        data: {
-            "input": input,
-            "lang": language.value,
-            "code": code,
-        }
-    })
-        .then(function (resp) {
-            // console.log(resp.data)
-            codeMsg.value = resp.data
-            if (resp.data.state == 'success') {
-                send_success("编译运行成功～")
-            } else {
-                codeMsg.value.state = "编译错误"
-                send_warning("编译失败！")
-            }
-            loading.value = false
-        })
-        .catch(function (error) {
-            console.log(error)
-            send_warning("发生了未知错误，请联系开发者～")
-            loading.value = false
-        })
+    const ret = await RunCode.runCode({input:input, lang:language.value, code:code})
+    
+    loading.value = false
+    if (ret.data.code == 200) {
+        codeMsg.value = ret.data.data
+        return ElMessage.success(ret?.data?.message ?? 'success')
+    }
+    else {
+        codeMsg.value.message = ret.data.message
+        codeMsg.value.state = "编译错误"
+        return ElMessage.error("运行失败！")
+    }
 }
 
-const codeInit1 = () => {
+const codeInit1 = async () => {
     codeLoading.value = true
-    axios({
-        method: 'get',
-        url: TargetPath + '/api/runcode/default_code',
-        params:{
-            "lang":language.value,
-        },
-    })
-        .then(function (resp) {
-            // console.log(resp.data)
-            textarea.value = resp.data.code
-            inputArea.value = resp.data.input
-            codeLoading.value = false
-       })
-        .catch(function (error) {
-            console.log(error)
-            codeLoading.value = false
-        })
+    
+    const ret = await RunCode.codeInit({lang:language.value})
+    codeLoading.value = false
+    console.log(ret.data)
+    if (ret.data.code == 200) {
+        textarea.value = ret.data.data.code
+        inputArea.value = ret.data.data.input
+    }
 }
 
 const codeClear = () => {

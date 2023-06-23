@@ -91,7 +91,7 @@ router.beforeEach(to => {
 		// 如果当前是首页，就不用存了，因为登录后默认回首页
 		// if (to.fullPath !== '/') query = { redirect: to.fullPath }
 		return {
-			path: '/error/404',
+			path: '/error/403',
 			// query,
 		}
 	}

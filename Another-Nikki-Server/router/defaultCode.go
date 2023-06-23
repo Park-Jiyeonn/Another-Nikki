@@ -1,8 +1,8 @@
 package router
 
 import (
+	"Another-Nikki/util"
 	"math/rand"
-	"net/http"
 	"strconv"
 	"time"
 
@@ -12,13 +12,14 @@ import (
 var rx *rand.Rand
 
 func DefaultCode(c *gin.Context) {
+	time.Sleep(time.Millisecond * 100)
 	language := c.Query("lang")
 	if rx == nil {
 		rx = rand.New(rand.NewSource(time.Now().UnixNano()))
 	}
 
 	if language == "c++" {
-		c.JSON(http.StatusOK, gin.H{
+		util.SendResp(c, 200, gin.H{
 			"code":
 `#include <bits/stdc++.h>
 using namespace std;
@@ -40,18 +41,18 @@ signed main()
 	return 0;
 }`,
 			"input": strconv.Itoa(rx.Intn(10)) + " " + strconv.Itoa(rx.Intn(10)),
-		})
+		}, "success")
 		return
 	} else if language == "python" {
-		c.JSON(http.StatusOK, gin.H{
+		util.SendResp(c, 200, gin.H{
 			"code":
 `s = input().split()
 print(int(s[0]) + int(s[1]))`,
 			"input": strconv.Itoa(rx.Intn(10)) + " " + strconv.Itoa(rx.Intn(10)),
-		})
+		}, "success")
 		return
 	} else if language == "java" {
-		c.JSON(http.StatusOK, gin.H{
+		util.SendResp(c, 200, gin.H{
 			"code":
 `import java.io.*;
 import java.util.*;
@@ -63,10 +64,10 @@ public class Main {
     }
 }`,
 			"input": strconv.Itoa(rx.Intn(10)) + " " + strconv.Itoa(rx.Intn(10)),
-		})
+		}, "success")
 		return
 	} else if language == "go" {
-		c.JSON(http.StatusOK, gin.H{
+		util.SendResp(c, 200, gin.H{
 			"code":
 `package main
 
@@ -77,12 +78,10 @@ func main() {
     fmt.Scanf("%d%d", &a, &b)
     fmt.Println(a+b)
 }`,
-		"input": strconv.Itoa(rx.Intn(10)) + " " + strconv.Itoa(rx.Intn(10)),
-		})
+			"input": strconv.Itoa(rx.Intn(10)) + " " + strconv.Itoa(rx.Intn(10)),
+		}, "success")
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":"error",
-		"input": "暂不支持这种语言呢～",
-	})
+
+	util.SendResp(c, 404, "暂不支持这种语言呢～", "error")
 }

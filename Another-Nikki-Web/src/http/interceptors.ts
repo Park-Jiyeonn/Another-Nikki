@@ -33,8 +33,6 @@ export class Interceptors {
       },
       (error:AxiosError) => {
         ElMessage.error("Something went wrong, please try again.")
-				// if(error.code === )
-				// console.log(error.response?.status === 401)
 				if (error.response?.status === 401){
 					// TODO 把当前路由写进 redirect 参数
 					router.push({path:'/auth/login'})

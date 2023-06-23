@@ -4,6 +4,6 @@ import ContentBase from '../../components/ContentBase.vue';
 
 <template>
 	<ContentBase>
-		403咯
+		不好意思，没权限访问这里捏～，这是管理员才能访问的哦
 	</ContentBase>
 </template>

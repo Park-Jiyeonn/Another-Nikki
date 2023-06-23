@@ -1,7 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
-import HelloWorld from "../../components/HelloWorld.vue"
+import { ElMessage } from 'element-plus';
 
+import HelloWorld from "../../components/HelloWorld.vue"
 import { Blog } from '@/types/Blog';
 import {BlogApi} from '@/api'
 
@@ -19,7 +20,8 @@ const PostBlog = async (content: string) => {
 
     loading.value = false
     get_last_seven_blogs()
-    console.log(ret.data.message)
+    if (ret?.data?.code !== 200) return ElMessage.warning(ret?.data?.message ?? 'Something went wrong, please try again.')
+    else return ElMessage.success(ret?.data?.message ?? 'success')
 }
 
 const get_last_seven_blogs = async () => {

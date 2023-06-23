@@ -5,7 +5,6 @@ import (
 	"Another-Nikki/router/model"
 	"Another-Nikki/util"
 	"context"
-	"net/http"
 	"strconv"
 	"strings"
 	"time"
@@ -20,37 +19,25 @@ func PostBlog(c *gin.Context) {
 		return
 	}
 	if blog.Content == "" {
-		c.JSON(http.StatusOK, gin.H{
-			"message":"不可以上传空的留言哦~",
-		})
+		util.SendResp(c, 404, nil, "不可以上传空的留言哦~")
 		return
 	}
 	if strings.TrimSpace(blog.Content) == "" {
-		c.JSON(http.StatusOK, gin.H{
-			"message":"全都是空格不行的呢~",
-		})
+		util.SendResp(c, 404, nil, "全都是空格不行的呢～")
 		return
 	}
 	err = dal.CreateBolg(context.Background(), blog.Content)
 	if util.HandleError(c, err, "数据库创建记录失败") {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":  200,
-		// "data": err.Error(),
-		"message": "success",
-	})
+	util.SendResp(c, 200, nil, "success")
 }
 func GetAllBlogs(c *gin.Context) {
 	ret, err := dal.GetBlogList(context.Background())
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":  200,
-		"data": ret,
-		"message": "success",
-	})
+	util.SendResp(c, 200, ret, "success")
 }
 
 func GetLastSevenBlog(c *gin.Context) {
@@ -62,11 +49,7 @@ func GetLastSevenBlog(c *gin.Context) {
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":  200,
-		"data": ret,
-		"message": "success",
-	})
+	util.SendResp(c, 200, ret, "success")
 }
 
 func GetRandomBlog(c *gin.Context) {
@@ -74,10 +57,6 @@ func GetRandomBlog(c *gin.Context) {
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
-	c.JSON(http.StatusOK, gin.H{
-		"code":  200,
-		"data": ret,
-		"message": "success",
-	})
+	util.SendResp(c, 200, ret, "success")
 	time.Sleep(time.Millisecond * 100)
 }

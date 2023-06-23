@@ -5,7 +5,6 @@ import (
 	"Another-Nikki/router/model"
 	"Another-Nikki/util"
 	"context"
-	"net/http"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
@@ -23,7 +22,7 @@ func Login(c *gin.Context) {
 		return
 	}
 	if user == nil {
-		util.HandleError(c, util.NewErrNo("用户不存在"), "")
+		util.SendResp(c, 404, nil, "用户不存在")
 		return
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(userLogin.Password))
@@ -35,14 +34,9 @@ func Login(c *gin.Context) {
 	if util.HandleError(c, err, "颁发 Token 失败") {
 		return
 	}
-
-	c.JSON(http.StatusOK, gin.H{
-		"code":200,
-		"data": gin.H {
-			"token":token,
-		},
-		"message":"success",
-	})
+	util.SendResp(c, 200, gin.H {
+		"token":token,
+	},"success")
 }
 
 func Register(c *gin.Context) {
@@ -53,11 +47,11 @@ func Register(c *gin.Context) {
 	}
 
 	if userRg.Password1 != userRg.Password2 {
-		util.HandleError(c, util.NewErrNo("密码不一致捏"), "")
+		util.SendResp(c, 404, nil, "密码不一致捏")
 		return
 	}
 	if user, _ := dal.GetUserByName(context.Background(), userRg.UserName); user != nil {
-		util.HandleError(c, util.NewErrNo("用户已存在"), "")
+		util.SendResp(c, 404, nil, "用户已存在")
 		return
 	}
 
@@ -70,17 +64,12 @@ func Register(c *gin.Context) {
 		return
 	}
 
-
 	token, err := util.GenToken(id, userRg.UserName)
 	if util.HandleError(c, err, "jwt 生成 Token 失败") {
 		return
 	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"code":200,
-		"data": gin.H {
-			"token":token,
-		},
-		"message":"success",
-	})
+	util.SendResp(c, 200, gin.H {
+		"token":token,
+	},"success")
 }

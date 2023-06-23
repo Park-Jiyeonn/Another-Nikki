@@ -16,3 +16,11 @@ func HandleError(c *gin.Context, err error, message string) bool {
 	}
 	return false
 }
+
+func SendResp(c *gin.Context, code int, T any, message string) {
+	c.JSON(http.StatusOK, gin.H{
+		"code":code,
+		"data": T,
+		"message":message,
+	})
+}
