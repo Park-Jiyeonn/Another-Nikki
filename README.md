@@ -5,7 +5,7 @@
  * 博客（目前长得像留言板）
  * 日志（直观的看到哪些 $api$ 被使用了，没钱买 $es$，记录只能写进 $MySQL$）
 
-## 如何运行？
+## 如何运行
 * 首先，克隆项目到本地：
     ```
     git clone git@github.com:Park-Jiyeonn/Another-Nikki.git
