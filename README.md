@@ -22,10 +22,12 @@
     cd Another-Nikki-Server
     cd Another-Nikki-Web
     ```
- * 对于 $Server$ ，先下载好 $Golang$ 的依赖：
+ * 对于 $Server$
+    * 先安装依赖：
         ```
         go mod tidy
         ```
+
     * 然后启动 $Docker$：
         ```
         docker-compose up -d
@@ -56,13 +58,19 @@
         ```
         docker build -t oj:1 .
         ```
- 
- * 对于 $Web$，先安装依赖：
-    ```
-    yarn
-    ```
 
-    然后即可启动：
-    ```
-    yarn dev
-    ```
+        启动：
+        ```
+        go run .
+        ```
+ 
+ * 对于 $Web$，
+    * 先安装依赖：
+        ```
+        yarn
+        ```
+
+    * 然后即可启动：
+        ```
+        yarn dev
+        ```
