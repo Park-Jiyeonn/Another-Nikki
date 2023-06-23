@@ -37,4 +37,5 @@ _testmain.go
 dumped_hertz_remote_config.json
 /upload
 
-/code/*
+/code/calc1
+/code/calc2

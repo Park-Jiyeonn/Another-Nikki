@@ -37,4 +37,5 @@ _testmain.go
 dumped_hertz_remote_config.json
 /upload
 
-/Another-Nikki-Server/code/*
+/Another-Nikki-Server/code/calc1
+/Another-Nikki-Server/code/calc2
