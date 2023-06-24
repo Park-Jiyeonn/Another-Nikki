@@ -10,21 +10,21 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func DeleteFile(ID int64) {
-	dirPath := fmt.Sprintf("./code/tmp-%d", ID)
+func DeleteFile(ID string) {
+	dirPath := fmt.Sprintf("./code/tmp-%s", ID)
 	_ = os.RemoveAll(dirPath)
 }
 
-func GetRetInFile(c *gin.Context, ID int64) (string, bool) {
-	ret, err:= os.ReadFile(fmt.Sprintf("./code/tmp-%d/data.out", ID))
+func GetRetInFile(c *gin.Context, ID string) (string, bool) {
+	ret, err:= os.ReadFile(fmt.Sprintf("./code/tmp-%s/data.out", ID))
 	if util.HandleError(c, err, "read data.out failed") {
 		return "", false
 	}
 	return string(ret), true
 }
 
-func WriteCodeInFile(code *model.Code, ID int64, FileName string) error {
-	dirPath := fmt.Sprintf("./code/tmp-%d", ID)
+func WriteCodeInFile(code *model.Code, ID string, FileName string) error {
+	dirPath := fmt.Sprintf("./code/tmp-%s", ID)
 	err := os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
 		return err

@@ -6,8 +6,7 @@ import (
 	"Another-Nikki/util"
 	"net/http"
 	"strings"
-	"time"
-
+	"github.com/google/uuid"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,7 +17,7 @@ func RunCode(c *gin.Context) {
 		return
 	}
 
-	ID := time.Now().UnixNano()
+	ID := uuid.NewString()
 	defer service.DeleteFile(ID)
 	
 	if code.Lang == "c++" {
