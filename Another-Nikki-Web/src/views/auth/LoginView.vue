@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus';
 
 import { User } from '@/api';
 import { setCookies } from '@/hooks/useCookies';
+import router from '@/router';
 
 const username = ref('')
 const password = ref('')
@@ -12,6 +13,7 @@ const login = async () => {
     const ret = await User.login({username:username.value, password:password.value})
     if (ret.data.code != 404) {
         setCookies("token", ret.data.data.token)
+        router.push("/jelly")
         return ElMessage.success("登录成功")
     }
     else {

@@ -4,6 +4,7 @@ import { ElMessage } from 'element-plus';
 
 import { User } from '@/api';
 import { setCookies } from '@/hooks/useCookies';
+import router from '@/router';
 
 const username = ref('')
 const password1 = ref('')
@@ -16,7 +17,8 @@ const register = async () => {
     }
     else {
         setCookies("token", ret.data.data.token)
-        return ElMessage.success("注册成功")
+        router.push("/runcode")
+        return ElMessage.success("注册成功，为您自动跳转")
     }
 }
 
