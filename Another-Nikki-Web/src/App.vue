@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import NavBar from '@/components/NavBar.vue';
 
-console.log(import.meta.env.VITE_API_URL);
 </script>
 
 <template>

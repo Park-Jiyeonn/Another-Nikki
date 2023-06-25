@@ -9,6 +9,9 @@
         <el-menu-item index="3" @click="router.push('/logs')">
             Logs
         </el-menu-item>
+        <el-menu-item index="3" @click="router.push('/article')">
+            Article
+        </el-menu-item>
     </el-menu>
 </template>
   

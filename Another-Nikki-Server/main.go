@@ -45,6 +45,13 @@ func main() {
 		user.POST("/login", router.Login)
 		user.POST("/register", router.Register)
 	}
+
+	article := r.Group("/api/article")
+	{
+		article.POST("", router.PostArticle)
+		article.GET("", router.GetArticleById)
+		article.GET("/articles", router.GetArticleByPage)
+	}
 	
 	r.Run(":8888")
 }

@@ -3,12 +3,13 @@ package router
 import (
 	"Another-Nikki/dal"
 	"Another-Nikki/util"
-	"context"
 	"net/http"
 	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
+
+var log dal.Log
 
 func min(x, y int) int {
 	if x < y {
@@ -18,7 +19,7 @@ func min(x, y int) int {
 }
 
 func GetLogCount(c *gin.Context) {
-	sum, err := dal.GetLogCount(context.Background())
+	sum, err := log.GetLogCount()
 	if util.HandleError(c, err, "出错了捏，查不到日志") {
 		return
 	}
@@ -36,7 +37,7 @@ func GetPageQue(c *gin.Context) {
 	if util.HandleError(c, err, "参数错误") {
 		return
 	}
-	ret, err := dal.GetPageQue(context.Background(), page)
+	ret, err := log.GetPageQue(page)
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}

@@ -4,7 +4,7 @@ import ContentBase from '../components/ContentBase.vue';
 
 <template>
     <ContentBase>
-        首页，待更新，目前毛都没有
+        今晚更新博客页面，我也终于要有自己的博客网站了捏
     </ContentBase>
 </template>
 

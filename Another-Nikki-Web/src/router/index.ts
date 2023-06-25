@@ -42,6 +42,10 @@ const systemRoutes = [
 			},
 		],
 	},
+	{
+		path:'/article',
+		component: () => import('@/views/article/ArticleListView.vue'),
+	}
 ]
 
 const RunCodeRoutes = [
@@ -61,7 +65,7 @@ const privateRoutes = [
 	},
 	{
 		path:"/logs",
-		component: () => import('@/views/LogView.vue'),
+		component: () => import('@/views/logs_/LogView.vue'),
 		meta: {
 			requiresAuth: true,
 		},

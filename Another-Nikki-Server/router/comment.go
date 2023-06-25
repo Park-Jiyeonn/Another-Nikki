@@ -4,13 +4,14 @@ import (
 	"Another-Nikki/dal"
 	"Another-Nikki/router/model"
 	"Another-Nikki/util"
-	"context"
 	"strconv"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 )
+
+var comment dal.Comment
 
 func PostBlog(c *gin.Context) {
 	var blog model.Blog
@@ -26,14 +27,14 @@ func PostBlog(c *gin.Context) {
 		util.SendResp(c, 404, nil, "全都是空格不行的呢～")
 		return
 	}
-	err = dal.CreateBolg(context.Background(), blog.Content)
+	err = comment.CreateBolg(blog.Content)
 	if util.HandleError(c, err, "数据库创建记录失败") {
 		return
 	}
 	util.SendResp(c, 200, nil, "success")
 }
 func GetAllBlogs(c *gin.Context) {
-	ret, err := dal.GetBlogList(context.Background())
+	ret, err := comment.GetBlogList()
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
@@ -45,7 +46,7 @@ func GetLastSevenBlog(c *gin.Context) {
 	if util.HandleError(c, err, "参数错误") {
 		return
 	}
-	ret, err := dal.GetLastSevenBlog(context.Background(), int64(num))
+	ret, err := comment.GetLastSevenBlog(int64(num))
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
@@ -53,7 +54,7 @@ func GetLastSevenBlog(c *gin.Context) {
 }
 
 func GetRandomBlog(c *gin.Context) {
-	ret, err := dal.GetRandomBlog(context.Background())
+	ret, err := comment.GetRandomBlog()
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}

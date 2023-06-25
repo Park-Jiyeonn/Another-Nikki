@@ -4,11 +4,12 @@ import (
 	"Another-Nikki/dal"
 	"Another-Nikki/router/model"
 	"Another-Nikki/util"
-	"context"
 
 	"github.com/gin-gonic/gin"
 	"golang.org/x/crypto/bcrypt"
 )
+
+var user dal.User
 
 func Login(c *gin.Context) {
 	var userLogin model.UserLogin
@@ -17,7 +18,7 @@ func Login(c *gin.Context) {
 		return
 	}
 
-	user, err := dal.GetUserByName(context.Background(), userLogin.UserName)
+	user, err := user.GetUserByName(userLogin.UserName)
 	if util.HandleError(c, err, "数据库查询用户存不存在失败！") {
 		return
 	}
@@ -50,7 +51,7 @@ func Register(c *gin.Context) {
 		util.SendResp(c, 404, nil, "密码不一致捏")
 		return
 	}
-	if user, _ := dal.GetUserByName(context.Background(), userRg.UserName); user != nil {
+	if user, _ := user.GetUserByName(userRg.UserName); user != nil {
 		util.SendResp(c, 404, nil, "用户已存在")
 		return
 	}
@@ -59,7 +60,7 @@ func Register(c *gin.Context) {
 	if util.HandleError(c, err, "密码加密失败") {
 		return
 	}
-	id, err := dal.CreateUser(context.Background(), userRg.UserName, string(EncodePassword))
+	id, err := user.CreateUser(userRg.UserName, string(EncodePassword))
 	if util.HandleError(c, err, "创建用户失败") {
 		return
 	}

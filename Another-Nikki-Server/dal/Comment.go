@@ -2,7 +2,6 @@ package dal
 
 import (
 	"Another-Nikki/dal/model"
-	"context"
 	"errors"
 	"math/rand"
 	"time"
@@ -10,12 +9,13 @@ import (
 	"gorm.io/gorm"
 )
 
+type Comment struct{}
+
 var rx *rand.Rand	// 给 GetRandomBlog 使用，原来的写法是每次创建对象，总感觉这样浪费资源，现在这样只创建一次
 
-func GetBlogList(ctx context.Context) ([]model.Blog, error) {
+func (*Comment) GetBlogList() ([]model.Blog, error) {
 	res := make([]model.Blog, 0)
-	err := DB.WithContext(ctx).
-		Model(model.Blog{}).
+	err := DB.Model(model.Blog{}).
 		Find(&res).Error
 	if err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
@@ -26,15 +26,14 @@ func GetBlogList(ctx context.Context) ([]model.Blog, error) {
 	return res, nil
 }
 
-func GetLastSevenBlog(ctx context.Context, num int64) ([]model.Blog, error) {
+func (*Comment) GetLastSevenBlog(num int64) ([]model.Blog, error) {
 	res := make([]model.Blog, 0)
 	var sum int64
-	if err := DB.WithContext(ctx).Model(model.Blog{}).Count(&sum).Error; err != nil {
+	if err := DB.Model(model.Blog{}).Count(&sum).Error; err != nil {
 		return nil, err
 	}
 	
-	err := DB.WithContext(ctx).
-		Model(model.Blog{}).
+	err := DB.Model(model.Blog{}).
 		Limit(int(num)).
 		Offset(int(sum - num)).
 		Find(&res).Error
@@ -47,10 +46,10 @@ func GetLastSevenBlog(ctx context.Context, num int64) ([]model.Blog, error) {
 	return res, nil
 }
 
-func GetRandomBlog(ctx context.Context) ([]model.Blog, error) {
+func (*Comment) GetRandomBlog() ([]model.Blog, error) {
 	res := make([]model.Blog, 0)
 	var sum int64
-	if err := DB.WithContext(ctx).Model(model.Blog{}).Count(&sum).Error; err != nil {
+	if err := DB.Model(model.Blog{}).Count(&sum).Error; err != nil {
 		return nil, err
 	}
 	
@@ -59,8 +58,7 @@ func GetRandomBlog(ctx context.Context) ([]model.Blog, error) {
 	}
 	num := rx.Intn(int(sum))
 
-	err := DB.WithContext(ctx).
-		Model(model.Blog{}).
+	err := DB.Model(model.Blog{}).
 		Limit(1).
 		Offset(num).
 		Find(&res).Error
@@ -73,16 +71,16 @@ func GetRandomBlog(ctx context.Context) ([]model.Blog, error) {
 	return res, nil
 }
 
-func CreateBolg(ctx context.Context, content string) error {
+func (*Comment) CreateBolg(content string) error {
 	blog := &model.Blog{
 		Content: content,
 	}
-	return DB.WithContext(ctx).Model(model.Blog{}).
+	return DB.Model(model.Blog{}).
 		Create(blog).Error
 }
 
-func DeleteBolgByID(ctx context.Context, id int64) error {
-	return DB.WithContext(ctx).Model(&model.Blog{}).
+func (*Comment) DeleteBolgByID(id int64) error {
+	return DB.Model(&model.Blog{}).
 		Where("id = ?", id).
 		Delete(nil).Error
 }

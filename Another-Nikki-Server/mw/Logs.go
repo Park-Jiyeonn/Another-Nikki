@@ -3,10 +3,11 @@ package mw
 import (
 	"Another-Nikki/dal"
 	"bytes"
-	"context"
 
 	"github.com/gin-gonic/gin"
 )
+
+var log dal.Log
 
 type responseBodyWriter struct {
 	gin.ResponseWriter  // 继承原有 gin.ResponseWriter
@@ -35,6 +36,6 @@ func Logger() gin.HandlerFunc {
 		clientIP := c.ClientIP()
 		api := c.Request.Proto + " " + c.Request.Method + " " + c.Request.RequestURI
 		
-		dal.CreateLog(context.Background(),api,statusCode, clientIP,writer.bodyBuf.String())
+		log.CreateLog(api,statusCode, clientIP,writer.bodyBuf.String())
 	}
 }

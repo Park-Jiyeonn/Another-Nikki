@@ -1,4 +1,16 @@
 # Another-Nikki
+
+<p align="center">
+   <a target="_blank" href="#">
+      <img style="display: inline-block;" src="https://img.shields.io/badge/Go-1.20-blue"/>
+      <img style="display: inline-block;" src="https://img.shields.io/badge/Gin-v1.9.1-blue"/>
+      <img style="display: inline-block;" src="https://img.shields.io/badge/mysql-8.0-blue"/>
+      <img style="display: inline-block;" src="https://img.shields.io/badge/GORM-v1.25.1-blue"/>
+      <img style="display: inline-block;" src="https://img.shields.io/badge/vue-v3.X-green"/>
+    </a>
+</p>
+
+
 ## 里面都有什么
 个人网站。我想要实现的东西都会放进来。
  * 在线编译器（目前支持 $Cpp$, $Python$, $Java$, $Golang$）
