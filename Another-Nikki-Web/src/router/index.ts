@@ -7,6 +7,33 @@ const systemRoutes = [
 		component: () => import('../views/HomeView.vue'),
 	},
 	{
+		name: "auth",
+		path: '/auth',
+		meta: { hideSidebar: true },
+		children: [
+			{
+				name: 'Login',
+				path: 'login',
+				component: () => import('@/views/auth/LoginView.vue'),
+			},
+			{
+				name: 'register',
+				path: 'register',
+				component: () => import('@/views/auth/Register.vue'),
+			},
+		],
+	},
+	{
+		name:'articles',
+		path:'/articles',
+		component: () => import('@/views/article/ArticleListView.vue'),
+	},
+	{
+		path: '/article/:id',
+		component: () => import('@/views/article/ArticleView.vue'),
+	},
+	
+	{
 		path: '/error',
 		children: [
 			{
@@ -26,26 +53,6 @@ const systemRoutes = [
 			},
 		],
 	},
-	{
-		path: '/auth',
-		meta: { hideSidebar: true },
-		children: [
-			{
-				name: 'Login',
-				path: 'login',
-				component: () => import('@/views/auth/LoginView.vue'),
-			},
-			{
-				name: 'register',
-				path: 'register',
-				component: () => import('@/views/auth/Register.vue'),
-			},
-		],
-	},
-	{
-		path:'/article',
-		component: () => import('@/views/article/ArticleListView.vue'),
-	}
 ]
 
 const RunCodeRoutes = [

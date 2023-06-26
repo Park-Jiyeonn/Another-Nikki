@@ -6,11 +6,11 @@
         <el-menu-item index="2" @click="router.push('/runcode')">
             Run Code 
         </el-menu-item>
+        <el-menu-item index="4" @click="router.push('/articles')">
+            Articles
+        </el-menu-item>
         <el-menu-item index="3" @click="router.push('/logs')">
             Logs
-        </el-menu-item>
-        <el-menu-item index="3" @click="router.push('/article')">
-            Article
         </el-menu-item>
     </el-menu>
 </template>

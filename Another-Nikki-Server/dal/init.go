@@ -22,6 +22,7 @@ func Init() {
 		&model.Blog{},
 		&model.Log{},
 		&model.User{},
+		&model.Article{},
 	)
 	if err != nil {
 		panic(err)

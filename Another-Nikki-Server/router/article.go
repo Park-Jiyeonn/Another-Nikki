@@ -35,7 +35,7 @@ func PostArticle(c *gin.Context) {
 }
 
 func GetArticleById(c *gin.Context) {
-	id, err := strconv.Atoi(c.Query("id"))
+	id, err := strconv.Atoi(c.Query("ID"))
 	if util.HandleError(c, err, "参数错误") {
 		return
 	}
