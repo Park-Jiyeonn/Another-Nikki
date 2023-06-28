@@ -20,6 +20,8 @@
     "markdown-it-katex": "^2.0.3",
     "path": "^0.12.7",
     "universal-cookie": "^4.0.4",
+    "unplugin-vue-components": "^0.25.1",
+    "vite-plugin-svg-icons": "^2.0.1",
     "vue": "^3.2.47",
     "vue-router": "^4.1.6"
   },
