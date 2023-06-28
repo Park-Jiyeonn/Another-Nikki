@@ -1,9 +1,3 @@
-{
-  http_port 80
-  https_port 443
-}
-
-
 jiyeon.club {
   @api {
     expression path('/api/*')
@@ -19,13 +13,13 @@ jiyeon.club {
   handle {
     root * /home/ubuntu/dox/Another-Nikki/Another-Nikki-Web/dist
     file_server
-    # try_files {path}  /index.html
-  }
+    try_files {path}  /index.html
+}
   
   handle_errors {
-    	redir https://jiyeon.club/#/error/{err.status_code}
+    	redir https://jiyeon.club/error/{err.status_code}
   }
   log {
-      output file /home/ubuntu/server/caddy.log
+      output file /home/ubuntu/caddy_server/caddy.log
   }
 }
