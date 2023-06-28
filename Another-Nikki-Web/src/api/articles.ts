@@ -17,7 +17,19 @@ const get_article = (data:{
     data
 })
 
+const update_article = (data:{
+    title: string;
+	ID: number;
+    content: string;
+    description:string,
+}) => HttpServer.request<typeof data,Article>({
+    url: `/api/article/update`,
+    method: "POST",
+    data
+})
+
 export {
 	page_que,
     get_article,
+    update_article,
 }

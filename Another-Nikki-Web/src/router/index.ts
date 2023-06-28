@@ -32,6 +32,10 @@ const systemRoutes = [
 		path: '/article/:id',
 		component: () => import('@/views/article/ArticleView.vue'),
 	},
+	{
+		path: '/article/update/:id',
+		component: () => import('@/views/article/ArticleUpdate.vue'),
+	},
 	
 	{
 		path: '/error',

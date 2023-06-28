@@ -57,3 +57,24 @@ func GetArticleByPage(c *gin.Context) {
 	}
 	util.SendResp(c, 200, ret, "success")
 }
+
+func UpdateArticle(c *gin.Context) {
+	var Article model.ArticleUpdate
+	err := c.BindJSON(&Article)
+	if util.HandleError(c, err, "参数填写错误") {
+		return
+	}
+	if Article.Content == "" {
+		util.SendResp(c, 404, nil, "不可以上传空的留言哦~")
+		return
+	}
+	if strings.TrimSpace(Article.Content) == "" {
+		util.SendResp(c, 404, nil, "全都是空格不行的呢～")
+		return
+	}
+	err = article.UpdateArticle(Article.ID, Article.Title, Article.Description, Article.Content)
+	if util.HandleError(c, err, "数据库更新记录失败") {
+		return
+	}
+	util.SendResp(c, 200, nil, "更新成功")
+}

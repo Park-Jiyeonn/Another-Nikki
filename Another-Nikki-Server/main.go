@@ -51,6 +51,7 @@ func main() {
 		article.POST("", router.PostArticle)
 		article.GET("", router.GetArticleById)
 		article.GET("/articles", router.GetArticleByPage)
+		article.POST("/update", router.UpdateArticle)
 	}
 	
 	r.Run(":8888")

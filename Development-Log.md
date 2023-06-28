@@ -1,6 +1,34 @@
 # Another-Nikki
 
 ## 记录
+### 6.28
+今天域名终于备案好了，可以启用 $Caddy$ 了。
+
+最近加上了真的博客，后端没什么，前端的主要修改：
+* 使用 $markdown-it$ 插件，在 $package.json$ 中添加的依赖，有 $@types$ 前缀的是适配了 $TypeScript$ 的：
+  ```
+  dependencies: {
+    highlight.js
+    markdown-it
+    markdown-it-katex  // 数学公式
+    markdown-it-attrs  // markdown 标签
+  }
+  devDependencies {
+    @types/markdown-it
+    @types/markdown-it-attrs
+  }
+  ```
+* 如果是没有适配 $TypeScript$，可以在 $src$ 目录下的 `vite-env.d.ts` 新增，（其实 $VsCode$ 本身也会这样提示）：
+  ```
+  declare module 'markdown-it-katex';
+  ```
+* 如果有，要在 $tsconfig.json$ 的 `compilerOptions` 加：
+  ```
+  "allowSyntheticDefaultImports": true
+  ```
+* $markdown-it-katex$ 的使用踩坑了，没有仔细看官方文档，以为 `md.use()` 之后就可以了，其实还缺少 $css$ 的引入，否则显示的效果会让人很头痛，以为是代码哪里写错了。
+* `.env.production` 修改为 `VITE_API_URL=https://jiyeon.club`，这样流量才能经过 $caddy$ 转发，而且是 $https$ 的。
+
 ### 6.23
 #### 上午11:21
 修好前端的响应了，同时后端的接口返回消息格式都规范了一下。以后都这样写，开发就方便了。
@@ -250,7 +278,7 @@ $webhook.py$ 修改了下，现在返回消息给 $github$ 比较及时了，用
 目前还不是 $build$ 得到静态文件，然后 $caddy$，所以前端部分我配置了环境变量：
 
 $.env.production$ 是线上的环境变量，其优先级高于 $.env$，低于 $.env.local$。但是
- $.env.local$ 会被 $git$ 忽略，所以线上运行的[http://110.42.239.202:5173/](http://110.42.239.202:5173/) 也就不会受到影响。
+ $.env.local$ 会被 $git$ 忽略，所以线上运行的前端服务也就不会受到影响。
 
  在 $package.json$ 中的 $scripts$，修改 $dev$ 为：
 
@@ -262,7 +290,7 @@ $.env.production$ 是线上的环境变量，其优先级高于 $.env$，低于 
 随着留言越来越多，展示所有留言并不美观，于是只展示了最后七条留言，主要用到的技术是 $offset$ 配合 $limit$ 一起用。偏移量 + 数量限制。
 
 ### 6.6 ~ 6.8
-项目从最初的只有 [http://110.42.239.202:8888/](http://110.42.239.202:8888/) 能看到一条 $message$ 到拥有前端，数据库跑在 $docker$ 中。
+项目从最初的只能在 $IP$ 地址下看到一条 $message$ 到拥有前端，数据库跑在 $docker$ 中。
 
 $clash$ 配置了一下，大概是在官方的 $github$ 下载好，然后 $scp$ 到服务器上去，接着解压到 $usr/local/bin$ 目录里去好像，然后执行了个命令，给了 $clash$ 权限，可以直接 $clash$ 启动。最后配置了一个文件，将其打包为系统服务。
 

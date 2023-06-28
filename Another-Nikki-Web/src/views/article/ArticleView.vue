@@ -1,10 +1,16 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
-const route = useRoute();
-
+import { useRouter } from 'vue-router'
 import { ref } from 'vue'
+
 import { Article } from '@/types/Article';
 import { ArticleApi } from '@/api';
+// import 'highlight.js/styles/github-dark-dimmed.css'
+import { renderMarkdown } from '@/utils/markdown'
+
+const route = useRoute();
+const router = useRouter();
+
 const article = ref<Article>({
     ID:1,
     title: "title",
@@ -18,8 +24,12 @@ const get_article = async (id:number) => {
     article.value = ret.data.data
 }
 
-const id: string = String(route.params.id);
-get_article(parseInt(id))
+const id: number = parseInt(String(route.params.id));
+get_article(id)
+
+const update_article = () => {
+    router.push(`/article/update/${id}`)
+}
 
 </script>
 <template>
@@ -27,6 +37,18 @@ get_article(parseInt(id))
         {{article.title}}
     </h2>
     <div>
-        {{ article.content }}
+        {{ article.description }}
+    </div>
+    <div class="content markdown-body" v-html="renderMarkdown(article.content)" />
+
+    <div style="text-align: center; margin-top: 10px;">
+        <el-button class="button" type="primary" @click="update_article()">
+            编辑
+        </el-button>
     </div>
 </template>
+
+<style scoped>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css');
+@import url('https://cdn.jsdelivr.net/github-markdown-css/2.2.1/github-markdown.css');
+</style>

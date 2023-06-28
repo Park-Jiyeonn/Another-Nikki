@@ -38,3 +38,15 @@ func (*Article) GetList(page int) ([]model.Article, error) {
 	}
 	return res, nil
 }
+
+func (*Article) UpdateArticle(id int, title, description, content string) (error) {
+	err := DB.Model(model.Article{}).
+			Where("id = ?", id).
+			UpdateColumns(map[string]interface{} {
+				"title":title,
+				"description":description,
+				"content":content,
+			}).
+			Error
+	return err	
+}
