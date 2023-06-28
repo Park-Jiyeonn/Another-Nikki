@@ -11,13 +11,13 @@
 </p>
 
 
-## 里面都有什么
+## What's inside
 个人网站。我想要实现的东西都会放进来。
  * 在线编译器（目前支持 $Cpp$, $Python$, $Java$, $Golang$）
- * 博客（目前长得像留言板）
- * 日志（直观的看到哪些 $api$ 被使用了，没钱买 $es$，记录只能写进 $MySQL$）
+ * 博客
+ * 日志（直观的看到哪些 $api$ 被使用了，没钱买 $ElasticSearch$，记录只能写进 $MySQL$）
 
-## 如何运行
+## How to run
 * 首先，克隆项目到本地：
     ```
     git clone git@github.com:Park-Jiyeonn/Another-Nikki.git
