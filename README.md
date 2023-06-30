@@ -54,7 +54,7 @@
 
         启动一个容器，在 $linux-alpine$ 的环境下编译出 $calc1$：
         ```
-        docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'calc.cpp' -o 'calc1' -O2 -std=c++11 2> compile.log"
+        docker run --rm --name cpp_compile -v $(pwd)/code:/dox oj:1 sh -c "g++ 'calc.cpp' -o 'calc1' -O2 -std=c++11 2> compile.log"
         ```
 
         修改源码中第 $20$ 行为：
@@ -63,7 +63,7 @@
         ```
         然后编译 $calc2$：
         ```
-        docker run --rm --name cpp_compile -v $(pwd)/code:/dox cpp_env:1 sh -c "g++ 'calc.cpp' -o 'calc2' -O2 -std=c++11 2> compile.log"
+        docker run --rm --name cpp_compile -v $(pwd)/code:/dox oj:1 sh -c "g++ 'calc.cpp' -o 'calc2' -O2 -std=c++11 2> compile.log"
         ```
 
         最后，让我们的镜像变得完整吧～  

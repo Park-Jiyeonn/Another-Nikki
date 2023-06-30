@@ -48,11 +48,12 @@ func main() {
 
 	article := r.Group("/api/article")
 	{
-		article.POST("", router.PostArticle)
 		article.GET("", router.GetArticleById)
 		article.GET("/articles", router.GetArticleByPage)
-		article.POST("/update", router.UpdateArticle)
+		// 这里要鉴权
+		article.POST("/update", router.UpdateArticle).Use(mw.JwtAuth())
+		article.POST("", router.PostArticle).Use(mw.JwtAuth())
 	}
-	
+
 	r.Run(":8888")
 }

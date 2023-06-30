@@ -35,6 +35,9 @@ const systemRoutes = [
 	{
 		path: '/article/update/:id',
 		component: () => import('@/views/article/ArticleUpdate.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	},
 	
 	{

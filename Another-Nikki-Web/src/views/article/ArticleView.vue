@@ -7,7 +7,9 @@ import { Article } from '@/types/Article';
 import { ArticleApi } from '@/api';
 // import 'highlight.js/styles/github-dark-dimmed.css'
 import { renderMarkdown } from '@/utils/markdown'
+import { useIsLoggedIn } from '@/hooks/userIsLogin'
 
+const isLoggedIn = useIsLoggedIn()
 const route = useRoute();
 const router = useRouter();
 
@@ -41,7 +43,7 @@ const update_article = () => {
     </div>
     <div class="content markdown-body" v-html="renderMarkdown(article.content)" />
 
-    <div style="text-align: center; margin-top: 10px;">
+    <div v-if="isLoggedIn" style="text-align: center; margin-top: 10px;">
         <el-button class="button" type="primary" @click="update_article()">
             编辑
         </el-button>
