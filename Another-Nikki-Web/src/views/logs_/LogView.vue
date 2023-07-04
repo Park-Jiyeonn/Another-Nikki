@@ -30,14 +30,18 @@ get_page_que(1)
 
 <template>
     <div style=" margin-top: 10px; ">
-        日志：
+        日志:
         <el-table
         :data="logs" 
         stripe style="margin-top: 20px;"
         height="500"  
         >
             <el-table-column prop="ID" label="#" width="70" />
-            <el-table-column prop="ip" label="IP"/>
+            <el-table-column prop="ip" label="IP">
+                <template #default="{ row }">
+                    <a :href="`https://www.ip138.com/iplookup.php?ip=${row.ip}&action=2`">{{ row.ip }}</a>
+                </template>
+            </el-table-column>
             <el-table-column prop="api" label="链接" width="300"/>
             <el-table-column prop="status" label="状态"/>
             <el-table-column prop="response" label="结果" width="300"/>
