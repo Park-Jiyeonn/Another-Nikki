@@ -89,14 +89,15 @@ func (*Comment) GetRandomComment() ([]model.Comment, error) {
 	return res, nil
 }
 
-func (*Comment) CreateComment(content, AuthorName, ParentName string, AuthorID, rootID, ParentID int) error {
+func (*Comment) CreateComment(content, AuthorName, ParentName, AuthorAvatar string, AuthorID, rootID, ParentID int) error {
 	comment := &model.Comment{
-		Content:    content,
-		AuthorID:   AuthorID,
-		AuthorName: AuthorName,
-		RootID:     rootID,
-		ParentID:   ParentID,
-		ParentName: ParentName,
+		Content:      content,
+		AuthorID:     AuthorID,
+		AuthorName:   AuthorName,
+		AuthorAvatar: AuthorAvatar,
+		RootID:       rootID,
+		ParentID:     ParentID,
+		ParentName:   ParentName,
 	}
 	return DB.Model(model.Comment{}).
 		Create(comment).Error

@@ -39,6 +39,7 @@ func Login(c *gin.Context) {
 		"token":     token,
 		"user_id":   user.ID,
 		"user_name": user.Username,
+		"avatar":    user.Avatar,
 	}, "success")
 }
 

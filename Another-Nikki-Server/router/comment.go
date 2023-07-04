@@ -27,9 +27,11 @@ func PostComment(c *gin.Context) {
 		util.SendResp(c, 404, nil, "全都是空格不行的呢～")
 		return
 	}
-	err = comment.CreateComment(newComment.Content,
+	err = comment.CreateComment(
+		newComment.Content,
 		newComment.AuthorName,
 		newComment.ParentName,
+		newComment.AuthorAvatar,
 		newComment.AuthorID,
 		newComment.RootID,
 		newComment.ParentID)

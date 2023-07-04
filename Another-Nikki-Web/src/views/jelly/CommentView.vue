@@ -20,14 +20,16 @@ const post_comment = async (content: string) => {
 
     const user_id = getCookies("user_id")
     const user_name = getCookies("user_name")
+    const user_avatar = getCookies("user_avatar")
 
     const ret = await CommentApi.post_comment({
-        content:        content,
-        author_id:      user_id,
-        author_name:    user_name,
-        parent_id:      0,
-        root_id:        0,
-        parent_name:    "",
+        content:            content,
+        author_id:          user_id,
+        author_name:        user_name,
+        parent_id:          0,
+        root_id:            0,
+        parent_name:        "",
+        author_avatar:      user_avatar,
     })
 
     loading.value = false
@@ -39,14 +41,16 @@ const post_comment = async (content: string) => {
 const reply_comment = async (content: string, parentID: number, root_id: number, parent_name:string) => {
     const user_id = getCookies("user_id")
     const user_name = getCookies("user_name")
+    const user_avatar = getCookies("user_avatar") 
 
     const ret = await CommentApi.reply_comment({
-        content:            content, 
-        author_id:          user_id,
-        author_name:        user_name,
-        parent_id:          parentID,
-        root_id:            root_id,
-        parent_name:        parent_name,
+        content:                content, 
+        author_id:              user_id,
+        author_name:            user_name,
+        parent_id:              parentID,
+        root_id:                root_id,
+        parent_name:            parent_name,
+        author_avatar:          user_avatar,
     })
     if (ret?.data?.code !== 200) ElMessage.warning(ret?.data?.message ?? 'Something went wrong, please try again.')
     else ElMessage.success(ret?.data?.message ?? 'success') 
@@ -91,7 +95,7 @@ get_last_seven_comments()
 
     <div style="display: flex; padding: 20px" v-for="item in comments">
         <div style="text-align: center; flex: 1">
-            <el-image src="https://cdn.acwing.com/media/user/profile/photo/104037_lg_820bcf5d13.jpg"
+            <el-image :src="item.author_avatar"
                 style="width: 60px; height: 60px; border-radius: 50%"></el-image>
         </div>
         <div style="padding: 0 10px; flex: 5">

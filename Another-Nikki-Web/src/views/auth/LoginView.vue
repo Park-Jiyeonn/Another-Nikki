@@ -15,6 +15,7 @@ const login = async () => {
         setCookies("token", ret.data.data.token)
         setCookies("user_id", ret.data.data.user_id)
         setCookies("user_name", ret.data.data.user_name)
+        setCookies("user_avatar", ret.data.data.avatar)
         router.push("/jelly")
         return ElMessage.success("登录成功")
     }

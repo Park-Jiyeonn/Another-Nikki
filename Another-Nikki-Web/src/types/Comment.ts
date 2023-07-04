@@ -8,6 +8,7 @@ export interface Comment {
     parent_id:      number,
     parent_name:    string,
     children:       Comment[],
+    author_avatar:  string,
 
     // 
     replyIsVisible: boolean

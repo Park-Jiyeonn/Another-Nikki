@@ -2,12 +2,13 @@ import { Comment } from '@/types/Comment';
 import HttpServer from '../http/index';
 
 const post_comment = (data:{
-	content:        string;
-    author_id:      number;
-    author_name:    string;
-    parent_id:      number,
-    root_id:        number,
-    parent_name:    string,
+	content:            string;
+    author_id:          number;
+    author_name:        string;
+    parent_id:          number,
+    root_id:            number,
+    parent_name:        string,
+    author_avatar:      string,
 }) => HttpServer.request<typeof data,null>({
     url:        `/api/blog/create_blog`,
     method:     "POST",
@@ -15,12 +16,13 @@ const post_comment = (data:{
 })
 
 const reply_comment = (data:{
-	content:        string,
-    author_id:      number,
-    author_name:    string,
-    parent_id:      number,
-    root_id:        number,
-    parent_name:    string,
+	content:            string,
+    author_id:          number,
+    author_name:        string,
+    parent_id:          number,
+    root_id:            number,
+    parent_name:        string,
+    author_avatar:      string,
 }) => HttpServer.request<typeof data,null>({
     url: `/api/blog/create_blog`,
     method: "POST",
