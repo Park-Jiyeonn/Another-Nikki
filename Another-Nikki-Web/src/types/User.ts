@@ -1,4 +1,5 @@
 export interface UserType {
-    avatar: string;
-    id: number;
+    token:string;
+    user_id:number;
+    user_name:string;
 }

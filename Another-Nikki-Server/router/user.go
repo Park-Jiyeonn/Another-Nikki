@@ -35,9 +35,11 @@ func Login(c *gin.Context) {
 	if util.HandleError(c, err, "颁发 Token 失败") {
 		return
 	}
-	util.SendResp(c, 200, gin.H {
-		"token":token,
-	},"success")
+	util.SendResp(c, 200, gin.H{
+		"token":     token,
+		"user_id":   user.ID,
+		"user_name": user.Username,
+	}, "success")
 }
 
 func Register(c *gin.Context) {
@@ -70,7 +72,9 @@ func Register(c *gin.Context) {
 		return
 	}
 
-	util.SendResp(c, 200, gin.H {
-		"token":token,
-	},"success")
+	util.SendResp(c, 200, gin.H{
+		"token":     token,
+		"user_id":   id,
+		"user_name": userRg.UserName,
+	}, "success")
 }

@@ -3,7 +3,7 @@ import { CookieSetOptions } from 'universal-cookie'
 
 const Cookies = useCookies()
 
-export const setCookies = (data: string, key: string) => {
+export const setCookies = (data: string, key: any) => {
 	const hostname = window.location.hostname
 	// hostname 除了常规域名和 IP 地址以外，还有可能是 localhost。这里兼容一下 localhost。
 	const domain = hostname.includes('.') ? '.' + hostname : hostname

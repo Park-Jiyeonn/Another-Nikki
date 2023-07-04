@@ -17,6 +17,8 @@ const register = async () => {
     }
     else {
         setCookies("token", ret.data.data.token)
+        setCookies("user_id", ret.data.data.user_id)
+        setCookies("user_name", ret.data.data.user_name)
         router.push("/runcode")
         return ElMessage.success("注册成功，为您自动跳转")
     }

@@ -19,7 +19,7 @@ func Init() {
 		panic(err)
 	}
 	err = DB.AutoMigrate(
-		&model.Blog{},
+		&model.Comment{},
 		&model.Log{},
 		&model.User{},
 		&model.Article{},

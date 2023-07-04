@@ -28,10 +28,10 @@ func main() {
 	blogGroup := r.Group("/api/blog")
 	blogGroup.Use(mw.JwtAuth())
 	{
-		blogGroup.GET("/get_all_blogs", router.GetAllBlogs)
-		blogGroup.GET("/get_last_seven_blogs", router.GetLastSevenBlog)
-		blogGroup.POST("/create_blog", router.PostBlog)
-		blogGroup.GET("/get_random_blog", router.GetRandomBlog)
+		blogGroup.GET("/get_all_blogs", router.GetAllComments)
+		blogGroup.GET("/get_last_seven_blogs", router.GetLastSevenComment)
+		blogGroup.POST("/create_blog", router.PostComment)
+		blogGroup.GET("/get_random_blog", router.GetRandomComment)
 	}
 
 	runCode := r.Group("/api/runcode")

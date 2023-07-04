@@ -4,7 +4,7 @@ import { useIsLoggedIn } from '@/hooks/userIsLogin'
 const systemRoutes = [
 	{
 		path:'/',
-		component: () => import('../views/HomeView.vue'),
+		component: () => import('@/views/HomeView.vue'),
 	},
 	{
 		name: "auth",
@@ -39,18 +39,24 @@ const systemRoutes = [
 			requiresAuth: true,
 		},
 	},
-	
+	{
+		path:'/article/post',
+		component: () => import('@/views/article/ArticlePost.vue'),
+		meta: {
+			requiresAuth: true,
+		},
+	},	
 	{
 		path: '/error',
 		children: [
 			{
 				path: '403',
-				component: () => import('../views/error/Error403.vue'),
+				component: () => import('@/views/error/Error403.vue'),
 				meta: { title: 'Error 403' },
 			},
 			{
 				path: '404',
-				component: () => import('../views/error/Error404.vue'),
+				component: () => import('@/views/error/Error404.vue'),
 				meta: { title: 'Error 404' },
 			},
 			{
@@ -65,14 +71,14 @@ const systemRoutes = [
 const RunCodeRoutes = [
 	{
 		path:'/runcode',
-		component: () => import('../views/runCode/RunCodeView.vue'),
+		component: () => import('@/views/runCode/RunCodeView.vue'),
 	},
 ]
 
 const privateRoutes = [
 	{
 		path:'/jelly',
-		component: () => import('../views/jelly/BlogView.vue'),
+		component: () => import('@/views/jelly/CommentView.vue'),
 		meta: {
 			requiresAuth: true,
 		},

@@ -4,14 +4,20 @@ import (
 	"gorm.io/gorm"
 )
 
-const TableNameComment = "blog"
+const TableNameComment = "comment"
 
-type Blog struct {
+type Comment struct {
 	gorm.Model
-	Content string `json:"content"`
+	Content    string    `json:"content"`
+	AuthorID   int       `json:"author_id"`
+	AuthorName string    `json:"author_name"`
+	RootID     int       `json:"root_id"`
+	ParentID   int       `json:"parent_id"`
+	ParentName string    `json:"parent_name"`
+	Children   []Comment `gorm:"-" json:"children"`
 }
 
 // TableName Comment's table name
-func (*Blog) TableName() string {
+func (*Comment) TableName() string {
 	return TableNameComment
 }

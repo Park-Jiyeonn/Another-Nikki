@@ -28,8 +28,19 @@ const update_article = (data:{
     data
 })
 
+const post_article = (data:{
+    title: string;
+    content: string;
+    description:string, 
+}) => HttpServer.request<typeof data,Article>({
+    url: `/api/article`,
+    method: "POST",
+    data
+}) 
+
 export {
 	page_que,
     get_article,
     update_article,
+    post_article,
 }

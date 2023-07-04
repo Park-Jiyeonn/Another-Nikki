@@ -13,21 +13,21 @@ import (
 var article dal.Article
 
 func PostArticle(c *gin.Context) {
-	var Article model.Article
-	err := c.BindJSON(&Article)
+	var newArticle model.Article
+	err := c.BindJSON(&newArticle)
 	if util.HandleError(c, err, "参数填写错误") {
 		return
 	}
 
-	if Article.Content == "" {
+	if newArticle.Content == "" {
 		util.SendResp(c, 404, nil, "不可以上传空的留言哦~")
 		return
 	}
-	if strings.TrimSpace(Article.Content) == "" {
+	if strings.TrimSpace(newArticle.Content) == "" {
 		util.SendResp(c, 404, nil, "全都是空格不行的呢～")
 		return
 	}
-	err = article.Create(Article.Title, Article.Content, Article.Description)
+	err = article.Create(newArticle.Title, newArticle.Content, newArticle.Description)
 	if util.HandleError(c, err, "数据库创建记录失败") {
 		return
 	}

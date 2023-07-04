@@ -13,6 +13,8 @@ const login = async () => {
     const ret = await User.login({username:username.value, password:password.value})
     if (ret.data.code != 404) {
         setCookies("token", ret.data.data.token)
+        setCookies("user_id", ret.data.data.user_id)
+        setCookies("user_name", ret.data.data.user_name)
         router.push("/jelly")
         return ElMessage.success("登录成功")
     }

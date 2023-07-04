@@ -1,4 +1,10 @@
 package model
-type Blog struct {
-	Content string `json:"content"`
+
+type Comment struct {
+	Content    string `json:"content"`
+	AuthorID   int    `json:"author_id"`
+	AuthorName string `json:"author_name"`
+	ParentID   int    `json:"parent_id"`
+	RootID     int    `json:"root_id"`
+	ParentName string `json:"parent_name"`
 }

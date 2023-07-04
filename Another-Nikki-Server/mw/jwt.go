@@ -11,14 +11,17 @@ import (
 func JwtAuth() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.Request.Header.Get("Authorization")
-		if (auth == "") {
+		if auth == "" {
+			c.JSON(404, gin.H{
+				"message": "You don't have permission",
+			})
 			c.Abort()
 			return
 		}
 		token := strings.Split(auth, " ")[1]
 
 		mc, err := util.ParseToken(token)
-		
+
 		fmt.Println("mc =", mc)
 		if err != nil {
 			c.Abort()
