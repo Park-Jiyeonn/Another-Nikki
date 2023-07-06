@@ -37,6 +37,7 @@ _testmain.go
 dumped_hertz_remote_config.json
 /upload
 
-/code/calc1
-/code/calc2
+/onlineJudge/judger
+/onlineJudge/problemData/*/input.in
+/onlineJudge/problemData/*/output.out
 /main

@@ -46,7 +46,29 @@ const systemRoutes = [
 			requiresAuth: true,
 		},
 	},	
+
 	{
+		name:'problems',
+		path:'/problems',
+		component: () => import('@/views/problem/ProblemList.vue'),
+	},
+	{
+		path: '/problem/:id',
+		component: () => import('@/views/problem/ProblemDetail.vue'),
+	},
+	{
+		path:'/problem/post',
+		component: () => import('@/views/problem/ProblemPost.vue'),
+		meta: {
+			requiresAuth: true,
+		},
+	},{
+		path: '/problem/update/:id',
+		component: () => import('@/views/problem/ProblemUpdate.vue'),
+		meta: {
+			requiresAuth: true,
+		},
+	},	{
 		path: '/error',
 		children: [
 			{

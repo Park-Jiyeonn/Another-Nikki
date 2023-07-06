@@ -6,7 +6,18 @@ const runCode = (data:{
     lang: string,
     code: string,
 }) => HttpServer.request<typeof data,CodeRet>({
-    url: `/api/runcode`,
+    url: `/api/runcode/run`,
+    method: "POST",
+    data
+})
+
+const judgeCode = (data:{
+    input: string,
+    lang: string,
+    code: string, 
+    problem_name:string
+}) => HttpServer.request<typeof data,CodeRet>({
+    url: `/api/runcode/judge`,
     method: "POST",
     data
 })
@@ -23,4 +34,5 @@ const codeInit = (data:{
 export {
 	runCode,
     codeInit,
+    judgeCode,
 }

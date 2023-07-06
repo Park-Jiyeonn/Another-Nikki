@@ -12,10 +12,11 @@
 
 
 ## What's inside
-个人网站。我想要实现的东西都会放进来。
- * 在线编译器（目前支持 $Cpp$, $Python$, $Java$, $Golang$）
- * 博客
- * 日志（直观的看到哪些 $api$ 被使用了，没钱买 $ElasticSearch$，记录只能写进 $MySQL$）
+个人网站。
+ * $OnlineJudge$（我出过的题大多都在里面。目前支持 $Cpp$, $Python$, $Java$, $Golang$）
+ * 博客（一些题解）
+ * 留言（暂未开放权限）
+ * 日志（只对个人开放权限）
 
 ## How to run
 * 首先，克隆项目到本地：
@@ -44,26 +45,17 @@
         ```
         docker-compose up -d
         ```
-    * 如果想使用在线编译器的功能，还要再 $build$ 出一个 $docker$ 镜像（大概 $1.2GB$）
+    * 如果想使用在线评测机的功能，还要再 $build$ 出一个 $docker$ 镜像（大概 $1.2GB$）
         ```
         docker build -t oj:1 .
         ```
-        嗯，这时候的镜像已经可以编译和运行代码了，但是还不够完整。因为缺少了计算程序运行时间和空间的工具。
+        嗯，这时候的镜像已经可以编译和运行代码了，但是还不够完整。因为缺少了 $online$ $judge$ 的工具。
 
-        在项目的 $code$ 目录下，$calc.cpp$ 正是这个工具的源码。
+        在项目的 $online$ $judge$ 目录下，正是这个工具的源码。
 
-        启动一个容器，在 $linux-alpine$ 的环境下编译出 $calc1$：
+        启动一个容器，在 $linux-alpine$ 的环境下编译出 $judger$：
         ```
-        docker run --rm --name cpp_compile -v $(pwd)/code:/dox oj:1 sh -c "g++ 'calc.cpp' -o 'calc1' -O2 -std=c++11 2> compile.log"
-        ```
-
-        修改源码中第 $20$ 行为：
-        ```
-        rl.rlim_cur = rl.rlim_max = 2;
-        ```
-        然后编译 $calc2$：
-        ```
-        docker run --rm --name cpp_compile -v $(pwd)/code:/dox oj:1 sh -c "g++ 'calc.cpp' -o 'calc2' -O2 -std=c++11 2> compile.log"
+        docker run --rm --name cpp_compile -v $(pwd)/onlineJudge:/dox oj:1 sh -c "g++ -o judger judger.cpp parse.cpp run.cpp limit.cpp result.cpp -O2 -std=c++11"
         ```
 
         最后，让我们的镜像变得完整吧～  

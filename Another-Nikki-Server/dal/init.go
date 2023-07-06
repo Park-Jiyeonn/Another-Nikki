@@ -23,6 +23,7 @@ func Init() {
 		&model.Log{},
 		&model.User{},
 		&model.Article{},
+		&model.Problem{},
 	)
 	if err != nil {
 		panic(err)

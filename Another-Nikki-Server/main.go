@@ -36,7 +36,8 @@ func main() {
 
 	runCode := r.Group("/api/runcode")
 	{
-		runCode.POST("", router.RunCode)
+		runCode.POST("/run", router.RunCode)
+		runCode.POST("/judge", router.Judge)
 		runCode.GET("/default_code", router.DefaultCode)
 	}
 
@@ -53,6 +54,15 @@ func main() {
 		// 这里要鉴权
 		article.POST("/update", router.UpdateArticle).Use(mw.JwtAuth())
 		article.POST("", router.PostArticle).Use(mw.JwtAuth())
+	}
+
+	problem := r.Group("/api/problem")
+	{
+		problem.GET("/problems", router.GetProblemByPage)
+		problem.GET("", router.GetProblemById)
+		// 这里要鉴权
+		problem.POST("", router.PostProblem).Use(mw.JwtAuth())
+		problem.POST("/update", router.UpdateProblem).Use(mw.JwtAuth())
 	}
 
 	r.Run(":8888")

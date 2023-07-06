@@ -10,8 +10,8 @@ type Article struct{}
 
 func (*Article) Create(title, content, description string) error {
 	article := &model.Article{
-		Title: title,
-		Content: content,
+		Title:       title,
+		Content:     content,
 		Description: description,
 	}
 	return DB.Model(model.Article{}).Create(article).Error
@@ -39,14 +39,14 @@ func (*Article) GetList(page int) ([]model.Article, error) {
 	return res, nil
 }
 
-func (*Article) UpdateArticle(id int, title, description, content string) (error) {
+func (*Article) UpdateArticle(id int, title, description, content string) error {
 	err := DB.Model(model.Article{}).
-			Where("id = ?", id).
-			UpdateColumns(map[string]interface{} {
-				"title":title,
-				"description":description,
-				"content":content,
-			}).
-			Error
-	return err	
+		Where("id = ?", id).
+		UpdateColumns(map[string]interface{}{
+			"title":       title,
+			"description": description,
+			"content":     content,
+		}).
+		Error
+	return err
 }

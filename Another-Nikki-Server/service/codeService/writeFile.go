@@ -11,12 +11,12 @@ import (
 )
 
 func DeleteFile(ID string) {
-	dirPath := fmt.Sprintf("./code/tmp-%s", ID)
+	dirPath := fmt.Sprintf("./onlineJudge/tmp-%s", ID)
 	_ = os.RemoveAll(dirPath)
 }
 
 func GetRetInFile(c *gin.Context, ID string) (string, bool) {
-	ret, err:= os.ReadFile(fmt.Sprintf("./code/tmp-%s/data.out", ID))
+	ret, err := os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/data.out", ID))
 	if util.HandleError(c, err, "read data.out failed") {
 		return "", false
 	}
@@ -24,7 +24,7 @@ func GetRetInFile(c *gin.Context, ID string) (string, bool) {
 }
 
 func WriteCodeInFile(code *model.Code, ID string, FileName string) error {
-	dirPath := fmt.Sprintf("./code/tmp-%s", ID)
+	dirPath := fmt.Sprintf("./onlineJudge/tmp-%s", ID)
 	err := os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
 		return err

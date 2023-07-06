@@ -1,54 +1,70 @@
 <script setup lang="ts">
 import { useRoute } from 'vue-router';
 import { useRouter } from 'vue-router'
-import { ref } from 'vue'
+import { ref } from 'vue';
 
-import { Article } from '@/types/Article';
-import { ArticleApi } from '@/api';
+import { Problem } from '@/types/Problem';
+import { ProblemApi } from '@/api';
 // import 'highlight.js/styles/github-dark-dimmed.css'
 import { renderMarkdown } from '@/utils/markdown'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
-import ContentBase from '@/components/ContentBase.vue';
+import RunCode from '@/components/RunCode.vue';
 
 const isLoggedIn = useIsLoggedIn()
 const route = useRoute();
 const router = useRouter();
 
-const article = ref<Article>({
+const problem = ref<Problem>({
     ID: 1,
-    title: "title",
+    name: "name",
     content: "content",
-    description: "description",
     CreatedAt: "CreatedAt",
 })
 
-const get_article = async (id: number) => {
-    const ret = await ArticleApi.get_article({ ID: id })
-    article.value = ret.data.data
+const get_problem = async (id: number) => {
+    const ret = await ProblemApi.get_problem({ ID: id })
+    problem.value = ret.data.data
 }
 
 const id: number = parseInt(String(route.params.id));
-get_article(id)
+get_problem(id)
 
-const update_article = () => {
-    router.push(`/article/update/${id}`)
+const update_problem = () => {
+    router.push(`/problem/update/${id}`)
 }
+
+
+import ContentBase from '@/components/ContentBase.vue';
 
 </script>
 <template>
     <ContentBase>
         <h2>
-            {{ article.title }}
+            {{ problem.name }}
         </h2>
+
         <el-divider />
-        <div>
-            {{ article.description }}
-        </div>
+
+        <div class="content markdown-body" v-html="renderMarkdown(problem.content)" />
+
         <el-divider />
-        <div class="content markdown-body" v-html="renderMarkdown(article.content)" />
+
+        <RunCode messageDefault=""
+        :problemName=problem.name
+    :id=id
+    :inputAreaMinRow=5
+    :inputAreaMaxRow=5
+    :run=false
+    :defaultCode=false
+    :clearCode=false
+    :submitCode=true
+    :testCode=true
+            />
+
+        <el-divider />
 
         <div v-if="isLoggedIn" style="text-align: center; margin-top: 10px;">
-            <el-button class="button" type="primary" @click="update_article()">
+            <el-button class="button" type="primary" @click="update_problem()">
                 编辑
             </el-button>
         </div>
