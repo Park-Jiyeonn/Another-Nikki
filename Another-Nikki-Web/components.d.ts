@@ -7,10 +7,6 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
-    Comment: typeof import('./src/components/comment/index.vue')['default']
-    CommentInput: typeof import('./src/components/comment/components/comment-input/index.vue')['default']
-    CommentItem: typeof import('./src/components/comment/components/comment-item/index.vue')['default']
-    CommentModal: typeof import('./src/components/comment/components/comment-modal/index.vue')['default']
     ContentBase: typeof import('./src/components/ContentBase.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
