@@ -36,12 +36,12 @@ const toProblemDetail = (id: number) => {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
 }
 
 .problem-card {
     cursor: pointer;
     width: 960px;
-
 }
 
 .problem-card:hover {

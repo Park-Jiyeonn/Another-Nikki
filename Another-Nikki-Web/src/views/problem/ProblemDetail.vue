@@ -10,6 +10,7 @@ import { renderMarkdown } from '@/utils/markdown'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
 import RunCode from '@/components/RunCode.vue';
 
+import ContentBase from '@/components/ContentBase.vue';
 const isLoggedIn = useIsLoggedIn()
 const route = useRoute();
 const router = useRouter();
@@ -34,7 +35,6 @@ const update_problem = () => {
 }
 
 
-import ContentBase from '@/components/ContentBase.vue';
 
 </script>
 <template>

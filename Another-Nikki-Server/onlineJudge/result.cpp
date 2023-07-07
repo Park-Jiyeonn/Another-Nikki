@@ -14,10 +14,10 @@ const char *check_result(char *answer_file_name, char *output_file_name) {
     while (1) {
         ans = fgetc(answer_file);
         out = fgetc(output_file);
-        while(ans == ' ' || ans == '\n') {
+        while(0 <= ans && ans <= 32) {
             ans = fgetc(answer_file);
         }
-        while(out == ' ' || out == '\n') {
+        while(0 <= out && out <= 32) {
             out = fgetc(output_file);
         }
         if (ans == EOF || out == EOF) {  // 文件读取结束时，值为 EOF
