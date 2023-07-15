@@ -16,4 +16,3 @@ declare module 'vue' {
     RunCode: typeof import('./src/components/RunCode.vue')['default']
   }
 }
-

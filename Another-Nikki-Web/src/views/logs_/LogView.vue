@@ -37,7 +37,7 @@ get_page_que(1)
         height="500"  
         >
             <el-table-column prop="ID" label="#" width="70" />
-            <el-table-column prop="ip" label="IP" width="200">
+            <el-table-column prop="ip" label="IP" width="150">
                 <template #default="{ row }">
                     <a :href="`https://www.ip138.com/iplookup.php?ip=${row.ip}&action=2`">{{ row.ip }}</a>
                 </template>

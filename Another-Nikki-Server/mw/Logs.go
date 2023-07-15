@@ -18,9 +18,8 @@ func Logger() gin.HandlerFunc {
 		platform := c.Request.Header.Get("Sec-Ch-Ua-Platform")
 		platform = strings.Trim(platform, "\"")
 		if platform == "" {
-			platform = "未知客户端"
+			platform = strings.Split(strings.Split(c.Request.Header.Get("User-Agent"), "(")[1], ";")[0]
 		}
-
 		_ = log.CreateLog(api, statusCode, clientIP, platform)
 	}
 }
