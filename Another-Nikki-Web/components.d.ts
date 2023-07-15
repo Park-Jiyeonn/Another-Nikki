@@ -7,6 +7,7 @@ export {}
 
 declare module 'vue' {
   export interface GlobalComponents {
+    CommentComponent: typeof import('./src/components/CommentComponent.vue')['default']
     ContentBase: typeof import('./src/components/ContentBase.vue')['default']
     HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
     NavBar: typeof import('./src/components/NavBar.vue')['default']
@@ -15,3 +16,4 @@ declare module 'vue' {
     RunCode: typeof import('./src/components/RunCode.vue')['default']
   }
 }
+
