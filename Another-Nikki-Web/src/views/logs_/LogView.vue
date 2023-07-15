@@ -37,12 +37,12 @@ get_page_que(1)
         height="500"  
         >
             <el-table-column prop="ID" label="#" width="70" />
-            <el-table-column prop="ip" label="IP">
+            <el-table-column prop="ip" label="IP" width="200">
                 <template #default="{ row }">
                     <a :href="`https://www.ip138.com/iplookup.php?ip=${row.ip}&action=2`">{{ row.ip }}</a>
                 </template>
             </el-table-column>
-            <el-table-column prop="response" label="客户端" width="150"/>
+            <el-table-column prop="response" label="客户端" width="120"/>
             <el-table-column prop="CreatedAt" label="时间" width="150"/>
             <el-table-column prop="api" label="链接" width="300"/>
             <el-table-column prop="status" label="状态"/>
