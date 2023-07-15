@@ -42,10 +42,10 @@ get_page_que(1)
                     <a :href="`https://www.ip138.com/iplookup.php?ip=${row.ip}&action=2`">{{ row.ip }}</a>
                 </template>
             </el-table-column>
+            <el-table-column prop="response" label="客户端" width="150"/>
+            <el-table-column prop="CreatedAt" label="时间" width="150"/>
             <el-table-column prop="api" label="链接" width="300"/>
             <el-table-column prop="status" label="状态"/>
-            <el-table-column prop="response" label="结果" width="300"/>
-            <el-table-column prop="CreatedAt" label="时间" width="150"/>
         </el-table>
     </div>
 
