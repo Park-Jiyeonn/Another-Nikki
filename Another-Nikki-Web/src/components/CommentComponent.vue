@@ -32,7 +32,7 @@ const handleUpload: UploadProps['onSuccess'] = (response, uploadFile) => {
 
 const post_comment = async (content: string) => {
     fileList.value.forEach((file)=>{
-        content += `<img src="${file.url}" width="80%" height="80%">`
+        content += `\n\n<img src="${file.url}" width="80%" height="80%">`
     })
     fileList.value=[]
     loading.value = !loading.value
