@@ -46,13 +46,13 @@ func main() {
 		runCodeGroup.GET("/default_code", RunCode.DefaultCode)
 	}
 
-	userGroup := r.Group("/api/User")
+	userGroup := r.Group("/api/user")
 	{
 		userGroup.POST("/login", User.Login)
 		userGroup.POST("/register", User.Register)
 	}
 
-	articleGroup := r.Group("/api/Article")
+	articleGroup := r.Group("/api/article")
 	{
 		articleGroup.GET("", Article.GetArticleById)
 		articleGroup.GET("/articles", Article.GetArticleByPage)
@@ -61,7 +61,7 @@ func main() {
 		articleGroup.POST("", Article.PostArticle).Use(mw.JwtAuth())
 	}
 
-	problemGroup := r.Group("/api/Problem")
+	problemGroup := r.Group("/api/problem")
 	{
 		problemGroup.GET("/problems", Problem.GetProblemByPage)
 		problemGroup.GET("", Problem.GetProblemById)
