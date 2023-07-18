@@ -3,7 +3,12 @@ package main
 import (
 	"Another-Nikki/dal"
 	"Another-Nikki/mw"
-	"Another-Nikki/router"
+	"Another-Nikki/router/Article"
+	"Another-Nikki/router/Comment"
+	"Another-Nikki/router/Problem"
+	"Another-Nikki/router/RunCode"
+	"Another-Nikki/router/User"
+	"Another-Nikki/router/logs"
 	"github.com/gin-gonic/gin"
 )
 
@@ -18,52 +23,54 @@ func main() {
 	// log 要鉴权
 	logGroup.Use(mw.JwtAuth())
 	{
-		logGroup.GET("/get_page_que", router.GetPageQue)
-		logGroup.GET("/count", router.GetLogCount)
+		logGroup.GET("/get_page_que", logs.GetPageQue)
+		logGroup.GET("/count", logs.GetLogCount)
 	}
 
 	r.Use(mw.Logger())
 
 	// blog 要鉴权
-	blogGroup := r.Group("/api/blog")
-	blogGroup.Use(mw.JwtAuth())
+	commentGroup := r.Group("/api/blog")
+	commentGroup.Use(mw.JwtAuth())
 	{
-		blogGroup.GET("/get_all_blogs", router.GetAllComments)
-		blogGroup.GET("/get_last_seven_blogs", router.GetLastSevenComment)
-		blogGroup.POST("/create_blog", router.PostComment)
-		blogGroup.GET("/get_random_blog", router.GetRandomComment)
+		commentGroup.GET("/get_all_blogs", Comment.GetAllComments)
+		commentGroup.GET("/get_last_seven_blogs", Comment.GetLastSevenComment)
+		commentGroup.POST("/create_blog", Comment.PostComment)
+		commentGroup.GET("/get_random_blog", Comment.GetRandomComment)
 	}
 
-	runCode := r.Group("/api/runcode")
+	runCodeGroup := r.Group("/api/runcode")
 	{
-		runCode.POST("/run", router.RunCode)
-		runCode.POST("/judge", router.Judge)
-		runCode.GET("/default_code", router.DefaultCode)
+		runCodeGroup.POST("/run", RunCode.RunCode)
+		runCodeGroup.POST("/judge", RunCode.Judge)
+		runCodeGroup.GET("/default_code", RunCode.DefaultCode)
 	}
 
-	user := r.Group("/api/user")
+	userGroup := r.Group("/api/User")
 	{
-		user.POST("/login", router.Login)
-		user.POST("/register", router.Register)
+		userGroup.POST("/login", User.Login)
+		userGroup.POST("/register", User.Register)
 	}
 
-	article := r.Group("/api/article")
+	articleGroup := r.Group("/api/Article")
 	{
-		article.GET("", router.GetArticleById)
-		article.GET("/articles", router.GetArticleByPage)
+		articleGroup.GET("", Article.GetArticleById)
+		articleGroup.GET("/articles", Article.GetArticleByPage)
 		// 这里要鉴权
-		article.POST("/update", router.UpdateArticle).Use(mw.JwtAuth())
-		article.POST("", router.PostArticle).Use(mw.JwtAuth())
+		articleGroup.POST("/update", Article.UpdateArticle).Use(mw.JwtAuth())
+		articleGroup.POST("", Article.PostArticle).Use(mw.JwtAuth())
 	}
 
-	problem := r.Group("/api/problem")
+	problemGroup := r.Group("/api/Problem")
 	{
-		problem.GET("/problems", router.GetProblemByPage)
-		problem.GET("", router.GetProblemById)
+		problemGroup.GET("/problems", Problem.GetProblemByPage)
+		problemGroup.GET("", Problem.GetProblemById)
 		// 这里要鉴权
-		problem.POST("", router.PostProblem).Use(mw.JwtAuth())
-		problem.POST("/update", router.UpdateProblem).Use(mw.JwtAuth())
+		problemGroup.POST("", Problem.PostProblem).Use(mw.JwtAuth())
+		problemGroup.POST("/update", Problem.UpdateProblem).Use(mw.JwtAuth())
 	}
+
+	r.POST("/api/upload", Comment.UploadImage)
 
 	r.Run(":8888")
 }

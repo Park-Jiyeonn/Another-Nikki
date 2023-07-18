@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus';
+import type { UploadProps, UploadUserFile } from 'element-plus'
+
 import { Comment } from '@/types/Comment';
 import { CommentApi } from '@/api'
 import { getCookies } from "@/hooks/useCookies";
@@ -10,7 +12,29 @@ const comments = ref<Comment[]>([])
 const loading = ref(false);
 const textarea = ref('')
 
+const fileList = ref<UploadUserFile[]>([])
+
+const dialogImageUrl = ref('')
+
+const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
+  console.log(uploadFile, uploadFiles)
+}
+
+const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
+  dialogImageUrl.value = uploadFile.url!
+}
+
+const handleUpload: UploadProps['onSuccess'] = (response, uploadFile) => {
+    console.log(response)
+    console.log(uploadFile)
+    uploadFile.url = response.data
+}
+
 const post_comment = async (content: string) => {
+    fileList.value.forEach((file)=>{
+        content += `<img src="${file.url}" width="80%" height="80%">`
+    })
+    fileList.value=[]
     loading.value = !loading.value
     textarea.value = ''
 
@@ -121,17 +145,26 @@ get_last_seven_comments()
         </el-col>
     </el-row>
 
-
-    <div style="text-align: center; margin-top: 10px;">
-        <el-button class="button" type="primary" :loading="loading" @click="post_comment(textarea)">
+    <div style="display: flex; justify-content: center;  margin-top: 10px;">
+        <el-upload
+            v-model:file-list="fileList"
+            class="upload-demo"
+            action="https://jiyeon.club/api/upload"
+            :on-preview="handlePictureCardPreview"
+            :on-remove="handleRemove"
+            :on-success="handleUpload"
+            list-type="picture"
+        >
+            <el-button type="primary">上传图片</el-button>
+        </el-upload>
+        <el-button class="button" style="margin-left: 10px;" type="primary" :loading="loading" @click="post_comment(textarea)">
             发布
         </el-button>
     </div>
 </template>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css');
-@import url('https://cdn.jsdelivr.net/github-markdown-css/2.2.1/github-markdown.css');
+
 .comment-container {
     display: flex;
     padding: 20px;

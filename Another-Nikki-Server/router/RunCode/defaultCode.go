@@ -1,4 +1,4 @@
-package router
+package RunCode
 
 import (
 	"Another-Nikki/util"
@@ -20,8 +20,7 @@ func DefaultCode(c *gin.Context) {
 
 	if language == "c++" {
 		util.SendResp(c, 200, gin.H{
-			"code":
-`#include <bits/stdc++.h>
+			"code": `#include <bits/stdc++.h>
 using namespace std;
 #define int long long
 const int N = 1e6 + 5, mod = 1e9 + 7;
@@ -45,16 +44,14 @@ signed main()
 		return
 	} else if language == "python" {
 		util.SendResp(c, 200, gin.H{
-			"code":
-`s = input().split()
+			"code": `s = input().split()
 print(int(s[0]) + int(s[1]))`,
 			"input": strconv.Itoa(rx.Intn(10)) + " " + strconv.Itoa(rx.Intn(10)),
 		}, "success")
 		return
 	} else if language == "java" {
 		util.SendResp(c, 200, gin.H{
-			"code":
-`import java.io.*;
+			"code": `import java.io.*;
 import java.util.*;
 public class Main {
     public static void main(String args[]) throws Exception {
@@ -68,8 +65,7 @@ public class Main {
 		return
 	} else if language == "go" {
 		util.SendResp(c, 200, gin.H{
-			"code":
-`package main
+			"code": `package main
 
 import "fmt"
 

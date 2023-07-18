@@ -1,4 +1,4 @@
-package router
+package User
 
 import (
 	"Another-Nikki/dal"

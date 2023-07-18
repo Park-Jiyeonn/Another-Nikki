@@ -1,4 +1,4 @@
-package router
+package logs
 
 import (
 	"Another-Nikki/dal"

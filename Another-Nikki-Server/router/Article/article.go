@@ -1,4 +1,4 @@
-package router
+package Article
 
 import (
 	"Another-Nikki/dal"

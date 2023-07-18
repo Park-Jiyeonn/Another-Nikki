@@ -41,3 +41,5 @@ dumped_hertz_remote_config.json
 /onlineJudge/problemData/*/input.in
 /onlineJudge/problemData/*/output.out
 /main
+/tmp
+/config/CosKey.go

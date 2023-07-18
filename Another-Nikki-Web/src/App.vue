@@ -8,19 +8,7 @@ import NavBar from '@/components/NavBar.vue';
   <router-view></router-view>
 </template>
 
-<style scoped>
-.logo {
-  height: 4em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
+<style>
+@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css');
+@import url('https://cdn.jsdelivr.net/github-markdown-css/2.2.1/github-markdown.css');
 </style>
