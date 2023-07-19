@@ -17,11 +17,11 @@ const fileList = ref<UploadUserFile[]>([])
 const dialogImageUrl = ref('')
 
 const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
-  console.log(uploadFile, uploadFiles)
+    console.log(uploadFile, uploadFiles)
 }
 
 const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
-  dialogImageUrl.value = uploadFile.url!
+    dialogImageUrl.value = uploadFile.url!
 }
 
 const handleUpload: UploadProps['onSuccess'] = (response, uploadFile) => {
@@ -31,10 +31,10 @@ const handleUpload: UploadProps['onSuccess'] = (response, uploadFile) => {
 }
 
 const post_comment = async (content: string) => {
-    fileList.value.forEach((file)=>{
-        content += `\n\n<img src="${file.url}" width="80%" height="80%">`
+    fileList.value.forEach((file) => {
+        content += `\n\n<img src="${file.url}" width="55%" height="55%">`
     })
-    fileList.value=[]
+    fileList.value = []
     loading.value = !loading.value
     textarea.value = ''
 
@@ -93,45 +93,42 @@ const reply_comment = async (content: string, parentID: number, root_id: number,
 get_last_seven_comments()
 </script>
 <template>
-    <div>
-        <div v-for="item in comments" :key="item.ID" class="comment-container">
-            <div class="avatar-container">
-                <el-image :src="item.author_avatar" class="avatar"></el-image>
+    <div v-for="item in comments" :key="item.ID" class="comment-container">
+        <div class="avatar-container">
+            <el-image :src="item.author_avatar" class="avatar"></el-image>
+        </div>
+        <div class="content-container">
+            <div><b style="font-size: 14px">{{ item.author_name }}</b></div>
+            <div class="content" v-html="renderMarkdown(item.content)" />
+            <div class="info">
+                <span>{{ item.CreatedAt }}</span>
+                <el-button link type="primary" style="margin-left: 20px"
+                    @click="item.replyIsVisible = !item.replyIsVisible">回复</el-button>
             </div>
-            <div class="content-container">
-                <div><b style="font-size: 14px">{{ item.author_name }}</b></div>
-                <div class="content" v-html="renderMarkdown(item.content)"/>
-                <div class="info">
-                    <span>{{ item.CreatedAt }}</span>
-                    <el-button link type="primary" style="margin-left: 20px"
-                        @click="item.replyIsVisible = !item.replyIsVisible">回复</el-button>
-                </div>
-                <div v-if="item.children.length" class="reply-container">
-                    <div v-for="chl in item.children" :key="chl.ID" class="reply">
-                        {{ chl.author_name }} reply {{ chl.parent_name }}: {{ chl.content }}
-                        <div class="reply-info">
-                            <span>{{ chl.CreatedAt }}</span>
+            <div v-if="item.children.length" class="reply-container">
+                <div v-for="chl in item.children" :key="chl.ID" class="reply">
+                    {{ chl.author_name }} reply {{ chl.parent_name }}: {{ chl.content }}
+                    <div class="reply-info">
+                        <span>{{ chl.CreatedAt }}</span>
+                        <el-button link type="primary" style="margin-left: 20px"
+                            @click="chl.replyIsVisible = !chl.replyIsVisible">回复</el-button>
+                        <div v-if="chl.replyIsVisible" class="reply-input-container">
+                            <el-input v-model="chl.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
+                                placeholder="Please input"></el-input>
                             <el-button link type="primary" style="margin-left: 20px"
-                                @click="chl.replyIsVisible = !chl.replyIsVisible">回复</el-button>
-                            <div v-if="chl.replyIsVisible" class="reply-input-container">
-                                <el-input v-model="chl.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
-                                    placeholder="Please input"></el-input>
-                                <el-button link type="primary" style="margin-left: 20px"
-                                    @click="chl.replyIsVisible = false">取消</el-button>
-                                <el-button link type="primary" style="margin-left: 20px"
-                                    @click="chl.replyIsVisible = false; reply_comment(chl.replyText, chl.ID, item.ID, chl.author_name)">确定</el-button>
-                            </div>
+                                @click="chl.replyIsVisible = false">取消</el-button>
+                            <el-button link type="primary" style="margin-left: 20px"
+                                @click="chl.replyIsVisible = false; reply_comment(chl.replyText, chl.ID, item.ID, chl.author_name)">确定</el-button>
                         </div>
                     </div>
                 </div>
-                <div v-if="item.replyIsVisible" class="reply-input-container">
-                    <el-input v-model="item.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
-                        placeholder="Please input"></el-input>
-                    <el-button link type="primary" style="margin-left: 20px"
-                        @click="item.replyIsVisible = false">取消</el-button>
-                    <el-button link type="primary" style="margin-left: 20px"
-                        @click="item.replyIsVisible = false; reply_comment(item.replyText, item.ID, item.ID, item.author_name)">确定</el-button>
-                </div>
+            </div>
+            <div v-if="item.replyIsVisible" class="reply-input-container">
+                <el-input v-model="item.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
+                    placeholder="Please input"></el-input>
+                <el-button link type="primary" style="margin-left: 20px" @click="item.replyIsVisible = false">取消</el-button>
+                <el-button link type="primary" style="margin-left: 20px"
+                    @click="item.replyIsVisible = false; reply_comment(item.replyText, item.ID, item.ID, item.author_name)">确定</el-button>
             </div>
         </div>
     </div>
@@ -146,25 +143,18 @@ get_last_seven_comments()
     </el-row>
 
     <div style="display: flex; justify-content: center;  margin-top: 10px;">
-        <el-upload
-            v-model:file-list="fileList"
-            class="upload-demo"
-            action="https://jiyeon.club/api/upload"
-            :on-preview="handlePictureCardPreview"
-            :on-remove="handleRemove"
-            :on-success="handleUpload"
-            list-type="picture"
-        >
+        <el-upload v-model:file-list="fileList" class="upload-demo" action="https://jiyeon.club/api/upload"
+            :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleUpload" list-type="picture">
             <el-button type="primary">上传图片</el-button>
         </el-upload>
-        <el-button class="button" style="margin-left: 10px;" type="primary" :loading="loading" @click="post_comment(textarea)">
+        <el-button class="button" style="margin-left: 10px;" type="primary" :loading="loading"
+            @click="post_comment(textarea)">
             发布
         </el-button>
     </div>
 </template>
 
 <style scoped>
-
 .comment-container {
     display: flex;
     padding: 20px;
