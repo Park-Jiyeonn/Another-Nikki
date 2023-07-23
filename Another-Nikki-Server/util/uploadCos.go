@@ -24,9 +24,14 @@ func UploadCos(path, name string) (string, error) {
 		},
 	})
 
-	key := "Another-Nikki" + "/" + name
+	md5String, err := GetFileMd5(path)
+	if err != nil {
+		return "", err
+	}
 
-	_, err := client.Object.PutFromFile(context.Background(), key, path, nil)
+	key := "Another-Nikki" + "/" + md5String + "-" + name
+
+	_, err = client.Object.PutFromFile(context.Background(), key, path, nil)
 	if err != nil {
 		return "", err
 	}
