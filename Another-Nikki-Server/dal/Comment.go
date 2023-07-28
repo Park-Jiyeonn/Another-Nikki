@@ -3,6 +3,7 @@ package dal
 import (
 	"Another-Nikki/dal/model"
 	"errors"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -21,9 +22,10 @@ func getChildren(root uint) []model.Comment {
 	return res
 }
 
-func (*Comment) GetCommentList() ([]model.Comment, error) {
+func (*Comment) GetCommentList(articleId int) ([]model.Comment, error) {
 	res := make([]model.Comment, 0)
 	err := DB.Model(model.Comment{}).
+		Where("article_id = ?", articleId).
 		Where("root_id = 0"). // 首先查出顶级评论，其父亲 id 为 0
 		Find(&res).Error
 	if err != nil {
@@ -38,16 +40,19 @@ func (*Comment) GetCommentList() ([]model.Comment, error) {
 	return res, nil
 }
 
-func (*Comment) GetLastSevenComment(num int64) ([]model.Comment, error) {
+func (*Comment) GetLastSevenComment(num int64, articleId int) ([]model.Comment, error) {
 	res := make([]model.Comment, 0)
 	var sum int64
+	fmt.Println("articleId = ", articleId)
 	if err := DB.Model(model.Comment{}).
+		Where("article_id = ?", articleId).
 		Where("root_id = 0").
 		Count(&sum).Error; err != nil {
 		return nil, err
 	}
 
 	err := DB.Model(model.Comment{}).
+		Where("article_id = ?", articleId).
 		Where("root_id = 0").
 		Limit(int(num)).
 		Offset(int(sum - num)).
@@ -89,9 +94,10 @@ func (*Comment) GetRandomComment() ([]model.Comment, error) {
 	return res, nil
 }
 
-func (*Comment) CreateComment(content, AuthorName, ParentName, AuthorAvatar string, AuthorID, rootID, ParentID int) error {
+func (*Comment) CreateComment(content, AuthorName, ParentName, AuthorAvatar string, ArticleID, AuthorID, rootID, ParentID int) error {
 	comment := &model.Comment{
 		Content:      content,
+		ArticleID:    ArticleID,
 		AuthorID:     AuthorID,
 		AuthorName:   AuthorName,
 		AuthorAvatar: AuthorAvatar,

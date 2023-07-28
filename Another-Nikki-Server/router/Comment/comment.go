@@ -32,6 +32,7 @@ func PostComment(c *gin.Context) {
 		newComment.AuthorName,
 		newComment.ParentName,
 		newComment.AuthorAvatar,
+		newComment.ArticleID,
 		newComment.AuthorID,
 		newComment.RootID,
 		newComment.ParentID)
@@ -42,7 +43,11 @@ func PostComment(c *gin.Context) {
 }
 
 func GetAllComments(c *gin.Context) {
-	ret, err := comment.GetCommentList()
+	articleID, err := strconv.Atoi(c.Query("article_id"))
+	if util.HandleError(c, err, "参数错误") {
+		return
+	}
+	ret, err := comment.GetCommentList(articleID)
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}
@@ -54,7 +59,11 @@ func GetLastSevenComment(c *gin.Context) {
 	if util.HandleError(c, err, "参数错误") {
 		return
 	}
-	ret, err := comment.GetLastSevenComment(int64(num))
+	articleID, err := strconv.Atoi(c.Query("article_id"))
+	if util.HandleError(c, err, "参数错误") {
+		return
+	}
+	ret, err := comment.GetLastSevenComment(int64(num), articleID)
 	if util.HandleError(c, err, "数据库查询记录失败") {
 		return
 	}

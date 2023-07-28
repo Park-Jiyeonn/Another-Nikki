@@ -21,7 +21,7 @@ func main() {
 	// log 不走 log 记录哈哈哈
 	logGroup := r.Group("/api/log")
 	// log 要鉴权
-	logGroup.Use(mw.JwtAuth())
+	logGroup.Use(mw.JwtAuth(true))
 	{
 		logGroup.GET("/get_page_que", logs.GetPageQue)
 		logGroup.GET("/count", logs.GetLogCount)
@@ -31,7 +31,7 @@ func main() {
 
 	// blog 要鉴权
 	commentGroup := r.Group("/api/blog")
-	commentGroup.Use(mw.JwtAuth())
+	commentGroup.Use(mw.JwtAuth(false))
 	{
 		commentGroup.GET("/get_all_blogs", Comment.GetAllComments)
 		commentGroup.GET("/get_last_seven_blogs", Comment.GetLastSevenComment)
@@ -57,8 +57,8 @@ func main() {
 		articleGroup.GET("", Article.GetArticleById)
 		articleGroup.GET("/articles", Article.GetArticleByPage)
 		// 这里要鉴权
-		articleGroup.POST("/update", Article.UpdateArticle).Use(mw.JwtAuth())
-		articleGroup.POST("", Article.PostArticle).Use(mw.JwtAuth())
+		articleGroup.POST("/update", Article.UpdateArticle).Use(mw.JwtAuth(true))
+		articleGroup.POST("", Article.PostArticle).Use(mw.JwtAuth(true))
 	}
 
 	problemGroup := r.Group("/api/problem")
@@ -66,8 +66,8 @@ func main() {
 		problemGroup.GET("/problems", Problem.GetProblemByPage)
 		problemGroup.GET("", Problem.GetProblemById)
 		// 这里要鉴权
-		problemGroup.POST("", Problem.PostProblem).Use(mw.JwtAuth())
-		problemGroup.POST("/update", Problem.UpdateProblem).Use(mw.JwtAuth())
+		problemGroup.POST("", Problem.PostProblem).Use(mw.JwtAuth(true))
+		problemGroup.POST("/update", Problem.UpdateProblem).Use(mw.JwtAuth(true))
 	}
 
 	r.POST("/api/upload", Comment.UploadImage)

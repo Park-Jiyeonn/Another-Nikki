@@ -2,6 +2,7 @@ package model
 
 type Comment struct {
 	Content      string `json:"content"`
+	ArticleID    int    `json:"article_id"`
 	AuthorID     int    `json:"author_id"`
 	AuthorName   string `json:"author_name"`
 	AuthorAvatar string `json:"author_avatar"`

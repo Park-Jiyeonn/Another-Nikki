@@ -1,4 +1,7 @@
 <script setup lang="ts">
+const props = defineProps<{
+    article_id: number
+}>()
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus';
 import type { UploadProps, UploadUserFile } from 'element-plus'
@@ -44,6 +47,7 @@ const post_comment = async (content: string) => {
 
     const ret = await CommentApi.post_comment({
         content: content,
+        article_id:props.article_id,
         author_id: user_id,
         author_name: user_name,
         parent_id: 0,
@@ -59,7 +63,7 @@ const post_comment = async (content: string) => {
 }
 
 const get_last_seven_comments = async () => {
-    const ret = await CommentApi.get_last_seven_comments({ num: 7 })
+    const ret = await CommentApi.get_last_seven_comments({ num: 7, article_id:props.article_id, })
     comments.value = ret.data.data
     comments.value.forEach((blog) => {
         blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
@@ -76,6 +80,7 @@ const reply_comment = async (content: string, parentID: number, root_id: number,
 
     const ret = await CommentApi.reply_comment({
         content: content,
+        article_id:props.article_id,
         author_id: user_id,
         author_name: user_name,
         parent_id: parentID,

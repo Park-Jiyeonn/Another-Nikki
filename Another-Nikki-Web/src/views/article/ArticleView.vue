@@ -8,6 +8,7 @@ import { ArticleApi } from '@/api';
 // import 'highlight.js/styles/github-dark-dimmed.css'
 import { renderMarkdown } from '@/utils/markdown'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
+import CommentComponent from '@/components/CommentComponent.vue';
 import ContentBase from '@/components/ContentBase.vue';
 
 const isLoggedIn = useIsLoggedIn()
@@ -52,6 +53,13 @@ const update_article = () => {
                 编辑
             </el-button>
         </div>
+
+        <el-divider />
+        <div>
+            评论区：
+        </div>
+
+        <CommentComponent :article_id=id />
     </ContentBase>
 </template>
 

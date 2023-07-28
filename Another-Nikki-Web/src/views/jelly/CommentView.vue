@@ -31,7 +31,7 @@ const get_random_comment = async () => {
 
         <HelloWorld msg="Another Nikki" />
 
-        <CommentComponent />
+        <CommentComponent :article_id="0"/>
 
         <div style=" margin-top: 10px; ">
             随机展示留言板：

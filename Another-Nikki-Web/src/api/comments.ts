@@ -3,6 +3,7 @@ import HttpServer from '../http/index';
 
 const post_comment = (data:{
 	content:            string;
+    article_id:         number;
     author_id:          number;
     author_name:        string;
     parent_id:          number,
@@ -17,6 +18,7 @@ const post_comment = (data:{
 
 const reply_comment = (data:{
 	content:            string,
+    article_id:         number;
     author_id:          number,
     author_name:        string,
     parent_id:          number,
@@ -31,6 +33,7 @@ const reply_comment = (data:{
 
 const get_last_seven_comments = (data:{
 	num: number;
+    article_id:         number;
 }) => HttpServer.request<typeof data,Comment[]>({
     url: `/api/blog/get_last_seven_blogs`,
     method: "GET",

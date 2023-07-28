@@ -8,13 +8,11 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func JwtAuth() gin.HandlerFunc {
+func JwtAuth(isRoot bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.Request.Header.Get("Authorization")
 		if auth == "" {
-			c.JSON(404, gin.H{
-				"message": "You don't have permission",
-			})
+			util.SendResp(c, 404, nil, "You don't have permission")
 			c.Abort()
 			return
 		}
@@ -28,7 +26,14 @@ func JwtAuth() gin.HandlerFunc {
 			return
 		}
 
-		if mc.UserID > 2 {
+		if !isRoot && mc.UserID > 2 {
+			util.SendResp(c, 404, nil, "You don't have permission")
+			c.Abort()
+			return
+		}
+		articleID := c.Query("article_id")
+		if !isRoot && articleID == "0" && mc.UserID > 2 {
+			util.SendResp(c, 404, nil, "You don't have permission")
 			c.Abort()
 			return
 		}
