@@ -29,6 +29,10 @@ func main() {
 
 	r.Use(mw.Logger())
 
+	go mw.SetTodayTime(1)
+	go mw.SetTodayTime(2)
+	logGroup.GET("/visit_time", logs.GetVisitTime)
+
 	// blog 要鉴权
 	commentGroup := r.Group("/api/blog")
 	commentGroup.Use(mw.JwtAuth(false))

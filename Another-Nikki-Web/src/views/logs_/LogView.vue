@@ -2,11 +2,16 @@
 import { ref } from 'vue'
 
 import { LogsType } from '@/types/Logs';
-import { page_que, count } from '@/api/logs'; 
+import { page_que, count, get_visit_time } from '@/api/logs'; 
+import { getCookies } from "@/hooks/useCookies";
 
 const logs = ref<LogsType[]>([])
 const sum = ref(0)
 const currentPage = ref(1)
+const user_name = getCookies("user_name")
+const user_id = getCookies("user_id")
+const sum_visit_time = ref(0)
+const today_visit_time = ref(0)
 
 const get_page_que = async (page:number) => {
     const ret = await page_que({page:page})
@@ -23,12 +28,23 @@ const get_count = async() => {
     sum.value = ret.data.data.sum
 }
 
+const get_visitTime = async() => {
+    const ret = await get_visit_time({user_id:user_id})
+    sum_visit_time.value = ret.data.data.sum_visit_time
+    today_visit_time.value = ret.data.data.today_visit_time
+}
+
 get_count()
 get_page_que(1)
+get_visitTime()
 
 </script>
 
 <template>
+    <div> 为了督促某个人学习, 我在 2023.10.12 13:41 为网站加上新的内容： </div>
+    <div>
+        {{user_name}} 今日访问网站 {{today_visit_time}} 次, 累计访问网站 {{sum_visit_time}} 次
+    </div>
     <div style=" margin-top: 10px; ">
         日志:
         <el-table

@@ -40,6 +40,8 @@ func JwtAuth(isRoot bool) gin.HandlerFunc {
 
 		c.Set("uid", mc.UserID)
 		c.Set("username", mc.Username)
+
+		AddVisitTime(mc.UserID, 1)
 		c.Next()
 	}
 }

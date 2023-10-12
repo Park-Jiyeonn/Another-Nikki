@@ -21,7 +21,7 @@ func (*User) CreateUser(username, password string) (int, error) {
 	return int(user.ID), nil
 }
 
-func (*User) GetUserById(userId int64) (*model.User, error) {
+func (User) GetUserById(userId int64) (*model.User, error) {
 	var user model.User
 	err := DB.Model(model.User{}).Where("id = ?", userId).First(&user).Error
 	if err != nil {
@@ -33,7 +33,7 @@ func (*User) GetUserById(userId int64) (*model.User, error) {
 	return &user, nil
 }
 
-func (*User) GetUserByName(name string) (*model.User, error) {
+func (User) GetUserByName(name string) (*model.User, error) {
 	var user model.User
 	err := DB.Model(model.User{}).Where("username = ?", name).First(&user).Error
 	if err != nil {
@@ -46,7 +46,7 @@ func (*User) GetUserByName(name string) (*model.User, error) {
 	return &user, nil
 }
 
-func (*User) UpdateUser(uid int64, userMap *map[string]interface{}) (err error) {
+func (User) UpdateUser(uid int64, userMap map[string]interface{}) (err error) {
 	if err = DB.Model(model.User{}).Where("id = ?", uid).Updates(&userMap).Error; err != nil {
 		return err
 	}

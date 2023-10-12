@@ -14,7 +14,16 @@ const count = () => HttpServer.request<null,{sum:number}>({
     method: "GET",
 })
 
+const get_visit_time = (data:{
+	user_id: string;
+}) => HttpServer.request<typeof data,{sum_visit_time:number,today_visit_time:number}>({
+    url: `/api/log/visit_time`,
+    method: "GET",
+    data
+})
+
 export {
 	page_que,
     count,
+    get_visit_time,
 }
