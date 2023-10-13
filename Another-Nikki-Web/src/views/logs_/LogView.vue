@@ -41,10 +41,10 @@ get_visitTime()
 </script>
 
 <template>
-    <div> 为了督促某个人学习, 我在 2023.10.12 13:41 为网站加上新的内容： </div>
+    <!-- <div> 为了督促某个人学习, 我在 2023.10.12 13:41 为网站加上新的内容： </div>
     <div>
         {{user_name}} 今日访问网站 {{today_visit_time}} 次, 累计访问网站 {{sum_visit_time}} 次
-    </div>
+    </div> -->
     <div style=" margin-top: 10px; ">
         日志:
         <el-table
