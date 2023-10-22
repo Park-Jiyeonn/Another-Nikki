@@ -59,12 +59,13 @@ func GetVisitTime(c *gin.Context) {
 	if util.HandleError(c, err, "参数错误") {
 		return
 	}
-	visitTime := mw.GetVisitTime(int64(userID))
+	visitTime, lastVisitTime := mw.GetVisitTime(int64(userID))
 	c.JSON(http.StatusOK, gin.H{
 		"onlineJudge": 200,
 		"data": gin.H{
 			"sum_visit_time":   visitTime >> 32,
 			"today_visit_time": visitTime & (1<<32 - 1),
+			"last_visit_time":  lastVisitTime,
 		},
 		"message": "success",
 	})
