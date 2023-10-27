@@ -16,6 +16,13 @@ func RunCode(c *gin.Context) {
 	if util.HandleError(c, err, "参数错误") {
 		return
 	}
+	if len(code.Code) > 400*100 {
+		c.JSON(http.StatusOK, gin.H{
+			"state":   "error",
+			"message": "代码实在是太长了呢～",
+		})
+		return
+	}
 
 	ID := uuid.NewString()
 	defer service.DeleteFile(ID)
@@ -65,6 +72,13 @@ func Judge(c *gin.Context) {
 	var code model.Code
 	err := c.BindJSON(&code)
 	if util.HandleError(c, err, "参数错误") {
+		return
+	}
+	if len(code.Code) > 400*100 {
+		c.JSON(http.StatusOK, gin.H{
+			"state":   "error",
+			"message": "代码实在是太长了呢～",
+		})
 		return
 	}
 

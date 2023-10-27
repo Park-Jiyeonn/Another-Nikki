@@ -20,7 +20,7 @@ func (*Article) Create(title, content, description string) error {
 func (*Article) GetInfoById(id int) (*model.Article, error) {
 	var article model.Article
 	err := DB.Where("id = ?", id).First(&article).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil {
 		return nil, err
 	}
 	return &article, nil

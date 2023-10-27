@@ -27,6 +27,10 @@ func PostComment(c *gin.Context) {
 		util.SendResp(c, 404, nil, "全都是空格不行的呢～")
 		return
 	}
+	if len(newComment.Content) > 500 {
+		util.SendResp(c, 404, nil, "太长惹，评论长度不可以超过500呢～")
+		return
+	}
 	err = comment.CreateComment(
 		newComment.Content,
 		newComment.AuthorName,

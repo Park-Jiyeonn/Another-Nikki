@@ -25,6 +25,13 @@ const article = ref<Article>({
 
 const get_article = async (id: number) => {
     const ret = await ArticleApi.get_article({ ID: id })
+    if (ret.data.code < 200 || ret.data.code > 200) {
+        article.value.ID = -1
+        article.value.title = "请求错误捏, 请不要填奇奇怪怪的参数哦"
+        article.value.description = "空"
+        article.value.content = "空"
+        return
+    }
     article.value = ret.data.data
 }
 

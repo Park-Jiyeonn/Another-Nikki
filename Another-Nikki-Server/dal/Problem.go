@@ -2,7 +2,6 @@ package dal
 
 import (
 	"Another-Nikki/dal/model"
-	"gorm.io/gorm"
 )
 
 type Problem struct {
@@ -22,7 +21,7 @@ func (*Problem) GetInfoById(id int) (*model.Problem, error) {
 		Where("id = ?", id).
 		First(&problem).
 		Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil {
 		return nil, err
 	}
 	return &problem, nil
@@ -35,7 +34,7 @@ func (*Problem) GetList(page int) ([]model.Problem, error) {
 		Offset((page - 1) * 20).
 		Order("ID DESC").
 		Find(&res).Error
-	if err != nil && err != gorm.ErrRecordNotFound {
+	if err != nil {
 		return nil, err
 	}
 	return res, nil

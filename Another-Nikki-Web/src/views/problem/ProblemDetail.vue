@@ -24,6 +24,12 @@ const problem = ref<Problem>({
 
 const get_problem = async (id: number) => {
     const ret = await ProblemApi.get_problem({ ID: id })
+    if (ret.data.code < 200 || ret.data.code > 200) {
+        problem.value.ID = -1
+        problem.value.name = "请求错误捏, 请不要填奇奇怪怪的参数哦"
+        problem.value.content = "空"
+        return
+    }
     problem.value = ret.data.data
 }
 
@@ -49,7 +55,7 @@ const update_problem = () => {
 
         <el-divider />
 
-        <RunCode messageDefault=""
+        <RunCode v-if="problem.ID != -1" messageDefault=""
         :problemName=problem.name
     :id=id
     :inputAreaMinRow=5
