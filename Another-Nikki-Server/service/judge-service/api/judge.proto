@@ -1,0 +1,35 @@
+syntax = "proto3";
+package AnotherNikki.oj.judge;
+option go_package = "./;api";
+
+// protoc -I=. -I=$GOPATH/pkg/mod --go-grpc_out=. --gogo_out=. *.proto
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+service judge {
+  rpc Judge (JudgeReq) returns (JudgeResp);
+  rpc OnlineRun (OnlineRunReq) returns (OnlineRunResp);
+}
+
+message JudgeReq {
+  string Code = 1 [json_name = "code", (gogoproto.jsontag) = "code"];
+  string Language = 2 [json_name = "language", (gogoproto.jsontag) = "language"];
+  string Input = 3 [json_name = "input", (gogoproto.jsontag) = "input"];
+  string ProblemName = 4 [json_name = "problem_name", (gogoproto.jsontag) = "problem_name"];
+}
+message JudgeResp {
+  string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
+  int64 CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
+  int64 MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
+  string JudgeResult = 4 [json_name = "judge_result", (gogoproto.jsontag) = "judge_result"];
+}
+
+message OnlineRunReq {
+  string Code = 1 [json_name = "code", (gogoproto.jsontag) = "code"];
+  string Language = 2 [json_name = "language", (gogoproto.jsontag) = "language"];
+  string Input = 3 [json_name = "input", (gogoproto.jsontag) = "input"];
+}
+message OnlineRunResp {
+  string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
+  int64 CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
+  int64 MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
+}

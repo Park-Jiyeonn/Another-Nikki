@@ -12,7 +12,7 @@ func JwtAuth(isRoot bool) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		auth := c.Request.Header.Get("Authorization")
 		if auth == "" {
-			util.SendResp(c, 404, nil, "You don't have permission")
+			util.SendResp(c, 401, nil, "You don't have permission")
 			c.Abort()
 			return
 		}
@@ -27,13 +27,13 @@ func JwtAuth(isRoot bool) gin.HandlerFunc {
 		}
 
 		if !isRoot && mc.UserID > 2 {
-			util.SendResp(c, 404, nil, "You don't have permission")
+			util.SendResp(c, 401, nil, "You don't have permission")
 			c.Abort()
 			return
 		}
 		articleID := c.Query("article_id")
 		if !isRoot && articleID == "0" && mc.UserID > 2 {
-			util.SendResp(c, 404, nil, "You don't have permission")
+			util.SendResp(c, 401, nil, "You don't have permission")
 			c.Abort()
 			return
 		}
