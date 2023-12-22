@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Judge_Judge_FullMethodName     = "/AnotherNikki.oj.judge.judge/Judge"
-	Judge_OnlineRun_FullMethodName = "/AnotherNikki.oj.judge.judge/OnlineRun"
+	Judge_Judge_FullMethodName     = "/AnotherNikki.oj.judge.Judge/Judge"
+	Judge_OnlineRun_FullMethodName = "/AnotherNikki.oj.judge.Judge/OnlineRun"
 )
 
 // JudgeClient is the client API for Judge service.
@@ -129,7 +129,7 @@ func _Judge_OnlineRun_Handler(srv interface{}, ctx context.Context, dec func(int
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Judge_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "AnotherNikki.oj.judge.judge",
+	ServiceName: "AnotherNikki.oj.judge.Judge",
 	HandlerType: (*JudgeServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
