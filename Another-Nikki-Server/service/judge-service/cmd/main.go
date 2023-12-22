@@ -1,5 +1,7 @@
 package main
 
-func main() {
+import "Another-Nikki/service/judge-service/internal/service"
 
+func main() {
+	service.New()
 }
