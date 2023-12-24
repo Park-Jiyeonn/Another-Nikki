@@ -3,7 +3,6 @@ package service
 import (
 	"Another-Nikki/service/judge-service/api"
 	"fmt"
-	"io"
 	"os"
 	"os/exec"
 )
@@ -16,6 +15,11 @@ const (
 )
 
 func compile(ID, code, input string, language api.Language) (err error) {
+	defer func() {
+		if err != nil {
+			deleteFile(ID)
+		}
+	}()
 	var (
 		cmd        string
 		compileLog []byte
@@ -36,7 +40,10 @@ func compile(ID, code, input string, language api.Language) (err error) {
 	if err = runCommand(cmd); err != nil {
 		return
 	}
-	compileLog, err = os.ReadFile(fmt.Sprintf("./code/tmp-%s/compile.log", ID))
+	compileLog, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
+	if err != nil {
+		return
+	}
 	if len(compileLog) != 0 {
 		err = fmt.Errorf(string(compileLog))
 		return
@@ -72,26 +79,4 @@ func runCommand(s string) error {
 	cmd := exec.Command("bash", "-c", s)
 	err := cmd.Run()
 	return err
-}
-
-func writeInFile(ID, code, input, filename string) (err error) {
-	if err = writeContentInFile(ID, code, filename); err != nil {
-		return
-	}
-	if err = writeContentInFile(ID, input, DataFileName); err != nil {
-		return
-	}
-	return
-}
-
-func writeContentInFile(ID, content, filename string) (err error) {
-	var f *os.File
-	dirPath := fmt.Sprintf("./onlineJudge/tmp-%s", ID)
-	path := dirPath + "/" + filename
-	f, err = os.OpenFile(path, os.O_WRONLY|os.O_CREATE|os.O_TRUNC, 0666)
-	defer f.Close()
-	if _, err = io.WriteString(f, content); err != nil {
-		return
-	}
-	return
 }

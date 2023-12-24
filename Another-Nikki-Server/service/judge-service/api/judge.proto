@@ -24,8 +24,8 @@ message JudgeReq {
 }
 message JudgeResp {
   string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
-  int64 CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
-  int64 MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
+  string CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
+  string MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
   string JudgeResult = 4 [json_name = "judge_result", (gogoproto.jsontag) = "judge_result"];
 }
 
@@ -36,7 +36,7 @@ message OnlineRunReq {
 }
 message OnlineRunResp {
   string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
-  int64 CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
-  int64 MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
+  string CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
+  string MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
   string Output = 4  [json_name = "output", (gogoproto.jsontag) = "output"];
 }
