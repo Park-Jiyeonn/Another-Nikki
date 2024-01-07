@@ -1,7 +1,7 @@
 package service
 
 import (
-	"Another-Nikki/service/judge-service/api"
+	"Another-Nikki/service/judge/api"
 	"fmt"
 	"os"
 	"os/exec"
