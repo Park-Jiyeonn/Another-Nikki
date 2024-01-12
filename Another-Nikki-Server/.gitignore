@@ -43,3 +43,5 @@ dumped_hertz_remote_config.json
 /main
 /tmp
 /config/CosKey.go
+/docker-conf/conf/example/h2.mv.db
+/docker-conf/conf/example/meta.dat

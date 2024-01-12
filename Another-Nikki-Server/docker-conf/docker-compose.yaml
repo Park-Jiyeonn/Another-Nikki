@@ -25,3 +25,4 @@ services:
       - $PWD/canal/logs/:/home/admin/canal-server/logs/
     depends_on:
       - mysql
+

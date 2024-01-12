@@ -24,6 +24,7 @@ func Init() {
 		&model.User{},
 		&model.Article{},
 		&model.Problem{},
+		&model.Judge{},
 	)
 	if err != nil {
 		panic(err)

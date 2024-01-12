@@ -13,8 +13,9 @@ message SubmitCodeReq {
   int64 UserID = 1  [json_name = "user_id", (gogoproto.jsontag) = "user_id"];
   string UserName = 2  [json_name = "user_name", (gogoproto.jsontag) = "user_name"];
   int64 ProblemID = 3  [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
-  string Language = 4  [json_name = "language", (gogoproto.jsontag) = "language"];
-  string Code = 5  [json_name = "code", (gogoproto.jsontag) = "code"];
+  string ProblemName = 4 [json_name = "problem_name", (gogoproto.jsontag) = "problem_name"];
+  string Language = 5  [json_name = "language", (gogoproto.jsontag) = "language"];
+  string Code = 6  [json_name = "code", (gogoproto.jsontag) = "code"];
 }
 message SubmitCodeResp {
 }
