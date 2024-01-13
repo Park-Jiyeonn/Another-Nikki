@@ -43,3 +43,5 @@ dumped_hertz_remote_config.json
 /Another-Nikki-Server/main
 /Another-Nikki-Server/tmp
 /Another-Nikki-Server/config/CosKey.go
+/Another-Nikki/docker-conf/canal/conf/example/h2.mv.db
+/Another-Nikki/docker-conf/canal/conf/example/meta.dat
