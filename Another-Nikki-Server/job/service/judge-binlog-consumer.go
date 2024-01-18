@@ -36,8 +36,7 @@ func (s *Service) MessageHandle(value []byte) {
 	}
 	switch val.Type {
 	case "INSERT":
-		fmt.Println("start to judge...")
-		resp, err := s.globalGrpc.JudgeClient.Judge(context.Background(), &api.JudgeReq{
+		resp, err := s.GlobalGrpc.JudgeClient.Judge(context.Background(), &api.JudgeReq{
 			Code:        val.NewData[0].Code,
 			Language:    api.Language(api.Language_value[val.NewData[0].Language]),
 			ProblemName: val.NewData[0].ProblemName,

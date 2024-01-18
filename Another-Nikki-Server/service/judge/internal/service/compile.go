@@ -38,6 +38,8 @@ func compile(ID, code, input string, language api.Language) (err error) {
 		return
 	}
 	if err = runCommand(cmd); err != nil {
+		compileLog, readErr := os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
+		err = fmt.Errorf("os.ReadFile error: %s, %s, %s", readErr, err, string(compileLog))
 		return
 	}
 	compileLog, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))

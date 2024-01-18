@@ -11,7 +11,7 @@ type globalGrpcClient struct {
 }
 
 type Service struct {
-	globalGrpc *globalGrpcClient
+	GlobalGrpc *globalGrpcClient
 }
 
 func New() (s *Service) {
@@ -22,6 +22,6 @@ func New() (s *Service) {
 		panic(err)
 	}
 	glbgrpc.JudgeClient = api.NewJudgeClient(conn)
-	s.globalGrpc = glbgrpc
+	s.GlobalGrpc = glbgrpc
 	return
 }
