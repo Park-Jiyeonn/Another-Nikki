@@ -2,10 +2,10 @@ package service
 
 import (
 	"Another-Nikki/service/judge/api"
+	"Another-Nikki/util/log"
 	"context"
 	"encoding/json"
 	"fmt"
-	"log"
 )
 
 type Judge struct {
@@ -32,7 +32,7 @@ func (s *Service) MessageHandle(value []byte) {
 	val := new(Value)
 	err := json.Unmarshal(value, val)
 	if err != nil {
-		log.Println(err)
+		log.Error(context.Background())
 	}
 	switch val.Type {
 	case "INSERT":
@@ -42,6 +42,7 @@ func (s *Service) MessageHandle(value []byte) {
 			ProblemName: val.NewData[0].ProblemName,
 		})
 		fmt.Println(resp, err)
+		log.Info(context.Background())
 	case "UPDATE":
 		return
 	}
