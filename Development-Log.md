@@ -1,7 +1,7 @@
 # Another-Nikki
 
 ## 记录
-### 2024
+### 2024-01-20
 #### 16:33
 今天看到 $go-common$ 里面的源码，$trace-id$ 原来是根据时间和随机数生成的（在一个叫 $genId$ 的函数里面），之后还会有相关的全局 $map$，会在起服务的时候帮忙把 $trace-id$ 注入，$http$ 层会用 $metadata.Pairs$ 把 $trace-id$ 放进 $context$。
 
