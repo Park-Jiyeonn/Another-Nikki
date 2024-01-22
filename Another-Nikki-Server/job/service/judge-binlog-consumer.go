@@ -32,7 +32,7 @@ func (s *Service) MessageHandle(value []byte) {
 	val := new(Value)
 	err := json.Unmarshal(value, val)
 	if err != nil {
-		log.Error(context.Background())
+		log.Error(context.Background(), "123")
 	}
 	switch val.Type {
 	case "INSERT":
@@ -42,7 +42,7 @@ func (s *Service) MessageHandle(value []byte) {
 			ProblemName: val.NewData[0].ProblemName,
 		})
 		fmt.Println(resp, err)
-		log.Info(context.Background())
+		log.Info(context.Background(), "123")
 	case "UPDATE":
 		return
 	}

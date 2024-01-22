@@ -18,3 +18,8 @@ func ExtractTraceIDFromContext(ctx context.Context) (string, bool) {
 
 	return values[0], true
 }
+
+func AddTraceIDToContext(ctx context.Context, traceID string) context.Context {
+	md := metadata.Pairs("trace-id", traceID)
+	return metadata.NewOutgoingContext(ctx, md)
+}

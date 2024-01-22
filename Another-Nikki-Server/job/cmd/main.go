@@ -2,10 +2,11 @@ package main
 
 import (
 	"Another-Nikki/job/service"
+	"Another-Nikki/util/log"
 	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
-	"log"
+	"go.uber.org/zap"
 	"os"
 	"os/signal"
 	"syscall"
@@ -43,8 +44,7 @@ func main() {
 	for {
 		m, err := r.ReadMessage(context.Background())
 		if err != nil {
-			log.Println(err)
-			log.Println(m.Value)
+			log.Error(context.Background(), "", zap.Error(err))
 			break
 		}
 		s.MessageHandle(m.Value)

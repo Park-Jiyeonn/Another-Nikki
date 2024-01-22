@@ -10,9 +10,9 @@ import (
 
 func Init() {
 	// TODO: 此处的逻辑太丑了，毕竟我不是真的几台机器上的微服务，都是本地直接跑的，没办法，会重复创建 Client
-	if zap.L() != nil {
-		return
-	}
+	//if zap.L() != nil {
+	//	return
+	//}
 	client, err := elastic.NewTypedClient(elastic.Config{
 		Addresses: []string{"http://47.116.20.160:9200"},
 	})
@@ -36,30 +36,30 @@ func NewWithHook(w io.Writer) {
 	)
 
 	// 创建Zap logger
-	logger := zap.New(core, zap.AddCaller())
+	logger := zap.New(core, zap.AddCaller(), zap.AddCallerSkip(1), zap.AddStacktrace(zapcore.ErrorLevel))
 
 	defer logger.Sync()
 
 	zap.ReplaceGlobals(logger)
 }
 
-func Info(ctx context.Context, field ...zap.Field) {
+func Info(ctx context.Context, msg string, field ...zap.Field) {
 	if traceId, ok := ExtractTraceIDFromContext(ctx); ok {
 		field = append(field, zap.String("trace_id", traceId))
 	}
-	zap.L().Info("", field...)
+	zap.L().Info(msg, field...)
 }
 
-func Warn(ctx context.Context, field ...zap.Field) {
+func Warn(ctx context.Context, msg string, field ...zap.Field) {
 	if traceId, ok := ExtractTraceIDFromContext(ctx); ok {
 		field = append(field, zap.String("trace_id", traceId))
 	}
-	zap.L().Warn("", field...)
+	zap.L().Warn(msg, field...)
 }
 
-func Error(ctx context.Context, field ...zap.Field) {
+func Error(ctx context.Context, msg string, field ...zap.Field) {
 	if traceId, ok := ExtractTraceIDFromContext(ctx); ok {
 		field = append(field, zap.String("trace_id", traceId))
 	}
-	zap.L().Error("", field...)
+	zap.L().Error(msg, field...)
 }
