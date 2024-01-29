@@ -1,17 +1,24 @@
 package service
 
 import (
-	"Another-Nikki/service/judge/api"
-	"Another-Nikki/util/log"
+	"Another-Nikki/judge/service/api"
 	"context"
 	"github.com/google/uuid"
 )
 
-func (s *server) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.JudgeResp, err error) {
-	log.Info(ctx, "666666")
+type JudgeService struct {
+	api.UnimplementedJudgeServer
+}
+
+func NewJudgeService() *JudgeService {
+	return &JudgeService{}
+}
+
+func (s *JudgeService) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.JudgeResp, err error) {
+	//log.Info(ctx, "666666")
 	ID := uuid.NewString()
 	if err = compile(ID, req.Code, "", req.Language); err != nil {
-		log.Error(ctx, "120210")
+		//log.Error(ctx, "120210")
 		return
 	}
 	if err = judge(ID, req.ProblemName); err != nil {
@@ -19,13 +26,12 @@ func (s *server) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.JudgeR
 	}
 	resp, err = readJudgeRet(ID)
 	if err != nil {
-		log.Error(ctx, "")
+		//log.Error(ctx, "")
 		return
 	}
 	return
 }
-
-func (s *server) OnlineRun(ctx context.Context, req *api.OnlineRunReq) (resp *api.OnlineRunResp, err error) {
+func (s *JudgeService) OnlineRun(ctx context.Context, req *api.OnlineRunReq) (resp *api.OnlineRunResp, err error) {
 	ID := uuid.NewString()
 	if err = compile(ID, req.Code, req.Input, req.Language); err != nil {
 		return

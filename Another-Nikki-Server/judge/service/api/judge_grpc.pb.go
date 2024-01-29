@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.24.4
-// source: judge.proto
+// source: service/judge/api/judge.proto
 
 package api
 
@@ -19,8 +19,8 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	Judge_Judge_FullMethodName     = "/AnotherNikki.oj.judge.Judge/Judge"
-	Judge_OnlineRun_FullMethodName = "/AnotherNikki.oj.judge.Judge/OnlineRun"
+	Judge_Judge_FullMethodName     = "/service.judge.api.Judge/Judge"
+	Judge_OnlineRun_FullMethodName = "/service.judge.api.Judge/OnlineRun"
 )
 
 // JudgeClient is the client API for Judge service.
@@ -129,7 +129,7 @@ func _Judge_OnlineRun_Handler(srv interface{}, ctx context.Context, dec func(int
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var Judge_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "AnotherNikki.oj.judge.Judge",
+	ServiceName: "service.judge.api.Judge",
 	HandlerType: (*JudgeServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -142,5 +142,5 @@ var Judge_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "judge.proto",
+	Metadata: "service/judge/api/judge.proto",
 }
