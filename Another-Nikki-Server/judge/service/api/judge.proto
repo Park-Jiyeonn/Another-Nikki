@@ -1,14 +1,13 @@
 syntax = "proto3";
 
-package service.judge.api;
+package judge.service.api;
 
-option go_package = "Another-Nikki/service/judge/api;api";
-option java_multiple_files = true;
-option java_package = "service.judge.api";
+option go_package = ".;api";
 
-// kratos proto add service/judge/api/judge.proto
-// kratos proto client service/judge/api/judge.proto -p=$GOPATH/pkg/mod
-// kratos proto server service/judge/api/judge.proto -t service/judge/internal/service
+// protoc -I=. -I=$GOPATH/pkg/mod --go-grpc_out=. --gogo_out=. *.proto
+// Another-Nikki/judge/service/api
+// kratos proto server *.proto -t ../internal/service
+
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service Judge {

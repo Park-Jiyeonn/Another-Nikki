@@ -2,7 +2,7 @@
 // versions:
 // - protoc-gen-go-grpc v1.3.0
 // - protoc             v4.24.4
-// source: judge.proto
+// source: code_processing.proto
 
 package api
 
@@ -19,7 +19,7 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CodeProcessing_SubmitCode_FullMethodName = "/AnotherNikki.oj.code_processing.CodeProcessing/SubmitCode"
+	CodeProcessing_SubmitCode_FullMethodName = "/service.code_processing.api.CodeProcessing/SubmitCode"
 )
 
 // CodeProcessingClient is the client API for CodeProcessing service.
@@ -96,7 +96,7 @@ func _CodeProcessing_SubmitCode_Handler(srv interface{}, ctx context.Context, de
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
 var CodeProcessing_ServiceDesc = grpc.ServiceDesc{
-	ServiceName: "AnotherNikki.oj.code_processing.CodeProcessing",
+	ServiceName: "service.code_processing.api.CodeProcessing",
 	HandlerType: (*CodeProcessingServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -105,5 +105,5 @@ var CodeProcessing_ServiceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "judge.proto",
+	Metadata: "code_processing.proto",
 }

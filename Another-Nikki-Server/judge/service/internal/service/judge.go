@@ -31,6 +31,7 @@ func (s *JudgeService) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.
 	}
 	return
 }
+
 func (s *JudgeService) OnlineRun(ctx context.Context, req *api.OnlineRunReq) (resp *api.OnlineRunResp, err error) {
 	ID := uuid.NewString()
 	if err = compile(ID, req.Code, req.Input, req.Language); err != nil {
