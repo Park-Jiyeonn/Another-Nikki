@@ -8,6 +8,7 @@ package main
 
 import (
 	"Another-Nikki/judge/service/internal/conf"
+	"Another-Nikki/judge/service/internal/data"
 	"Another-Nikki/judge/service/internal/server"
 	"Another-Nikki/judge/service/internal/service"
 	"github.com/go-kratos/kratos/v2"
@@ -21,10 +22,11 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, data *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	judgeService := service.NewJudgeService()
+func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
+	judgeService := service.NewJudgeService(logger)
 	grpcServer := server.NewGRPCServer(confServer, judgeService, logger)
-	app := newApp(logger, grpcServer)
+	registrar := data.NewRegistry()
+	app := newApp(logger, grpcServer, registrar)
 	return app, func() {
 	}, nil
 }

@@ -3,6 +3,13 @@ package main
 import (
 	"Another-Nikki/judge/service/internal/conf"
 	"flag"
+	"github.com/go-kratos/kratos/v2/registry"
+	"go.opentelemetry.io/otel"
+	"go.opentelemetry.io/otel/attribute"
+	"go.opentelemetry.io/otel/exporters/jaeger"
+	"go.opentelemetry.io/otel/sdk/resource"
+	tracesdk "go.opentelemetry.io/otel/sdk/trace"
+	semconv "go.opentelemetry.io/otel/semconv/v1.20.0"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -30,7 +37,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, r registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(id),
 		kratos.Name(Name),
@@ -40,6 +47,7 @@ func newApp(logger log.Logger, gs *grpc.Server) *kratos.App {
 		kratos.Server(
 			gs,
 		),
+		kratos.Registrar(r),
 	)
 }
 
@@ -70,6 +78,10 @@ func main() {
 		panic(err)
 	}
 
+	if err := setTracerProvider(bc.Trace.Endpoint); err != nil {
+		panic(err)
+	}
+
 	app, cleanup, err := wireApp(bc.Server, bc.Data, logger)
 	if err != nil {
 		panic(err)
@@ -80,4 +92,31 @@ func main() {
 	if err := app.Run(); err != nil {
 		panic(err)
 	}
+}
+
+// get trace provider
+func setTracerProvider(url string) error {
+	// create the jaeger exporter
+	exp, err := jaeger.New(jaeger.WithCollectorEndpoint(jaeger.WithEndpoint(url)))
+	if err != nil {
+		return err
+	}
+
+	// New trace provider
+	tp := tracesdk.NewTracerProvider(
+		// Set the sampling rate based on the parent span to 100%
+		tracesdk.WithSampler(tracesdk.ParentBased(tracesdk.TraceIDRatioBased(1.0))),
+		// always be sure to batch in production
+		tracesdk.WithBatcher(exp),
+		// Record information about this application in an Resource.
+		tracesdk.WithResource(
+			resource.NewWithAttributes(
+				semconv.SchemaURL,
+				semconv.ServiceNameKey.String("judge"),  // service name,实例名称
+				attribute.String("env", "uat"),          // environment
+				attribute.String("ID", "1.0.0.1.judge"), // version
+			)),
+	)
+	otel.SetTracerProvider(tp)
+	return nil
 }
