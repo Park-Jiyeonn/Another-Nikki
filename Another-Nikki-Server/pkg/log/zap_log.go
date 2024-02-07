@@ -7,6 +7,7 @@ import (
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
+	"golang.org/x/net/context"
 )
 
 func Init(env, serviceName string) log.Logger {
@@ -20,7 +21,7 @@ func Init(env, serviceName string) log.Logger {
 		zap.NewAtomicLevelAt(zapcore.DebugLevel),
 		zap.AddStacktrace(
 			zap.NewAtomicLevelAt(zapcore.ErrorLevel)),
-		zap.AddCallerSkip(2),
+		zap.AddCallerSkip(1),
 		zap.Development(),
 	)
 
@@ -32,6 +33,7 @@ func Init(env, serviceName string) log.Logger {
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 	)
+	//log.SetLogger(logger)
 
 	return logger
 }
@@ -82,4 +84,16 @@ func (l *Logger) Log(level log.Level, keyvals ...interface{}) error {
 		l.log.Error("", data...)
 	}
 	return nil
+}
+
+func Info(ctx context.Context, filed ...interface{}) {
+	log.Context(ctx).Infow(filed...)
+}
+
+func Warn(ctx context.Context, filed ...interface{}) {
+	log.Context(ctx).Warnw(filed...)
+}
+
+func Error(ctx context.Context, filed ...interface{}) {
+	log.Context(ctx).Errorw(filed...)
 }
