@@ -2,7 +2,9 @@ package service
 
 import (
 	"Another-Nikki/judge/service/api"
+	"Another-Nikki/pkg/log"
 	"fmt"
+	"golang.org/x/net/context"
 )
 
 const (
@@ -11,7 +13,7 @@ const (
 	GolangAppName = "golang"
 )
 
-func run(ID string, language api.Language) (err error) {
+func run(ctx context.Context, ID string, language api.Language) (err error) {
 	defer func() {
 		if err != nil {
 			deleteFile(ID)
@@ -28,11 +30,14 @@ func run(ID string, language api.Language) (err error) {
 	case api.Language_Golang:
 		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i data.in -o data.out ./%s >> data.out'", ID, GolangAppName)
 	}
-	err = runCommand(cmd)
+	err = runCommand(ctx, cmd)
+	if err != nil {
+		log.Error(ctx, "run code error: %v", err)
+	}
 	return
 }
 
-func judge(ID, problemName string, language api.Language) (err error) {
+func judge(ctx context.Context, ID, problemName string, language api.Language) (err error) {
 	defer func() {
 		if err != nil {
 			deleteFile(ID)
@@ -49,6 +54,9 @@ func judge(ID, problemName string, language api.Language) (err error) {
 	case api.Language_Golang:
 		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i ../../onlineJudge/problemData/%s/input.in -a ../../onlineJudge/problemData/%s/output.out -o out.out -t 2000 ./%s > data.out'", ID, problemName, problemName, GolangAppName)
 	}
-	err = runCommand(cmd)
+	err = runCommand(ctx, cmd)
+	if err != nil {
+		log.Error(ctx, "judge code error: %v", err)
+	}
 	return
 }

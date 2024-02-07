@@ -2,7 +2,9 @@ package service
 
 import (
 	"Another-Nikki/judge/service/api"
+	"Another-Nikki/pkg/log"
 	"fmt"
+	"golang.org/x/net/context"
 	"os"
 	"os/exec"
 )
@@ -15,7 +17,7 @@ const (
 	PythonFileName = "py.py"
 )
 
-func compile(ID, code, input string, language api.Language) (err error) {
+func compile(ctx context.Context, ID, code, input string, language api.Language) (err error) {
 	defer func() {
 		if err != nil {
 			deleteFile(ID)
@@ -37,20 +39,23 @@ func compile(ID, code, input string, language api.Language) (err error) {
 		cmd, err = golang_compile(ID, code, input)
 	}
 	if err != nil {
+		log.Error(ctx, "write code into file err: %v", err)
 		return
 	}
-	if err = runCommand(cmd); err != nil {
-		fmt.Println(err.Error())
+	if err = runCommand(ctx, cmd); err != nil {
+		log.Error(ctx, "compile error, err = %v, code = %v, language = %v", err, code, language)
 		compileLog, readErr := os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
-		err = fmt.Errorf("os.ReadFile error: %s, %s, %s", readErr, err, string(compileLog))
+		log.Error(ctx, "compile log = %v, read compile err = %v", string(compileLog), readErr)
 		return
 	}
 	compileLog, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
 	if err != nil {
+		log.Error(ctx, "ReadFile err: %v", err)
 		return
 	}
 	if len(compileLog) != 0 {
 		err = fmt.Errorf(string(compileLog))
+		log.Error(ctx, "compile error: %v", string(compileLog))
 		return
 	}
 	return
@@ -88,7 +93,7 @@ func python_compile(ID, code, input string) (cmd string, err error) {
 	return
 }
 
-func runCommand(s string) error {
+func runCommand(ctx context.Context, s string) error {
 	cmd := exec.Command("bash", "-c", s)
 	err := cmd.Run()
 	return err

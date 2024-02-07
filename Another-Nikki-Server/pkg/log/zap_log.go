@@ -22,7 +22,7 @@ func Init(env, serviceName string) log.Logger {
 		zap.NewAtomicLevelAt(zapcore.DebugLevel),
 		zap.AddStacktrace(
 			zap.NewAtomicLevelAt(zapcore.ErrorLevel)),
-		zap.AddCallerSkip(1),
+		zap.AddCallerSkip(2),
 		zap.Development(),
 	)
 
