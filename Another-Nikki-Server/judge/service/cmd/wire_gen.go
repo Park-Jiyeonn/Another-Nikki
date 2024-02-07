@@ -23,7 +23,7 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	judgeService := service.NewJudgeService(logger)
+	judgeService := service.NewJudgeService()
 	grpcServer := server.NewGRPCServer(confServer, judgeService, logger)
 	registrar := data.NewRegistry()
 	app := newApp(logger, grpcServer, registrar)

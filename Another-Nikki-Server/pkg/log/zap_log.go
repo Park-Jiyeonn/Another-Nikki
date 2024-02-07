@@ -15,6 +15,7 @@ func Init(env, serviceName string) log.Logger {
 	encoder := zap.NewProductionEncoderConfig()
 	encoder.EncodeTime = zapcore.ISO8601TimeEncoder
 	encoder.EncodeLevel = zapcore.CapitalLevelEncoder
+	encoder.MessageKey = "message"
 
 	zapLogger := NewZapLogger(
 		encoder,
@@ -86,14 +87,14 @@ func (l *Logger) Log(level log.Level, keyvals ...interface{}) error {
 	return nil
 }
 
-func Info(ctx context.Context, filed ...interface{}) {
-	log.Context(ctx).Infow(filed...)
+func Info(ctx context.Context, msg string, filed ...interface{}) {
+	log.Context(ctx).Infof(msg, filed...)
 }
 
-func Warn(ctx context.Context, filed ...interface{}) {
-	log.Context(ctx).Warnw(filed...)
+func Warn(ctx context.Context, msg string, filed ...interface{}) {
+	log.Context(ctx).Warnf(msg, filed...)
 }
 
-func Error(ctx context.Context, filed ...interface{}) {
-	log.Context(ctx).Errorw(filed...)
+func Error(ctx context.Context, msg string, filed ...interface{}) {
+	log.Context(ctx).Errorf(msg, filed...)
 }

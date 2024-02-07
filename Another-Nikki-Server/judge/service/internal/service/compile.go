@@ -10,8 +10,9 @@ import (
 const (
 	DataFileName   = "data.in"
 	CppFileName    = "c++.cpp"
-	JavaFileName   = "java.java"
+	JavaFileName   = "Main.java"
 	GolangFileName = "golang.go"
+	PythonFileName = "py.py"
 )
 
 func compile(ID, code, input string, language api.Language) (err error) {
@@ -30,6 +31,7 @@ func compile(ID, code, input string, language api.Language) (err error) {
 	case api.Language_Java:
 		cmd, err = java_compile(ID, code, input)
 	case api.Language_Python:
+		_, _ = python_compile(ID, code, input)
 		return
 	case api.Language_Golang:
 		cmd, err = golang_compile(ID, code, input)
@@ -38,6 +40,7 @@ func compile(ID, code, input string, language api.Language) (err error) {
 		return
 	}
 	if err = runCommand(cmd); err != nil {
+		fmt.Println(err.Error())
 		compileLog, readErr := os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
 		err = fmt.Errorf("os.ReadFile error: %s, %s, %s", readErr, err, string(compileLog))
 		return
@@ -57,7 +60,7 @@ func cpp_compile(ID, code, input string) (cmd string, err error) {
 	if err = writeInFile(ID, code, input, CppFileName); err != nil {
 		return
 	}
-	cmd = fmt.Sprintf("docker run --rm -m 256m --name cpp_compile-%s -v $(pwd)/onlineJudge/tmp-%s:/dox oj:1 sh -c 'g++ 'c++.cpp' -o 'cpp' -O2 -std=c++11 2> compile.log'", ID, ID)
+	cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; g++ %s -o %s -O2 -std=c++11 2> compile.log'", ID, CppFileName, CppAppName)
 	return
 }
 
@@ -65,7 +68,7 @@ func java_compile(ID, code, input string) (cmd string, err error) {
 	if err = writeInFile(ID, code, input, JavaFileName); err != nil {
 		return
 	}
-	cmd = fmt.Sprintf("docker run --rm -m 256m --name java_compile-%s -v $(pwd)/onlineJudge/tmp-%s:/dox oj:1 sh -c 'javac 'Main.java' 2> compile.log'", ID, ID)
+	cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; javac %s 2> compile.log'", ID, JavaFileName)
 	return
 }
 
@@ -73,7 +76,15 @@ func golang_compile(ID, code, input string) (cmd string, err error) {
 	if err = writeInFile(ID, code, input, GolangFileName); err != nil {
 		return
 	}
-	cmd = fmt.Sprintf("docker run --rm -m 256m --name go_compile-%s -v $(pwd)/onlineJudge/tmp-%s:/dox oj:1 sh -c 'go build go.go 2> compile.log'", ID, ID)
+	// docker run -d -i -m 256m --name oj -v $(pwd)/onlineJudge:/dox oj:1
+	cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; go build %s 2> compile.log'", ID, GolangFileName)
+	return
+}
+
+func python_compile(ID, code, input string) (cmd string, err error) {
+	if err = writeInFile(ID, code, input, PythonFileName); err != nil {
+		return
+	}
 	return
 }
 

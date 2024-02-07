@@ -1,25 +1,54 @@
 package service
 
-import "fmt"
+import (
+	"Another-Nikki/judge/service/api"
+	"fmt"
+)
 
-func run(ID string) (err error) {
+const (
+	CppAppName    = "c++"
+	JavaAppName   = "Main"
+	GolangAppName = "golang"
+)
+
+func run(ID string, language api.Language) (err error) {
 	defer func() {
 		if err != nil {
 			deleteFile(ID)
 		}
 	}()
-	cmd := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%s -v $(pwd)/onlineJudge/tmp-%s:/dox oj:1 sh -c '../onlineJudge/judger -i data.in -o data.out ./cpp >> data.out'", ID, ID)
+	var cmd string
+	switch language {
+	case api.Language_Cpp:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i data.in -o data.out ./%s >> data.out'", ID, CppAppName)
+	case api.Language_Java:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i data.in -o data.out java %s >> data.out'", ID, JavaAppName)
+	case api.Language_Python:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i data.in -o data.out -i data.in python3 -u %s >> data.out 2>&1'", ID, PythonFileName)
+	case api.Language_Golang:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i data.in -o data.out ./%s >> data.out'", ID, GolangAppName)
+	}
 	err = runCommand(cmd)
 	return
 }
 
-func judge(ID, problemName string) (err error) {
+func judge(ID, problemName string, language api.Language) (err error) {
 	defer func() {
 		if err != nil {
 			deleteFile(ID)
 		}
 	}()
-	cmd := fmt.Sprintf("docker run --rm -m 256m --name cpp_run-%s -v $(pwd)/onlineJudge/tmp-%s:/dox oj:1 sh -c '../onlineJudge/judger -i ../onlineJudge/problemData/%s/input.in -a ../onlineJudge/problemData/%s/output.out -o out.out -t 1000 ./cpp > data.out'", ID, ID, problemName, problemName)
+	var cmd string
+	switch language {
+	case api.Language_Cpp:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i ../../onlineJudge/problemData/%s/input.in -a ../../onlineJudge/problemData/%s/output.out -o out.out -t 1000 ./%s > data.out'", ID, problemName, problemName, CppAppName)
+	case api.Language_Java:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i ../../onlineJudge/problemData/%s/input.in -a ../../onlineJudge/problemData/%s/output.out -o out.out -t 2000 java %s > data.out'", ID, problemName, problemName, JavaAppName)
+	case api.Language_Python:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i ../../onlineJudge/problemData/%s/input.in -a ../../onlineJudge/problemData/%s/output.out -o out.out -t 2000 python3 -u %s >> data.out 2>&1'", ID, problemName, problemName, PythonFileName)
+	case api.Language_Golang:
+		cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; ../../onlineJudge/judger -i ../../onlineJudge/problemData/%s/input.in -a ../../onlineJudge/problemData/%s/output.out -o out.out -t 2000 ./%s > data.out'", ID, problemName, problemName, GolangAppName)
+	}
 	err = runCommand(cmd)
 	return
 }

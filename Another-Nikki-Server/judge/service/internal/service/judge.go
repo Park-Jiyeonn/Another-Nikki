@@ -3,30 +3,24 @@ package service
 import (
 	"Another-Nikki/judge/service/api"
 	"context"
-	"github.com/go-kratos/kratos/v2/log"
 	"github.com/google/uuid"
 )
 
 type JudgeService struct {
 	api.UnimplementedJudgeServer
-
-	log *log.Helper
 }
 
-func NewJudgeService(logger log.Logger) *JudgeService {
-	return &JudgeService{
-		log: log.NewHelper(logger),
-	}
+func NewJudgeService() *JudgeService {
+	return &JudgeService{}
 }
 
 func (s *JudgeService) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.JudgeResp, err error) {
-	//log.Info(ctx, "666666")
 	ID := uuid.NewString()
 	if err = compile(ID, req.Code, "", req.Language); err != nil {
 		//s.log.WithContext(ctx).Error(err)
 		return
 	}
-	if err = judge(ID, req.ProblemName); err != nil {
+	if err = judge(ID, req.ProblemName, req.Language); err != nil {
 		return
 	}
 	resp, err = readJudgeRet(ID)
@@ -42,7 +36,7 @@ func (s *JudgeService) OnlineRun(ctx context.Context, req *api.OnlineRunReq) (re
 	if err = compile(ID, req.Code, req.Input, req.Language); err != nil {
 		return
 	}
-	if err = run(ID); err != nil {
+	if err = run(ID, req.Language); err != nil {
 		return
 	}
 	resp, err = readRunRet(ID)

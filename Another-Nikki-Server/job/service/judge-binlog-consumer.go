@@ -2,7 +2,7 @@ package service
 
 import (
 	"Another-Nikki/judge/service/api"
-	"Another-Nikki/util/log"
+	"Another-Nikki/pkg/log"
 	"context"
 	"encoding/json"
 	"fmt"
