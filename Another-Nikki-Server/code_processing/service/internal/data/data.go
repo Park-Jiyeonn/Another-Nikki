@@ -12,7 +12,7 @@ import (
 var ProviderSet = wire.NewSet(NewData, NewGlobalGrpcClient, NewRegistry, NewDiscovery, NewMySql, NewCodeProcessingRepo)
 
 type Data struct {
-	DB *sqlx.DB
+	GlobalDB *sqlx.DB
 }
 
 func NewData(c *conf.Data, db *sqlx.DB) (*Data, func(), error) {
@@ -22,14 +22,10 @@ func NewData(c *conf.Data, db *sqlx.DB) (*Data, func(), error) {
 		}
 	}
 	return &Data{
-		DB: db,
+		GlobalDB: db,
 	}, cleanup, nil
 }
 
 func NewMySql(c *conf.Data) *sqlx.DB {
-	db, err := sqlx.Open(c.Database.Driver, c.Database.Source)
-	if err != nil {
-		panic(err)
-	}
-	return db
+	return sqlx.MustConnect(c.Database.Driver, c.Database.Source)
 }
