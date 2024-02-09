@@ -20,26 +20,12 @@ type CodeDataMysql struct {
 	Language      string `db:"language"`
 	Code          string `db:"code"`
 	CompileStatus string `db:"compile_status"`
+	CompileLog    string `json:"compile_log"`
 	JudgeStatus   string `db:"judge_status"`
 }
 
 type codeProcessingRepo struct {
 	db *sqlx.DB
-}
-
-func (c *codeProcessingRepo) CreateCode(ctx context.Context, req *api.SubmitCodeReq) (err error) {
-	_, err = c.db.ExecContext(ctx, "INSERT INTO judge (user_id, user_name, problem_id, problem_name, language, code) VALUES (?, ?, ?, ?, ?, ?)",
-		req.UserID,
-		req.UserName,
-		req.ProblemID,
-		req.ProblemName,
-		req.Language,
-		req.Code,
-	)
-	if err != nil {
-		log.Error(ctx, "create judge code err: %v", err)
-	}
-	return
 }
 
 func NewCodeProcessingRepo(data *Data) biz.CodeDataRepo {
@@ -61,3 +47,38 @@ func NewCodeProcessingRepo(data *Data) biz.CodeDataRepo {
 //    compile_status VARCHAR(255) NOT NULL DEFAULT 'Compiling...',
 //    judge_status VARCHAR(255) NOT NULL DEFAULT '-'
 //);
+
+func (c *codeProcessingRepo) CreateCode(ctx context.Context, req *api.SubmitCodeReq) (err error) {
+	const sqlStr = "INSERT INTO judge (user_id, user_name, problem_id, problem_name, language, code) VALUES (?, ?, ?, ?, ?, ?)"
+	_, err = c.db.ExecContext(ctx, sqlStr,
+		req.UserID,
+		req.UserName,
+		req.ProblemID,
+		req.ProblemName,
+		req.Language,
+		req.Code,
+	)
+	if err != nil {
+		log.Error(ctx, "create judge code err: %v", err)
+	}
+	return
+}
+
+func (c *codeProcessingRepo) UpdateCodeCompileStatus(ctx context.Context, id int64, status, compile_log string) (err error) {
+	const sqlStr = "update judge set compile_status = ?, compile_log = ? where id = ?"
+	_, err = c.db.ExecContext(ctx, sqlStr,
+		status,
+		compile_log,
+		id,
+	)
+	return
+}
+
+func (c *codeProcessingRepo) UpdateCodeJudgeStatus(ctx context.Context, id int64, status string) (err error) {
+	const sqlStr = "update judge set judge_status = ? where id = ?"
+	_, err = c.db.ExecContext(ctx, sqlStr,
+		status,
+		id,
+	)
+	return
+}
