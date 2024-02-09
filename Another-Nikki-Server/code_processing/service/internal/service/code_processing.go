@@ -12,10 +12,10 @@ type CodeProcessingService struct {
 	pb.UnimplementedCodeProcessingServer
 
 	judgeClient judge.JudgeClient
-	dao         *biz.CodeDataUseCase
+	dao         biz.CodeDataRepo
 }
 
-func NewCodeProcessingService(globalGrpc *data.GlobalGrpcClient, dao *biz.CodeDataUseCase) *CodeProcessingService {
+func NewCodeProcessingService(globalGrpc *data.GlobalGrpcClient, dao biz.CodeDataRepo) *CodeProcessingService {
 	return &CodeProcessingService{
 		judgeClient: globalGrpc.JudgeClient,
 		dao:         dao,

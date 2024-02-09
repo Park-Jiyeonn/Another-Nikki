@@ -6,7 +6,6 @@
 package main
 
 import (
-	"Another-Nikki/code_processing/service/internal/biz"
 	"Another-Nikki/code_processing/service/internal/conf"
 	"Another-Nikki/code_processing/service/internal/data"
 	"Another-Nikki/code_processing/service/internal/server"
@@ -18,5 +17,5 @@ import (
 
 // wireApp init kratos application.
 func wireApp(*conf.Server, *conf.Data, log.Logger) (*kratos.App, func(), error) {
-	panic(wire.Build(service.ProviderSet, server.ProviderSet, data.ProviderSet, biz.ProviderSet, newApp))
+	panic(wire.Build(service.ProviderSet, server.ProviderSet, data.ProviderSet, newApp))
 }

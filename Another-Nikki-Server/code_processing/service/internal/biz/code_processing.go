@@ -8,18 +8,3 @@ import (
 type CodeDataRepo interface {
 	CreateCode(ctx context.Context, req *pb.SubmitCodeReq) (err error)
 }
-
-type CodeDataUseCase struct {
-	repo CodeDataRepo
-}
-
-func NewCodeDataRepo(repo CodeDataRepo) *CodeDataUseCase {
-	return &CodeDataUseCase{
-		repo: repo,
-	}
-}
-
-func (uc *CodeDataUseCase) CreateCode(ctx context.Context, req *pb.SubmitCodeReq) (err error) {
-	err = uc.repo.CreateCode(ctx, req)
-	return
-}

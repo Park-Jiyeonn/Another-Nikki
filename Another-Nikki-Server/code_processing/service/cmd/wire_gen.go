@@ -7,7 +7,6 @@
 package main
 
 import (
-	"Another-Nikki/code_processing/service/internal/biz"
 	"Another-Nikki/code_processing/service/internal/conf"
 	"Another-Nikki/code_processing/service/internal/data"
 	"Another-Nikki/code_processing/service/internal/server"
@@ -32,8 +31,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 		return nil, nil, err
 	}
 	codeDataRepo := data.NewCodeProcessingRepo(dataData)
-	codeDataUseCase := biz.NewCodeDataRepo(codeDataRepo)
-	codeProcessingService := service.NewCodeProcessingService(globalGrpcClient, codeDataUseCase)
+	codeProcessingService := service.NewCodeProcessingService(globalGrpcClient, codeDataRepo)
 	grpcServer := server.NewGRPCServer(confServer, codeProcessingService, logger)
 	registrar := data.NewRegistry()
 	app := newApp(logger, grpcServer, registrar)
