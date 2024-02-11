@@ -27,3 +27,15 @@ func (s *CodeProcessingService) SubmitCode(ctx context.Context, req *pb.SubmitCo
 	err = s.dao.CreateCode(ctx, req)
 	return resp, err
 }
+
+func (s *CodeProcessingService) UpdateCodeCompileStatus(ctx context.Context, req *pb.UpdateCodeCompileStatusReq) (resp *pb.UpdateCodeCompileStatusResp, err error) {
+	resp = new(pb.UpdateCodeCompileStatusResp)
+	err = s.dao.UpdateCodeCompileStatus(ctx, req.CodeId, req.Status, req.CompileLog)
+	return
+}
+
+func (s *CodeProcessingService) UpdateCodeJudgeStatus(ctx context.Context, req *pb.UpdateCodeJudgeStatusReq) (resp *pb.UpdateCodeJudgeStatusResp, err error) {
+	resp = new(pb.UpdateCodeJudgeStatusResp)
+	err = s.dao.UpdateCodeJudgeStatus(ctx, req.CodeId, req.Status)
+	return
+}

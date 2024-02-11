@@ -19,7 +19,9 @@ import (
 const _ = grpc.SupportPackageIsVersion7
 
 const (
-	CodeProcessing_SubmitCode_FullMethodName = "/service.code_processing.api.CodeProcessing/SubmitCode"
+	CodeProcessing_SubmitCode_FullMethodName              = "/service.code_processing.api.CodeProcessing/SubmitCode"
+	CodeProcessing_UpdateCodeCompileStatus_FullMethodName = "/service.code_processing.api.CodeProcessing/UpdateCodeCompileStatus"
+	CodeProcessing_UpdateCodeJudgeStatus_FullMethodName   = "/service.code_processing.api.CodeProcessing/UpdateCodeJudgeStatus"
 )
 
 // CodeProcessingClient is the client API for CodeProcessing service.
@@ -27,6 +29,8 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type CodeProcessingClient interface {
 	SubmitCode(ctx context.Context, in *SubmitCodeReq, opts ...grpc.CallOption) (*SubmitCodeResp, error)
+	UpdateCodeCompileStatus(ctx context.Context, in *UpdateCodeCompileStatusReq, opts ...grpc.CallOption) (*UpdateCodeCompileStatusResp, error)
+	UpdateCodeJudgeStatus(ctx context.Context, in *UpdateCodeJudgeStatusReq, opts ...grpc.CallOption) (*UpdateCodeJudgeStatusResp, error)
 }
 
 type codeProcessingClient struct {
@@ -46,11 +50,31 @@ func (c *codeProcessingClient) SubmitCode(ctx context.Context, in *SubmitCodeReq
 	return out, nil
 }
 
+func (c *codeProcessingClient) UpdateCodeCompileStatus(ctx context.Context, in *UpdateCodeCompileStatusReq, opts ...grpc.CallOption) (*UpdateCodeCompileStatusResp, error) {
+	out := new(UpdateCodeCompileStatusResp)
+	err := c.cc.Invoke(ctx, CodeProcessing_UpdateCodeCompileStatus_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *codeProcessingClient) UpdateCodeJudgeStatus(ctx context.Context, in *UpdateCodeJudgeStatusReq, opts ...grpc.CallOption) (*UpdateCodeJudgeStatusResp, error) {
+	out := new(UpdateCodeJudgeStatusResp)
+	err := c.cc.Invoke(ctx, CodeProcessing_UpdateCodeJudgeStatus_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CodeProcessingServer is the server API for CodeProcessing service.
 // All implementations must embed UnimplementedCodeProcessingServer
 // for forward compatibility
 type CodeProcessingServer interface {
 	SubmitCode(context.Context, *SubmitCodeReq) (*SubmitCodeResp, error)
+	UpdateCodeCompileStatus(context.Context, *UpdateCodeCompileStatusReq) (*UpdateCodeCompileStatusResp, error)
+	UpdateCodeJudgeStatus(context.Context, *UpdateCodeJudgeStatusReq) (*UpdateCodeJudgeStatusResp, error)
 	mustEmbedUnimplementedCodeProcessingServer()
 }
 
@@ -60,6 +84,12 @@ type UnimplementedCodeProcessingServer struct {
 
 func (UnimplementedCodeProcessingServer) SubmitCode(context.Context, *SubmitCodeReq) (*SubmitCodeResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method SubmitCode not implemented")
+}
+func (UnimplementedCodeProcessingServer) UpdateCodeCompileStatus(context.Context, *UpdateCodeCompileStatusReq) (*UpdateCodeCompileStatusResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCodeCompileStatus not implemented")
+}
+func (UnimplementedCodeProcessingServer) UpdateCodeJudgeStatus(context.Context, *UpdateCodeJudgeStatusReq) (*UpdateCodeJudgeStatusResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateCodeJudgeStatus not implemented")
 }
 func (UnimplementedCodeProcessingServer) mustEmbedUnimplementedCodeProcessingServer() {}
 
@@ -92,6 +122,42 @@ func _CodeProcessing_SubmitCode_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CodeProcessing_UpdateCodeCompileStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCodeCompileStatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CodeProcessingServer).UpdateCodeCompileStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CodeProcessing_UpdateCodeCompileStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CodeProcessingServer).UpdateCodeCompileStatus(ctx, req.(*UpdateCodeCompileStatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _CodeProcessing_UpdateCodeJudgeStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateCodeJudgeStatusReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CodeProcessingServer).UpdateCodeJudgeStatus(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CodeProcessing_UpdateCodeJudgeStatus_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CodeProcessingServer).UpdateCodeJudgeStatus(ctx, req.(*UpdateCodeJudgeStatusReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CodeProcessing_ServiceDesc is the grpc.ServiceDesc for CodeProcessing service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -102,6 +168,14 @@ var CodeProcessing_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "SubmitCode",
 			Handler:    _CodeProcessing_SubmitCode_Handler,
+		},
+		{
+			MethodName: "UpdateCodeCompileStatus",
+			Handler:    _CodeProcessing_UpdateCodeCompileStatus_Handler,
+		},
+		{
+			MethodName: "UpdateCodeJudgeStatus",
+			Handler:    _CodeProcessing_UpdateCodeJudgeStatus_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

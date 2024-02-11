@@ -64,21 +64,21 @@ func (c *codeProcessingRepo) CreateCode(ctx context.Context, req *api.SubmitCode
 	return
 }
 
-func (c *codeProcessingRepo) UpdateCodeCompileStatus(ctx context.Context, id int64, status, compile_log string) (err error) {
+func (c *codeProcessingRepo) UpdateCodeCompileStatus(ctx context.Context, codeId int64, status, compile_log string) (err error) {
 	const sqlStr = "update judge set compile_status = ?, compile_log = ? where id = ?"
 	_, err = c.db.ExecContext(ctx, sqlStr,
 		status,
 		compile_log,
-		id,
+		codeId,
 	)
 	return
 }
 
-func (c *codeProcessingRepo) UpdateCodeJudgeStatus(ctx context.Context, id int64, status string) (err error) {
+func (c *codeProcessingRepo) UpdateCodeJudgeStatus(ctx context.Context, codeId int64, status string) (err error) {
 	const sqlStr = "update judge set judge_status = ? where id = ?"
 	_, err = c.db.ExecContext(ctx, sqlStr,
 		status,
-		id,
+		codeId,
 	)
 	return
 }

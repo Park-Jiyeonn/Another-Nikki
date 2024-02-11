@@ -11,6 +11,8 @@ import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service CodeProcessing {
 	rpc SubmitCode (SubmitCodeReq) returns (SubmitCodeResp);
+	rpc UpdateCodeCompileStatus(UpdateCodeCompileStatusReq) returns (UpdateCodeCompileStatusResp);
+	rpc UpdateCodeJudgeStatus(UpdateCodeJudgeStatusReq) returns (UpdateCodeJudgeStatusResp);
 }
 
 message SubmitCodeReq {
@@ -22,4 +24,20 @@ message SubmitCodeReq {
 	string Code = 6  [json_name = "code", (gogoproto.jsontag) = "code"];
 }
 message SubmitCodeResp {
+}
+
+message UpdateCodeCompileStatusReq {
+	int64 CodeId = 1 [json_name = "code_id", (gogoproto.jsontag) = "code_id"];
+	string Status = 2 [json_name = "status", (gogoproto.jsontag) = "status"];
+	string CompileLog = 3 [json_name = "compile_log", (gogoproto.jsontag) = "compile_log"];
+}
+message UpdateCodeCompileStatusResp {
+
+}
+
+message UpdateCodeJudgeStatusReq {
+	int64 CodeId = 1 [json_name = "code_id", (gogoproto.jsontag) = "code_id"];
+	string Status = 2 [json_name = "status", (gogoproto.jsontag) = "status"];
+}
+message UpdateCodeJudgeStatusResp {
 }

@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-const CodeProcessingAppID = "Another-Nikki.Code_Processing"
+const CodeProcessingAppID = "Another-Nikki.CodeProcessing"
 
 func NewClientCodeProcessing(r registry.Discovery) CodeProcessingClient {
 	connGRPC, err := grpc.DialInsecure(

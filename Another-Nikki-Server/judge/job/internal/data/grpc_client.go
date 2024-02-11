@@ -1,6 +1,7 @@
 package data
 
 import (
+	codeService "Another-Nikki/code_processing/service/api"
 	"Another-Nikki/judge/job/internal/conf"
 	judge "Another-Nikki/judge/service/api"
 	etcdregitry "github.com/go-kratos/kratos/contrib/registry/etcd/v2"
@@ -9,12 +10,14 @@ import (
 )
 
 type GlobalGrpcClient struct {
-	JudgeClient judge.JudgeClient
+	JudgeClient          judge.JudgeClient
+	CodeProcessingClient codeService.CodeProcessingClient
 }
 
 func NewGlobalGrpcClient(c *conf.Data, r registry.Discovery) *GlobalGrpcClient {
 	globalGrpcClient := &GlobalGrpcClient{}
 	globalGrpcClient.JudgeClient = judge.NewClientJudge(r)
+	globalGrpcClient.CodeProcessingClient = codeService.NewClientCodeProcessing(r)
 	return globalGrpcClient
 }
 
