@@ -2,7 +2,7 @@ package main
 
 import (
 	"Another-Nikki/job/service"
-	"Another-Nikki/util/log"
+	"Another-Nikki/pkg/log"
 	"context"
 	"fmt"
 	"github.com/segmentio/kafka-go"
