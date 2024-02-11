@@ -23,7 +23,9 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	judgeBinlogConsumer := service.NewJudgeBinlogConsumer()
+	discovery := data.NewDiscovery()
+	globalGrpcClient := data.NewGlobalGrpcClient(confData, discovery)
+	judgeBinlogConsumer := service.NewJudgeBinlogConsumer(globalGrpcClient)
 	kafkaServer := server.NewKafkaServer(judgeBinlogConsumer)
 	registrar := data.NewRegistry()
 	app := newApp(logger, kafkaServer, registrar)

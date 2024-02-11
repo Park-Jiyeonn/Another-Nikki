@@ -1,11 +1,16 @@
 package service
 
 import (
+	"Another-Nikki/judge/job/internal/data"
+	judge "Another-Nikki/judge/service/api"
+	"Another-Nikki/pkg/log"
+	"fmt"
 	"github.com/tx7do/kratos-transport/broker"
 	"golang.org/x/net/context"
 )
 
 type JudgeBinlogConsumer struct {
+	judgeClient judge.JudgeClient
 }
 
 type Judge struct {
@@ -29,11 +34,19 @@ type Value struct {
 	Database string
 }
 
-func NewJudgeBinlogConsumer() *JudgeBinlogConsumer {
-	return &JudgeBinlogConsumer{}
+func NewJudgeBinlogConsumer(client *data.GlobalGrpcClient) *JudgeBinlogConsumer {
+	return &JudgeBinlogConsumer{
+		judgeClient: client.JudgeClient,
+	}
 }
 
 func (s *JudgeBinlogConsumer) Handle(ctx context.Context, _ string, _ broker.Headers, msg *Value) (err error) {
-
+	fmt.Println(msg)
+	judgeResp, err := s.judgeClient.Judge(ctx, &judge.JudgeReq{
+		Code:        msg.NewData[0].Code,
+		Language:    judge.Language(judge.Language_value[msg.NewData[0].Language]),
+		ProblemName: "1.A+B",
+	})
+	log.Info(ctx, "%+v, %+v", judgeResp, err)
 	return
 }
