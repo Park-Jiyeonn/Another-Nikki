@@ -11,39 +11,41 @@ option go_package = ".;api";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service Judge {
-	rpc Judge (JudgeReq) returns (JudgeResp);
-	rpc OnlineRun (OnlineRunReq) returns (OnlineRunResp);
+  rpc Judge (JudgeReq) returns (JudgeResp);
+  rpc OnlineRun (OnlineRunReq) returns (OnlineRunResp);
 }
 
 enum Language {
-	Cpp = 0;
-	Python = 1;
-	Java = 2;
-	Golang = 3;
+  Cpp = 0;
+  Python = 1;
+  Java = 2;
+  Golang = 3;
 }
 
 message JudgeReq {
-	string Code = 1 [json_name = "code", (gogoproto.jsontag) = "code"];
-	Language Language = 2 [json_name = "language", (gogoproto.jsontag) = "language"];
-	string ProblemName = 3 [json_name = "problem_name", (gogoproto.jsontag) = "problem_name"];
+  string Code = 1 [json_name = "code", (gogoproto.jsontag) = "code"];
+  Language Language = 2 [json_name = "language", (gogoproto.jsontag) = "language"];
+  string ProblemName = 3 [json_name = "problem_name", (gogoproto.jsontag) = "problem_name"];
 }
 message JudgeResp {
-	string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
-	string CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
-	string MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
-	string JudgeResult = 4 [json_name = "judge_result", (gogoproto.jsontag) = "judge_result"];
-	string CompileLog = 5 [json_name = "compile_log", (gogoproto.jsontag) = "compile_log"];
+  string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
+  string CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
+  string MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
+  string JudgeResult = 4 [json_name = "judge_result", (gogoproto.jsontag) = "judge_result"];
+  string CompileLog = 5 [json_name = "compile_log", (gogoproto.jsontag) = "compile_log"];
+  bool   IsCompileError = 6 [json_name = "is_compile_error", (gogoproto.jsontag) = "is_compile_error"];
 }
 
 message OnlineRunReq {
-	string Code = 1 [json_name = "code", (gogoproto.jsontag) = "code"];
-	Language Language = 2 [json_name = "language", (gogoproto.jsontag) = "language"];
-	string Input = 3 [json_name = "input", (gogoproto.jsontag) = "input"];
+  string Code = 1 [json_name = "code", (gogoproto.jsontag) = "code"];
+  Language Language = 2 [json_name = "language", (gogoproto.jsontag) = "language"];
+  string Input = 3 [json_name = "input", (gogoproto.jsontag) = "input"];
 }
 message OnlineRunResp {
-	string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
-	string CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
-	string MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
-	string Output = 4  [json_name = "output", (gogoproto.jsontag) = "output"];
-	string CompileLog = 5 [json_name = "compile_log", (gogoproto.jsontag) = "compile_log"];
+  string CompileState = 1 [json_name = "compile_state", (gogoproto.jsontag) = "compile_state"];
+  string CpuTimeUsed = 2 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
+  string MemoryUsed = 3 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
+  string Output = 4  [json_name = "output", (gogoproto.jsontag) = "output"];
+  string CompileLog = 5 [json_name = "compile_log", (gogoproto.jsontag) = "compile_log"];
+  bool   IsCompileError = 6 [json_name = "is_compile_error", (gogoproto.jsontag) = "is_compile_error"];
 }

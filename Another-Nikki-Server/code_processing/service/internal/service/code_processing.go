@@ -36,6 +36,6 @@ func (s *CodeProcessingService) UpdateCodeCompileStatus(ctx context.Context, req
 
 func (s *CodeProcessingService) UpdateCodeJudgeStatus(ctx context.Context, req *pb.UpdateCodeJudgeStatusReq) (resp *pb.UpdateCodeJudgeStatusResp, err error) {
 	resp = new(pb.UpdateCodeJudgeStatusResp)
-	err = s.dao.UpdateCodeJudgeStatus(ctx, req.CodeId, req.Status)
+	err = s.dao.UpdateCodeJudgeStatus(ctx, req.CodeId, req.CompileStatus, req.JudgeStatus, req.CpuTimeUsed, req.MemoryUsed)
 	return
 }

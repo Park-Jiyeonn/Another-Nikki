@@ -1,7 +1,6 @@
 package service
 
 import (
-	"Another-Nikki/judge/service/api"
 	"fmt"
 	"io"
 	"os"
@@ -42,9 +41,8 @@ func writeContentInFile(ID, content, filename string) (err error) {
 	return
 }
 
-func readJudgeRet(ID string) (resp *api.JudgeResp, err error) {
+func readJudgeRet(ID string) (memoryUsed, cpuTimeUsed, JudgeResult string, err error) {
 	defer deleteFile(ID)
-	resp = new(api.JudgeResp)
 	var ret []byte
 	if ret, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/data.out", ID)); err != nil {
 		return
@@ -52,15 +50,14 @@ func readJudgeRet(ID string) (resp *api.JudgeResp, err error) {
 	retString := string(ret)
 	ans := strings.Split(retString, "\n")
 	n := len(ans)
-	resp.MemoryUsed = ans[n-3] + " kb"
-	resp.CpuTimeUsed = ans[n-5] + " ms"
-	resp.JudgeResult = ans[n-1]
+	memoryUsed = ans[n-3] + " kb"
+	cpuTimeUsed = ans[n-5] + " ms"
+	JudgeResult = ans[n-1]
 	return
 }
 
-func readRunRet(ID string) (resp *api.OnlineRunResp, err error) {
+func readRunRet(ID string) (output, memoryUsed, cpuTimeUsed string, err error) {
 	defer deleteFile(ID)
-	resp = new(api.OnlineRunResp)
 	var ret []byte
 	if ret, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/data.out", ID)); err != nil {
 		return
@@ -68,10 +65,9 @@ func readRunRet(ID string) (resp *api.OnlineRunResp, err error) {
 	retString := string(ret)
 	ans := strings.Split(retString, "\n")
 	n := len(ans)
-	resp.CompileState = "success"
-	resp.Output = strings.Join(ans[:n-5], "\n")
-	resp.MemoryUsed = ans[n-3] + " kb"
-	resp.CpuTimeUsed = ans[n-5] + " ms"
+	output = strings.Join(ans[:n-5], "\n")
+	memoryUsed = ans[n-3] + " kb"
+	cpuTimeUsed = ans[n-5] + " ms"
 	return
 }
 

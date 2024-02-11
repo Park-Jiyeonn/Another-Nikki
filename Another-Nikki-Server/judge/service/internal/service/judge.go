@@ -15,8 +15,9 @@ func NewJudgeService() *JudgeService {
 }
 
 func (s *JudgeService) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.JudgeResp, err error) {
+	resp = new(api.JudgeResp)
 	ID := uuid.NewString()
-	if resp.CompileLog, err = compile(ctx, ID, req.Code, "", req.Language); err != nil {
+	if resp.CompileLog, resp.IsCompileError = compile(ctx, ID, req.Code, "", req.Language); resp.IsCompileError {
 		resp.CompileState = "Compile Failed"
 		return
 	}
@@ -24,7 +25,7 @@ func (s *JudgeService) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.
 	if err = judge(ctx, ID, req.ProblemName, req.Language); err != nil {
 		return
 	}
-	resp, err = readJudgeRet(ID)
+	resp.MemoryUsed, resp.CpuTimeUsed, resp.JudgeResult, err = readJudgeRet(ID)
 	if err != nil {
 		//log.Error(ctx, "")
 		return
@@ -34,7 +35,8 @@ func (s *JudgeService) Judge(ctx context.Context, req *api.JudgeReq) (resp *api.
 
 func (s *JudgeService) OnlineRun(ctx context.Context, req *api.OnlineRunReq) (resp *api.OnlineRunResp, err error) {
 	ID := uuid.NewString()
-	if resp.CompileLog, err = compile(ctx, ID, req.Code, req.Input, req.Language); err != nil {
+	resp = new(api.OnlineRunResp)
+	if resp.CompileLog, resp.IsCompileError = compile(ctx, ID, req.Code, req.Input, req.Language); resp.IsCompileError {
 		resp.CompileState = "Compile Failed"
 		return
 	}
@@ -42,7 +44,7 @@ func (s *JudgeService) OnlineRun(ctx context.Context, req *api.OnlineRunReq) (re
 	if err = run(ctx, ID, req.Language); err != nil {
 		return
 	}
-	resp, err = readRunRet(ID)
+	resp.Output, resp.MemoryUsed, resp.CpuTimeUsed, err = readRunRet(ID)
 	if err != nil {
 		return
 	}

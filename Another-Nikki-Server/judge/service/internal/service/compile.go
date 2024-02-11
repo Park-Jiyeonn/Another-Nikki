@@ -17,16 +17,18 @@ const (
 	PythonFileName = "py.py"
 )
 
-func compile(ctx context.Context, ID, code, input string, language api.Language) (compileLog string, err error) {
+func compile(ctx context.Context, ID, code, input string, language api.Language) (compileLog string, isCompileError bool) {
+	var (
+		err            error
+		cmd            string
+		compileLogByte []byte
+	)
 	defer func() {
 		if err != nil {
 			deleteFile(ID)
 		}
 	}()
-	var (
-		cmd            string
-		compileLogByte []byte
-	)
+
 	switch language {
 	case api.Language_Cpp:
 		cmd, err = cpp_compile(ID, code, input)
@@ -38,7 +40,10 @@ func compile(ctx context.Context, ID, code, input string, language api.Language)
 	case api.Language_Golang:
 		cmd, err = golang_compile(ID, code, input)
 	}
+
 	if err != nil {
+		compileLog = "服务出错"
+		isCompileError = true
 		log.Error(ctx, "write code into file err: %v", err)
 		return
 	}
@@ -48,18 +53,22 @@ func compile(ctx context.Context, ID, code, input string, language api.Language)
 		var readErr error
 		compileLogByte, readErr = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
 		compileLog = string(compileLogByte)
+		isCompileError = true
+
 		log.Error(ctx, "compile log = %v, read compile err = %v", compileLog, readErr)
 		return
 	}
 	compileLogByte, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
-	compileLog = string(compileLogByte)
 	if err != nil {
+		compileLog = "服务出错"
+		isCompileError = true
 		log.Error(ctx, "ReadFile err: %v", err)
 		return
 	}
+	compileLog = string(compileLogByte)
 	if len(compileLog) != 0 {
-		err = fmt.Errorf(compileLog)
-		log.Error(ctx, "compile error: %v", err)
+		isCompileError = true
+		log.Error(ctx, "compile error: %v", compileLog)
 		return
 	}
 	return

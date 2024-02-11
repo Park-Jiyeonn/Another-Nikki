@@ -38,15 +38,18 @@ func NewCodeProcessingRepo(data *Data) biz.CodeDataRepo {
 //    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 //    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//    user_id BIGINT NOT NULL DEFAULT '0',
+//    user_id BIGINT NOT NULL DEFAULT 0,
 //    user_name VARCHAR(255) NOT NULL DEFAULT '',
-//    problem_id BIGINT NOT NULL DEFAULT '0',
+//    problem_id BIGINT NOT NULL DEFAULT 0,
 //    problem_name VARCHAR(255) NOT NULL DEFAULT '',
 //    language VARCHAR(255) NOT NULL DEFAULT '',
 //    code TEXT NOT NULL,
-//    compile_status VARCHAR(255) NOT NULL DEFAULT 'Compiling...',
-//    judge_status VARCHAR(255) NOT NULL DEFAULT '-'
-//);
+//    compile_status VARCHAR(255) NOT NULL DEFAULT 'in queue',
+//    compile_log VARCHAR(255) NOT NULL DEFAULT '',
+//    judge_status VARCHAR(255) NOT NULL DEFAULT '-',
+//    cpu_time_used VARCHAR(255) NOT NULL DEFAULT '0',
+//    memory_used VARCHAR(255) NOT NULL DEFAULT '0'
+// );
 
 func (c *codeProcessingRepo) CreateCode(ctx context.Context, req *api.SubmitCodeReq) (err error) {
 	const sqlStr = "INSERT INTO judge (user_id, user_name, problem_id, problem_name, language, code) VALUES (?, ?, ?, ?, ?, ?)"
@@ -74,10 +77,13 @@ func (c *codeProcessingRepo) UpdateCodeCompileStatus(ctx context.Context, codeId
 	return
 }
 
-func (c *codeProcessingRepo) UpdateCodeJudgeStatus(ctx context.Context, codeId int64, status string) (err error) {
-	const sqlStr = "update judge set judge_status = ? where id = ?"
+func (c *codeProcessingRepo) UpdateCodeJudgeStatus(ctx context.Context, codeId int64, compileStatus, judgeStatus, cpuTimeUsed, memoryUsed string) (err error) {
+	const sqlStr = "update judge set compile_status = ?, judge_status = ?, cpu_time_used = ?, memory_used = ? where id = ?"
 	_, err = c.db.ExecContext(ctx, sqlStr,
-		status,
+		compileStatus,
+		judgeStatus,
+		cpuTimeUsed,
+		memoryUsed,
 		codeId,
 	)
 	return

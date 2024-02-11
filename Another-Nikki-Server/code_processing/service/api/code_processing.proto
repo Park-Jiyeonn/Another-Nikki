@@ -10,34 +10,37 @@ option go_package = "Another-Nikki/code_processing/service/api;api";
 import "github.com/gogo/protobuf/gogoproto/gogo.proto";
 
 service CodeProcessing {
-	rpc SubmitCode (SubmitCodeReq) returns (SubmitCodeResp);
-	rpc UpdateCodeCompileStatus(UpdateCodeCompileStatusReq) returns (UpdateCodeCompileStatusResp);
-	rpc UpdateCodeJudgeStatus(UpdateCodeJudgeStatusReq) returns (UpdateCodeJudgeStatusResp);
+  rpc SubmitCode (SubmitCodeReq) returns (SubmitCodeResp);
+  rpc UpdateCodeCompileStatus(UpdateCodeCompileStatusReq) returns (UpdateCodeCompileStatusResp);
+  rpc UpdateCodeJudgeStatus(UpdateCodeJudgeStatusReq) returns (UpdateCodeJudgeStatusResp);
 }
 
 message SubmitCodeReq {
-	int64 UserID = 1  [json_name = "user_id", (gogoproto.jsontag) = "user_id"];
-	string UserName = 2  [json_name = "user_name", (gogoproto.jsontag) = "user_name"];
-	int64 ProblemID = 3  [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
-	string ProblemName = 4 [json_name = "problem_name", (gogoproto.jsontag) = "problem_name"];
-	string Language = 5  [json_name = "language", (gogoproto.jsontag) = "language"];
-	string Code = 6  [json_name = "code", (gogoproto.jsontag) = "code"];
+  int64 UserID = 1  [json_name = "user_id", (gogoproto.jsontag) = "user_id"];
+  string UserName = 2  [json_name = "user_name", (gogoproto.jsontag) = "user_name"];
+  int64 ProblemID = 3  [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
+  string ProblemName = 4 [json_name = "problem_name", (gogoproto.jsontag) = "problem_name"];
+  string Language = 5  [json_name = "language", (gogoproto.jsontag) = "language"];
+  string Code = 6  [json_name = "code", (gogoproto.jsontag) = "code"];
 }
 message SubmitCodeResp {
 }
 
 message UpdateCodeCompileStatusReq {
-	int64 CodeId = 1 [json_name = "code_id", (gogoproto.jsontag) = "code_id"];
-	string Status = 2 [json_name = "status", (gogoproto.jsontag) = "status"];
-	string CompileLog = 3 [json_name = "compile_log", (gogoproto.jsontag) = "compile_log"];
+  int64 CodeId = 1 [json_name = "code_id", (gogoproto.jsontag) = "code_id"];
+  string Status = 2 [json_name = "status", (gogoproto.jsontag) = "status"];
+  string CompileLog = 3 [json_name = "compile_log", (gogoproto.jsontag) = "compile_log"];
 }
 message UpdateCodeCompileStatusResp {
 
 }
 
 message UpdateCodeJudgeStatusReq {
-	int64 CodeId = 1 [json_name = "code_id", (gogoproto.jsontag) = "code_id"];
-	string Status = 2 [json_name = "status", (gogoproto.jsontag) = "status"];
+  int64 CodeId = 1 [json_name = "code_id", (gogoproto.jsontag) = "code_id"];
+  string CompileStatus = 2 [json_name = "compile_status", (gogoproto.jsontag) = "compile_status"];
+  string JudgeStatus = 3 [json_name = "judge_status", (gogoproto.jsontag) = "judge_status"];
+  string CpuTimeUsed = 4 [json_name = "cpu_time_used", (gogoproto.jsontag) = "cpu_time_used"];
+  string MemoryUsed = 5 [json_name = "memory_used", (gogoproto.jsontag) = "memory_used"];
 }
 message UpdateCodeJudgeStatusResp {
 }

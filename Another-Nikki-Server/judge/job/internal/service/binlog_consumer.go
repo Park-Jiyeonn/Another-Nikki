@@ -5,7 +5,6 @@ import (
 	"Another-Nikki/judge/job/internal/data"
 	judge "Another-Nikki/judge/service/api"
 	"Another-Nikki/pkg/log"
-	"fmt"
 	"github.com/tx7do/kratos-transport/broker"
 	"golang.org/x/net/context"
 	"strconv"
@@ -71,15 +70,24 @@ func (s *JudgeBinlogConsumer) Handle(ctx context.Context, _ string, _ broker.Hea
 		Language:    judge.Language(judge.Language_value[msg.NewData[0].Language]),
 		ProblemName: "1.A+B",
 	})
-	fmt.Println(judgeResp, err)
 	if err != nil {
 		log.Error(ctx, "judge err: %v", err)
+	}
+	if judgeResp.IsCompileError {
+		_, _ = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
+			CodeId:     codeId,
+			Status:     judgeResp.CompileState,
+			CompileLog: judgeResp.CompileLog,
+		})
 		return
 	}
 
 	_, err = s.codeProcessingClient.UpdateCodeJudgeStatus(ctx, &codeService.UpdateCodeJudgeStatusReq{
-		CodeId: codeId,
-		Status: judgeResp.JudgeResult,
+		CodeId:        codeId,
+		CompileStatus: judgeResp.CompileState,
+		JudgeStatus:   judgeResp.JudgeResult,
+		CpuTimeUsed:   judgeResp.CpuTimeUsed,
+		MemoryUsed:    judgeResp.MemoryUsed,
 	})
 	if err != nil {
 		log.Error(ctx, "modify judge resp err: %v", err)
