@@ -37,8 +37,8 @@ func (s *userServiceImpl) Register(ctx context.Context, req *biz.RegisterReq) (e
 }
 
 func (s *userServiceImpl) GetUserByUserName(ctx context.Context, req *biz.GetUserByUserNameReq) (*biz.GetUserByUserNameResp, error) {
-	var username, avatar string
-	err := s.db.QueryRowContext(ctx, "SELECT username, avatar FROM users WHERE username = ?", req.Username).Scan(&username, &avatar)
+	var username, avatar, password string
+	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, password FROM users WHERE username = ?", req.Username).Scan(&username, &avatar, &password)
 	if err != nil {
 		return nil, err
 	}

@@ -84,3 +84,8 @@ func (s *CommentServiceImpl) GetCommentById(ctx context.Context, req *biz.GetRan
 
 	return &biz.GetRandomCommentResp{Comments: &comment}, nil
 }
+
+func (s *CommentServiceImpl) GetCommentSum(ctx context.Context) (sum int64, err error) {
+	err = s.db.QueryRowContext(ctx, "SELECT COUNT(comment_id) from comments").Scan(&sum)
+	return
+}

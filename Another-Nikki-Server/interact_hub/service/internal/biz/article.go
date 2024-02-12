@@ -7,11 +7,19 @@ import (
 
 type ArticleRepo interface {
 	PostArticle(ctx context.Context, req *PostArticleReq) (err error)
+	UpdateArticle(ctx context.Context, req *UpdateArticleReq) (err error)
 	GetArticleById(ctx context.Context, req *GetArticleByIdReq) (*GetArticleByIdResp, error)
 	GetArticleByPage(ctx context.Context, req *GetArticleByPageReq) (*GetArticleByPageResp, error)
 }
 
 type PostArticleReq struct {
+	ArticleTitle       string `json:"article_title"`
+	ArticleDescription string `json:"article_description"`
+	ArticleContent     string `json:"article_content"`
+}
+
+type UpdateArticleReq struct {
+	ArticleId          int64  `json:"article_id"`
 	ArticleTitle       string `json:"article_title"`
 	ArticleDescription string `json:"article_description"`
 	ArticleContent     string `json:"article_content"`

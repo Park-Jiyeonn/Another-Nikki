@@ -13,11 +13,19 @@ type Problems struct {
 
 type ProblemRepo interface {
 	PostProblem(ctx context.Context, req *PostProblemReq) (err error)
+	UpdateProblem(ctx context.Context, req *UpdateProblemReq) (err error)
 	GetProblemById(ctx context.Context, req *GetProblemByIdReq) (*GetProblemByIdResp, error)
 	GetProblemByPage(ctx context.Context, req *GetProblemByPageReq) (*GetProblemByPageResp, error)
 }
 
 type PostProblemReq struct {
+	ProblemTitle       string `json:"problem_title"`
+	ProblemDescription string `json:"problem_description"`
+	ProblemContent     string `json:"problem_content"`
+}
+
+type UpdateProblemReq struct {
+	ProblemId          int64  `json:"problem_id"`
 	ProblemTitle       string `json:"problem_title"`
 	ProblemDescription string `json:"problem_description"`
 	ProblemContent     string `json:"problem_content"`

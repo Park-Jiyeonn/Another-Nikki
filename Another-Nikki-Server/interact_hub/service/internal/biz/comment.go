@@ -10,6 +10,7 @@ type CommentRepo interface {
 	GetCommentsByArticleId(ctx context.Context, req *GetCommentsByArticleIdReq) (*GetCommentsByArticleIdResp, error)
 	GetLastSevenComment(ctx context.Context, req *GetLastSevenCommentReq) (*GetLastSevenCommentResp, error)
 	GetCommentById(ctx context.Context, req *GetRandomCommentReq) (*GetRandomCommentResp, error)
+	GetCommentSum(ctx context.Context) (sum int64, err error)
 }
 
 type PostCommentReq struct {

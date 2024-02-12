@@ -82,7 +82,7 @@ message ArticlePageDetail {
   string CreateTime = 3 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
 }
 message GetArticleByPageResp {
-  repeated ArticlePageDetail Problems = 1 [json_name = "articles", (gogoproto.jsontag) = "articles"];
+  repeated ArticlePageDetail Articles = 1 [json_name = "articles", (gogoproto.jsontag) = "articles"];
 }
 
 
@@ -153,6 +153,7 @@ message Comments {
   string AuthorAvatar = 3 [json_name = "author_avatar", (gogoproto.jsontag) = "author_avatar"];
   int64 ParentId = 4 [json_name = "parent_id", (gogoproto.jsontag) = "parent_id"];
   int64 RootId = 5 [json_name = "root_id", (gogoproto.jsontag) = "root_id"];
+  string CreateTime = 6 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
 }
 message GetCommentsByArticleIdResp {
   repeated Comments comments = 1 [json_name = "comments", (gogoproto.jsontag) = "comments"];

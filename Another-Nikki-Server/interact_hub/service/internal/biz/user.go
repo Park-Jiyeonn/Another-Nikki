@@ -19,6 +19,7 @@ type GetUserByUserNameReq struct {
 
 type GetUserByUserNameResp struct {
 	Username string
+	Password string
 	Avatar   string
 }
 
