@@ -18,7 +18,7 @@ import (
 )
 
 var (
-	ServiceName = "Another-Nikki.CodeProcessing"
+	ServiceName = "Another-Nikki.CodeProcessing-Service"
 	// flagconf is the config flag.
 	flagconf string
 

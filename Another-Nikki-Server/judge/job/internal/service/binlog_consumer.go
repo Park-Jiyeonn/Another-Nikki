@@ -68,7 +68,7 @@ func (s *JudgeBinlogConsumer) Handle(ctx context.Context, _ string, _ broker.Hea
 	judgeResp, err = s.judgeClient.Judge(ctx, &judge.JudgeReq{
 		Code:        msg.NewData[0].Code,
 		Language:    judge.Language(judge.Language_value[msg.NewData[0].Language]),
-		ProblemName: "1.A+B",
+		ProblemName: msg.NewData[0].ProblemName,
 	})
 	if err != nil {
 		log.Error(ctx, "judge err: %v", err)

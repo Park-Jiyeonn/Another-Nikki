@@ -22,13 +22,13 @@ func Init(env, serviceName string) log.Logger {
 		zap.NewAtomicLevelAt(zapcore.DebugLevel),
 		zap.AddStacktrace(
 			zap.NewAtomicLevelAt(zapcore.ErrorLevel)),
-		zap.AddCallerSkip(2),
+		//zap.AddCallerSkip(1),
 		zap.Development(),
 	)
 
 	logger := log.With(zapLogger,
 		//"ts", log.DefaultTimestamp,
-		"caller", log.DefaultCaller,
+		"caller", log.Caller(5),
 		"service.id", env,
 		"service.name", serviceName,
 		"trace.id", tracing.TraceID(),

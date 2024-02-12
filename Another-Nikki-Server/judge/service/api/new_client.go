@@ -8,7 +8,7 @@ import (
 	"golang.org/x/net/context"
 )
 
-const JudgeAppID = "Another-Nikki.Judge"
+const JudgeAppID = "Another-Nikki.Judge-Service"
 
 func NewClientJudge(r registry.Discovery) JudgeClient {
 	connGRPC, err := grpc.DialInsecure(
