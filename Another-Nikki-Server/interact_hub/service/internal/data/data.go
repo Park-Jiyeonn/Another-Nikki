@@ -9,13 +9,18 @@ import (
 	"golang.org/x/net/context"
 )
 
-var ProviderSet = wire.NewSet(NewData, NewGlobalGrpcClient, NewRegistry, NewDiscovery, NewMySql, NewProblemRepo)
+var ProviderSet = wire.NewSet(NewData, NewGlobalGrpcClient, NewRegistry, NewDiscovery, NewMySql,
+	NewProblemRepo,
+	NewArticleRepo,
+	NewCommentImpl,
+	NewUserImpl,
+)
 
 type Data struct {
 	GlobalDB *sqlx.DB
 }
 
-func NewData(c *conf.Data, db *sqlx.DB) (*Data, func(), error) {
+func NewData(db *sqlx.DB) (*Data, func(), error) {
 	cleanup := func() {
 		if err := db.Close(); err != nil {
 			log.Info(context.Background(), "close DB client err: %v", err)

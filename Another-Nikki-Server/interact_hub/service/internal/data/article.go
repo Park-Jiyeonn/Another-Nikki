@@ -23,29 +23,40 @@ func NewArticleRepo(data *Data) biz.ArticleRepo {
 	}
 }
 
-// CREATE TABLE judge (
-//    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
-//    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-//    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-//    user_id BIGINT NOT NULL DEFAULT 0,
-//    user_name VARCHAR(255) NOT NULL DEFAULT '',
-//    problem_id BIGINT NOT NULL DEFAULT 0,
-//    problem_name VARCHAR(255) NOT NULL DEFAULT '',
-//    language VARCHAR(255) NOT NULL DEFAULT '',
-//    code TEXT NOT NULL,
-//    compile_status VARCHAR(255) NOT NULL DEFAULT 'in queue',
-//    compile_log VARCHAR(255) NOT NULL DEFAULT '',
-//    judge_status VARCHAR(255) NOT NULL DEFAULT '-',
-//    cpu_time_used VARCHAR(255) NOT NULL DEFAULT '0',
-//    memory_used VARCHAR(255) NOT NULL DEFAULT '0'
+// CREATE TABLE articles (
+//    article_id SERIAL PRIMARY KEY,
+//    article_title VARCHAR(255) NOT NULL,
+//    article_description VARCHAR(255),
+//    article_content TEXT,
+//    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+//    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // );
 
-func (s *articleRepo) CreateArticle(ctx context.Context, articleId int64, title, description, content string) (err error) {
+func (s *articleRepo) PostArticle(ctx context.Context, req *biz.PostArticleReq) (err error) {
+	_, err = s.db.ExecContext(ctx, "INSERT INTO articles (article_title, article_description, article_content) VALUES (?, ?, ?)",
+		req.ArticleTitle, req.ArticleDescription, req.ArticleContent)
 	return
 }
-func (s *articleRepo) GetArticleById(ctx context.Context, articleId int64) (articleTitle, articleDescription, articleContent, createTime string, err error) {
+func (s *articleRepo) GetArticleById(ctx context.Context, req *biz.GetArticleByIdReq) (resp *biz.GetArticleByIdResp, err error) {
+	resp = new(biz.GetArticleByIdResp)
+	err = s.db.GetContext(ctx, resp, "SELECT article_title, article_description, article_content, created_time FROM articles WHERE article_id = ?", req.ArticleId)
 	return
 }
-func (s *articleRepo) GetArticleByPage(ctx context.Context, pageNum, pageSize int64) (articles []*biz.Articles, err error) {
+func (s *articleRepo) GetArticleByPage(ctx context.Context, req *biz.GetArticleByPageReq) (resp *biz.GetArticleByPageResp, err error) {
+	rows, err := s.db.QueryxContext(ctx, "SELECT article_id, article_title, created_time FROM articles ORDER BY created_time DESC LIMIT ? OFFSET ?",
+		req.PageSize, (req.PageNum-1)*req.PageSize)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var article biz.ArticlePageDetail
+		err = rows.StructScan(&article)
+		if err != nil {
+			return nil, err
+		}
+		resp.Articles = append(resp.Articles, &article)
+	}
 	return
 }

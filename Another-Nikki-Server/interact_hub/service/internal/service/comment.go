@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Another-Nikki/interact_hub/service/internal/biz"
 	"context"
 
 	pb "Another-Nikki/interact_hub/service/api"
@@ -8,10 +9,13 @@ import (
 
 type CommentService struct {
 	pb.UnimplementedCommentServer
+	dao biz.CommentRepo
 }
 
-func NewCommentService() *CommentService {
-	return &CommentService{}
+func NewCommentService(dao biz.CommentRepo) *CommentService {
+	return &CommentService{
+		dao: dao,
+	}
 }
 
 func (s *CommentService) PostComment(ctx context.Context, req *pb.PostCommentReq) (*pb.PostCommentResp, error) {

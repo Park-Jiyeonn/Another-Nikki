@@ -23,10 +23,23 @@ import (
 
 // wireApp init kratos application.
 func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*kratos.App, func(), error) {
-	problemService := service.NewProblemService()
-	grpcServer := server.NewGRPCServer(confServer, problemService, logger)
+	db := data.NewMySql(confData)
+	dataData, cleanup, err := data.NewData(db)
+	if err != nil {
+		return nil, nil, err
+	}
+	problemRepo := data.NewProblemRepo(dataData)
+	problemService := service.NewProblemService(problemRepo)
+	articleRepo := data.NewArticleRepo(dataData)
+	articleService := service.NewArticleService(articleRepo)
+	commentRepo := data.NewCommentImpl(db)
+	commentService := service.NewCommentService(commentRepo)
+	userRepo := data.NewUserImpl(dataData)
+	userService := service.NewUserService(userRepo)
+	grpcServer := server.NewGRPCServer(confServer, problemService, articleService, commentService, userService, logger)
 	registrar := data.NewRegistry()
 	app := newApp(logger, grpcServer, registrar)
 	return app, func() {
+		cleanup()
 	}, nil
 }

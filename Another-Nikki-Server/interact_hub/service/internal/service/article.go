@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Another-Nikki/interact_hub/service/internal/biz"
 	"context"
 
 	pb "Another-Nikki/interact_hub/service/api"
@@ -8,10 +9,13 @@ import (
 
 type ArticleService struct {
 	pb.UnimplementedArticleServer
+	dao biz.ArticleRepo
 }
 
-func NewArticleService() *ArticleService {
-	return &ArticleService{}
+func NewArticleService(dao biz.ArticleRepo) *ArticleService {
+	return &ArticleService{
+		dao: dao,
+	}
 }
 
 func (s *ArticleService) PostArticle(ctx context.Context, req *pb.PostArticleReq) (*pb.PostArticleResp, error) {

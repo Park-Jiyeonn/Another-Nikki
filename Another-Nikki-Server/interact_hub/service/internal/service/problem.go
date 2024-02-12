@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Another-Nikki/interact_hub/service/internal/biz"
 	"context"
 
 	pb "Another-Nikki/interact_hub/service/api"
@@ -8,10 +9,13 @@ import (
 
 type ProblemService struct {
 	pb.UnimplementedProblemServer
+	dao biz.ProblemRepo
 }
 
-func NewProblemService() *ProblemService {
-	return &ProblemService{}
+func NewProblemService(dao biz.ProblemRepo) *ProblemService {
+	return &ProblemService{
+		dao: dao,
+	}
 }
 
 func (s *ProblemService) PostProblem(ctx context.Context, req *pb.PostProblemReq) (*pb.PostProblemResp, error) {

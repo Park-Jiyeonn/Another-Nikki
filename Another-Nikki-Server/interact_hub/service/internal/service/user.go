@@ -1,6 +1,7 @@
 package service
 
 import (
+	"Another-Nikki/interact_hub/service/internal/biz"
 	"context"
 
 	pb "Another-Nikki/interact_hub/service/api"
@@ -8,10 +9,14 @@ import (
 
 type UserService struct {
 	pb.UnimplementedUserServer
+
+	dao biz.UserRepo
 }
 
-func NewUserService() *UserService {
-	return &UserService{}
+func NewUserService(dao biz.UserRepo) *UserService {
+	return &UserService{
+		dao: dao,
+	}
 }
 
 func (s *UserService) Login(ctx context.Context, req *pb.LoginReq) (*pb.LoginResp, error) {

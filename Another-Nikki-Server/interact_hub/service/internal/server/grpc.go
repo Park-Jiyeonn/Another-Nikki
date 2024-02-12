@@ -11,7 +11,12 @@ import (
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 )
 
-func NewGRPCServer(c *conf.Server, problemService *service.ProblemService, logger log.Logger) *grpc.Server {
+func NewGRPCServer(c *conf.Server,
+	problemService *service.ProblemService,
+	articleService *service.ArticleService,
+	commentService *service.CommentService,
+	userService *service.UserService,
+	logger log.Logger) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -30,5 +35,8 @@ func NewGRPCServer(c *conf.Server, problemService *service.ProblemService, logge
 	}
 	srv := grpc.NewServer(opts...)
 	api.RegisterProblemServer(srv, problemService)
+	api.RegisterArticleServer(srv, articleService)
+	api.RegisterCommentServer(srv, commentService)
+	api.RegisterUserServer(srv, userService)
 	return srv
 }
