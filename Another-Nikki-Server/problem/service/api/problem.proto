@@ -1,0 +1,48 @@
+syntax = "proto3";
+
+package service.problem.api;
+option go_package = "Another-Nikki/problem/service/api;api";
+
+// protoc -I=. -I=$GOPATH/pkg/mod --go-grpc_out=. --gogo_out=. *.proto
+// Another-Nikki/problem/service/api
+// kratos proto server *.proto -t ../internal/service
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+service Problem {
+  rpc PostProblem(PostProblemReq) returns (PostProblemResp);
+  rpc GetProblemById(GetProblemByIdReq) returns (GetProblemByIdResp);
+  rpc GetProblemByPage(GetProblemByPageReq) returns (GetProblemByPageResp);
+}
+
+message PostProblemReq {
+  int64 ProblemId = 1 [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
+  string ProblemTitle = 2 [json_name = "problem_title", (gogoproto.jsontag) = "problem_title"];
+  string ProblemDescription = 3 [json_name = "problem_description", (gogoproto.jsontag) = "problem_description"];
+  string ProblemContent = 4 [json_name = "problem_content", (gogoproto.jsontag) = "problem_content"];
+}
+message PostProblemResp {
+}
+
+message GetProblemByIdReq {
+  int64 ProblemId = 1 [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
+}
+message GetProblemByIdResp {
+  string ProblemTitle = 1 [json_name = "problem_title", (gogoproto.jsontag) = "problem_title"];
+  string ProblemDescription = 2 [json_name = "problem_description", (gogoproto.jsontag) = "problem_description"];
+  string ProblemContent = 3 [json_name = "problem_content", (gogoproto.jsontag) = "problem_content"];
+  string CreateTime = 4 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
+}
+
+message GetProblemByPageReq {
+  int64 PageNum = 1;
+  int64 PageSize = 2;
+}
+message ProblemPageDetail {
+  int64 ProblemId = 1 [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
+  string ProblemTitle = 2 [json_name = "problem_title", (gogoproto.jsontag) = "problem_title"];
+  string CreateTime = 3 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
+}
+message GetProblemByPageResp {
+  repeated ProblemPageDetail Problems = 1 [json_name = "problems", (gogoproto.jsontag) = "problems"];
+}
