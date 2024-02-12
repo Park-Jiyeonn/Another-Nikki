@@ -1,8 +1,8 @@
 package main
 
 import (
+	"Another-Nikki/interact_hub/service/internal/conf"
 	"Another-Nikki/pkg/trace"
-	"Another-Nikki/problem/service/internal/conf"
 	"flag"
 	"github.com/go-kratos/kratos/v2/registry"
 	"os"

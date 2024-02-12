@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 
-	pb "Another-Nikki/problem/service/api"
+	pb "Another-Nikki/interact_hub/service/api"
 )
 
 type ProblemService struct {

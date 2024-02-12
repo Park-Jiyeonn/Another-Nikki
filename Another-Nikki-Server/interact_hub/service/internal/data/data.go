@@ -1,8 +1,8 @@
 package data
 
 import (
+	"Another-Nikki/interact_hub/service/internal/conf"
 	"Another-Nikki/pkg/log"
-	"Another-Nikki/problem/service/internal/conf"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"github.com/jmoiron/sqlx"

@@ -1,0 +1,173 @@
+syntax = "proto3";
+
+package service.problem.api;
+option go_package = "Another-Nikki/interact_hub/service/api;api";
+
+// protoc -I=. -I=$GOPATH/pkg/mod --go-grpc_out=. --gogo_out=. *.proto
+// Another-Nikki/interact_hub/service/api
+// kratos proto server *.proto -t ../internal/service
+
+import "github.com/gogo/protobuf/gogoproto/gogo.proto";
+
+service Problem {
+  rpc PostProblem(PostProblemReq) returns (PostProblemResp);
+  rpc GetProblemById(GetProblemByIdReq) returns (GetProblemByIdResp);
+  rpc GetProblemByPage(GetProblemByPageReq) returns (GetProblemByPageResp);
+}
+
+message PostProblemReq {
+  int64 ProblemId = 1 [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
+  string ProblemTitle = 2 [json_name = "problem_title", (gogoproto.jsontag) = "problem_title"];
+  string ProblemDescription = 3 [json_name = "problem_description", (gogoproto.jsontag) = "problem_description"];
+  string ProblemContent = 4 [json_name = "problem_content", (gogoproto.jsontag) = "problem_content"];
+}
+message PostProblemResp {
+}
+
+message GetProblemByIdReq {
+  int64 ProblemId = 1 [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
+}
+message GetProblemByIdResp {
+  string ProblemTitle = 1 [json_name = "problem_title", (gogoproto.jsontag) = "problem_title"];
+  string ProblemDescription = 2 [json_name = "problem_description", (gogoproto.jsontag) = "problem_description"];
+  string ProblemContent = 3 [json_name = "problem_content", (gogoproto.jsontag) = "problem_content"];
+  string CreateTime = 4 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
+}
+
+message GetProblemByPageReq {
+  int64 PageNum = 1;
+  int64 PageSize = 2;
+}
+message ProblemPageDetail {
+  int64 ProblemId = 1 [json_name = "problem_id", (gogoproto.jsontag) = "problem_id"];
+  string ProblemTitle = 2 [json_name = "problem_title", (gogoproto.jsontag) = "problem_title"];
+  string CreateTime = 3 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
+}
+message GetProblemByPageResp {
+  repeated ProblemPageDetail Problems = 1 [json_name = "problems", (gogoproto.jsontag) = "problems"];
+}
+
+
+service Article {
+  rpc PostArticle(PostArticleReq) returns (PostArticleResp);
+  rpc GetArticleById(GetArticleByIdReq) returns (GetArticleByIdResp);
+  rpc GetArticleByPage(GetArticleByPageReq) returns (GetArticleByPageResp);
+}
+message PostArticleReq {
+  int64 ArticleId = 1 [json_name = "article_id", (gogoproto.jsontag) = "article_id"];
+  string ArticleTitle = 2 [json_name = "article_title", (gogoproto.jsontag) = "article_title"];
+  string ArticleDescription = 3 [json_name = "article_description", (gogoproto.jsontag) = "article_description"];
+  string ArticleContent = 4 [json_name = "article_content", (gogoproto.jsontag) = "article_content"];
+}
+message PostArticleResp {
+}
+
+message GetArticleByIdReq {
+  int64 ArticleId = 1 [json_name = "article_id", (gogoproto.jsontag) = "article_id"];
+}
+message GetArticleByIdResp {
+  string ArticleTitle = 1 [json_name = "article_title", (gogoproto.jsontag) = "article_title"];
+  string ArticleDescription = 2 [json_name = "article_description", (gogoproto.jsontag) = "article_description"];
+  string ArticleContent = 3 [json_name = "article_content", (gogoproto.jsontag) = "article_content"];
+  string CreateTime = 4 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
+}
+
+message GetArticleByPageReq {
+  int64 PageNum = 1;
+  int64 PageSize = 2;
+}
+message ArticlePageDetail {
+  int64 ArticleId = 1 [json_name = "article_id", (gogoproto.jsontag) = "article_id"];
+  string ArticleTitle = 2 [json_name = "article_title", (gogoproto.jsontag) = "article_title"];
+  string CreateTime = 3 [json_name = "create_time", (gogoproto.jsontag) = "create_time"];
+}
+message GetArticleByPageResp {
+  repeated ArticlePageDetail Problems = 1 [json_name = "articles", (gogoproto.jsontag) = "articles"];
+}
+
+
+service User {
+  rpc Login(LoginReq) returns (LoginResp);
+  rpc Register(RegisterReq) returns (RegisterResp);
+  rpc GetUserByUserName (GetUserByUserNameReq) returns (GetUserByUserNameResp);
+  rpc GetUserById (GetUserByIdReq) returns (GetUserByIdResp);
+}
+message LoginReq {
+  string Username = 1 [json_name = "username", (gogoproto.jsontag) = "username"];
+  string Password = 2 [json_name = "password", (gogoproto.jsontag) = "password"];
+}
+message LoginResp {
+  string Token = 1 [json_name = "token", (gogoproto.jsontag) = "token"];
+}
+
+message RegisterReq {
+  string Username = 1 [json_name = "username", (gogoproto.jsontag) = "username"];
+  string Password = 2 [json_name = "password", (gogoproto.jsontag) = "password"];
+  string ConfirmPassword = 3 [json_name = "confirm_password", (gogoproto.jsontag) = "confirm_password"];
+}
+message RegisterResp {
+  string Token = 1 [json_name = "token", (gogoproto.jsontag) = "token"];
+}
+
+message GetUserByUserNameReq {
+  string Username = 1 [json_name = "username", (gogoproto.jsontag) = "username"];
+}
+message GetUserByUserNameResp {
+  string Username = 1 [json_name = "username", (gogoproto.jsontag) = "username"];
+  string Avatar = 2 [json_name = "avatar", (gogoproto.jsontag) = "avatar"];
+}
+
+message GetUserByIdReq {
+  string UserId = 1 [json_name = "user_id", (gogoproto.jsontag) = "user_id"];
+}
+message GetUserByIdResp {
+  string Username = 1 [json_name = "username", (gogoproto.jsontag) = "username"];
+  string Avatar = 2 [json_name = "avatar", (gogoproto.jsontag) = "avatar"];
+}
+
+
+service Comment {
+  rpc PostComment (PostCommentReq) returns (PostCommentResp);
+  rpc GetCommentsByArticleId (GetCommentsByArticleIdReq) returns (GetCommentsByArticleIdResp);
+  rpc GetLastSevenComment (GetLastSevenCommentReq) returns (GetLastSevenCommentResp);
+  rpc GetRandomComment (GetRandomCommentReq) returns (GetRandomCommentResp);
+}
+
+message PostCommentReq {
+  string Content = 1 [json_name = "content", (gogoproto.jsontag) = "content"];
+  int64 ArticleId = 2 [json_name = "article_id", (gogoproto.jsontag) = "article_id"];
+  string AuthorName = 3 [json_name = "author_name", (gogoproto.jsontag) = "author_name"];
+  string AuthorAvatar = 4 [json_name = "author_avatar", (gogoproto.jsontag) = "author_avatar"];
+  int64 ParentId = 5 [json_name = "parent_id", (gogoproto.jsontag) = "parent_id"];
+  int64 RootId = 6 [json_name = "root_id", (gogoproto.jsontag) = "root_id"];
+}
+message PostCommentResp {
+}
+
+message GetCommentsByArticleIdReq {
+  int64 ArticleId = 1 [json_name = "article_id", (gogoproto.jsontag) = "article_id"];
+}
+message Comments {
+  string Content = 1 [json_name = "content", (gogoproto.jsontag) = "content"];
+  string AuthorName = 2 [json_name = "author_name", (gogoproto.jsontag) = "author_name"];
+  string AuthorAvatar = 3 [json_name = "author_avatar", (gogoproto.jsontag) = "author_avatar"];
+  int64 ParentId = 4 [json_name = "parent_id", (gogoproto.jsontag) = "parent_id"];
+  int64 RootId = 5 [json_name = "root_id", (gogoproto.jsontag) = "root_id"];
+}
+message GetCommentsByArticleIdResp {
+  repeated Comments comments = 1 [json_name = "comments", (gogoproto.jsontag) = "comments"];
+}
+
+message GetLastSevenCommentReq {
+  int64 ArticleId = 1 [json_name = "article_id", (gogoproto.jsontag) = "article_id"];
+}
+message GetLastSevenCommentResp {
+  repeated Comments comments = 1 [json_name = "comments", (gogoproto.jsontag) = "comments"];
+}
+
+message GetRandomCommentReq {
+  int64 ArticleId = 1 [json_name = "article_id", (gogoproto.jsontag) = "article_id"];
+}
+message GetRandomCommentResp {
+  Comments comments = 1 [json_name = "comments", (gogoproto.jsontag) = "comments"];
+}

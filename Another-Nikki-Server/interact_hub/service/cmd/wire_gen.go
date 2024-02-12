@@ -7,10 +7,10 @@
 package main
 
 import (
-	"Another-Nikki/problem/service/internal/conf"
-	"Another-Nikki/problem/service/internal/data"
-	"Another-Nikki/problem/service/internal/server"
-	"Another-Nikki/problem/service/internal/service"
+	"Another-Nikki/interact_hub/service/internal/conf"
+	"Another-Nikki/interact_hub/service/internal/data"
+	"Another-Nikki/interact_hub/service/internal/server"
+	"Another-Nikki/interact_hub/service/internal/service"
 	"github.com/go-kratos/kratos/v2"
 	"github.com/go-kratos/kratos/v2/log"
 )

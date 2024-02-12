@@ -1,8 +1,8 @@
 package data
 
 import (
+	"Another-Nikki/interact_hub/service/internal/conf"
 	judge "Another-Nikki/judge/service/api"
-	"Another-Nikki/problem/service/internal/conf"
 	etcdregitry "github.com/go-kratos/kratos/contrib/registry/etcd/v2"
 	"github.com/go-kratos/kratos/v2/registry"
 	etcdclient "go.etcd.io/etcd/client/v3"

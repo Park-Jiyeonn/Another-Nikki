@@ -1,9 +1,9 @@
 package server
 
 import (
-	"Another-Nikki/problem/service/api"
-	"Another-Nikki/problem/service/internal/conf"
-	"Another-Nikki/problem/service/internal/service"
+	"Another-Nikki/interact_hub/service/api"
+	"Another-Nikki/interact_hub/service/internal/conf"
+	"Another-Nikki/interact_hub/service/internal/service"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"

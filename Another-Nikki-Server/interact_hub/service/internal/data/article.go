@@ -1,23 +1,24 @@
 package data
 
 import (
-	"Another-Nikki/problem/service/internal/biz"
+	"Another-Nikki/interact_hub/service/internal/biz"
 	"github.com/jmoiron/sqlx"
+	"golang.org/x/net/context"
 	"time"
 )
 
-type ProblemDataMysql struct {
+type ArticleDataMysql struct {
 	ProblemId int64 `db:"problem_id"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }
 
-type problemRepo struct {
+type articleRepo struct {
 	db *sqlx.DB
 }
 
-func NewProblemRepo(data *Data) biz.ProblemRepo {
-	return &problemRepo{
+func NewArticleRepo(data *Data) biz.ArticleRepo {
+	return &articleRepo{
 		db: data.GlobalDB,
 	}
 }
@@ -39,12 +40,12 @@ func NewProblemRepo(data *Data) biz.ProblemRepo {
 //    memory_used VARCHAR(255) NOT NULL DEFAULT '0'
 // );
 
-func (s *problemRepo) CreateProblem(problemId int64, title, description, content string) (err error) {
+func (s *articleRepo) CreateArticle(ctx context.Context, articleId int64, title, description, content string) (err error) {
 	return
 }
-func (s *problemRepo) GetProblemById(problemId int64) (problemTitle, problemDescription, problemContent, createTime string, err error) {
+func (s *articleRepo) GetArticleById(ctx context.Context, articleId int64) (articleTitle, articleDescription, articleContent, createTime string, err error) {
 	return
 }
-func (s *problemRepo) GetProblemByPage(pageNum, pageSize int64) (problems []*biz.Problems, err error) {
+func (s *articleRepo) GetArticleByPage(ctx context.Context, pageNum, pageSize int64) (articles []*biz.Articles, err error) {
 	return
 }
