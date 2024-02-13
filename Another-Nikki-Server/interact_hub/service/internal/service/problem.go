@@ -2,6 +2,7 @@ package service
 
 import (
 	"Another-Nikki/interact_hub/service/internal/biz"
+	"Another-Nikki/pkg/log"
 	"context"
 	"time"
 
@@ -44,11 +45,12 @@ func (s *ProblemService) GetProblemById(ctx context.Context, req *pb.GetProblemB
 		ProblemId: req.ProblemId,
 	})
 	if err != nil {
+		log.Error(ctx, "GetProblemById err: %v", err)
 		return nil, err
 	}
 	resp.ProblemTitle = problem.ProblemTitle
 	resp.ProblemDescription = problem.ProblemDescription
-	resp.CreateTime = problem.CreateTime.Format(time.DateTime)
+	resp.CreateTime = problem.CreatedTime.Format(time.DateTime)
 	resp.ProblemContent = problem.ProblemContent
 	return resp, nil
 }
@@ -67,7 +69,7 @@ func (s *ProblemService) GetProblemByPage(ctx context.Context, req *pb.GetProble
 		resp.Problems = append(resp.Problems, &pb.ProblemPageDetail{
 			ProblemId:    val.ProblemId,
 			ProblemTitle: val.ProblemTitle,
-			CreateTime:   val.CreateTime.Format(time.DateTime),
+			CreateTime:   val.CreatedTime.Format(time.DateTime),
 		})
 	}
 	return

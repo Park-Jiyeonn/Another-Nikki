@@ -19,40 +19,40 @@ type ProblemRepo interface {
 }
 
 type PostProblemReq struct {
-	ProblemTitle       string `json:"problem_title"`
-	ProblemDescription string `json:"problem_description"`
-	ProblemContent     string `json:"problem_content"`
+	ProblemTitle       string `db:"problem_title"`
+	ProblemDescription string `db:"problem_description"`
+	ProblemContent     string `db:"problem_content"`
 }
 
 type UpdateProblemReq struct {
-	ProblemId          int64  `json:"problem_id"`
-	ProblemTitle       string `json:"problem_title"`
-	ProblemDescription string `json:"problem_description"`
-	ProblemContent     string `json:"problem_content"`
+	ProblemId          int64  `db:"problem_id"`
+	ProblemTitle       string `db:"problem_title"`
+	ProblemDescription string `db:"problem_description"`
+	ProblemContent     string `db:"problem_content"`
 }
 
 type GetProblemByIdReq struct {
-	ProblemId int64 `json:"problem_id"`
+	ProblemId int64 `db:"problem_id"`
 }
 
 type GetProblemByIdResp struct {
-	ProblemTitle       string    `json:"problem_title"`
-	ProblemDescription string    `json:"problem_description"`
-	ProblemContent     string    `json:"problem_content"`
-	CreateTime         time.Time `json:"create_time"`
+	ProblemTitle       string    `db:"problem_title"`
+	ProblemDescription string    `db:"problem_description"`
+	ProblemContent     string    `db:"problem_content"`
+	CreatedTime        time.Time `db:"created_time"`
 }
 
 type GetProblemByPageReq struct {
-	PageNum  int64 `json:"page_num"`
-	PageSize int64 `json:"page_size"`
+	PageNum  int64 `db:"page_num"`
+	PageSize int64 `db:"page_size"`
 }
 
 type ProblemPageDetail struct {
-	ProblemId    int64     `json:"problem_id"`
-	ProblemTitle string    `json:"problem_title"`
-	CreateTime   time.Time `json:"create_time"`
+	ProblemId    int64     `db:"problem_id"`
+	ProblemTitle string    `db:"problem_title"`
+	CreatedTime  time.Time `db:"created_time"`
 }
 
 type GetProblemByPageResp struct {
-	Problems []*ProblemPageDetail `json:"problems"`
+	Problems []*ProblemPageDetail `db:"problems"`
 }

@@ -5,6 +5,7 @@ import (
 	"Another-Nikki/pkg/trace"
 	"flag"
 	"github.com/go-kratos/kratos/v2/registry"
+	"github.com/go-kratos/kratos/v2/transport/http"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -29,7 +30,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, r registry.Registrar) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, r registry.Registrar) *kratos.App {
 	return kratos.New(
 		kratos.ID(Env),
 		kratos.Name(ServiceName),
@@ -37,6 +38,7 @@ func newApp(logger log.Logger, gs *grpc.Server, r registry.Registrar) *kratos.Ap
 		kratos.Logger(logger),
 		kratos.Server(
 			gs,
+			hs,
 		),
 		kratos.Registrar(r),
 	)

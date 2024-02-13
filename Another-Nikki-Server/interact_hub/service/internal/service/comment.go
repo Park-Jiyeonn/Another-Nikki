@@ -50,7 +50,7 @@ func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.Get
 			AuthorAvatar: val.AuthorAvatar,
 			ParentId:     val.ParentId,
 			RootId:       val.RootId,
-			CreateTime:   val.CreateTime.Format(time.DateTime),
+			CreateTime:   val.CreatedTime.Format(time.DateTime),
 		})
 	}
 	return
@@ -71,7 +71,7 @@ func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLas
 			AuthorAvatar: val.AuthorAvatar,
 			ParentId:     val.ParentId,
 			RootId:       val.RootId,
-			CreateTime:   val.CreateTime.Format(time.DateTime),
+			CreateTime:   val.CreatedTime.Format(time.DateTime),
 		})
 	}
 	return
@@ -92,7 +92,7 @@ func (s *CommentService) GetRandomComment(ctx context.Context, req *pb.GetRandom
 		AuthorAvatar: comment.Comments.AuthorAvatar,
 		ParentId:     comment.Comments.ParentId,
 		RootId:       comment.Comments.RootId,
-		CreateTime:   comment.Comments.CreateTime.Format(time.DateTime),
+		CreateTime:   comment.Comments.CreatedTime.Format(time.DateTime),
 	}
 	return
 }

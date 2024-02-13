@@ -32,7 +32,7 @@ type Comments struct {
 	AuthorAvatar string    `json:"author_avatar"`
 	ParentId     int64     `json:"parent_id"`
 	RootId       int64     `json:"root_id"`
-	CreateTime   time.Time `json:"create_time"`
+	CreatedTime  time.Time `json:"created_time"`
 }
 
 type GetCommentsByArticleIdResp struct {

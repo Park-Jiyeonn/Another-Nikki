@@ -33,7 +33,7 @@ type GetArticleByIdResp struct {
 	ArticleTitle       string    `json:"article_title"`
 	ArticleDescription string    `json:"article_description"`
 	ArticleContent     string    `json:"article_content"`
-	CreateTime         time.Time `json:"create_time"`
+	CreatedTime        time.Time `json:"created_time"`
 }
 
 type GetArticleByPageReq struct {
@@ -44,7 +44,7 @@ type GetArticleByPageReq struct {
 type ArticlePageDetail struct {
 	ArticleId    int64     `json:"article_id"`
 	ArticleTitle string    `json:"article_title"`
-	CreateTime   time.Time `json:"create_time"`
+	CreatedTime  time.Time `json:"created_time"`
 }
 
 type GetArticleByPageResp struct {

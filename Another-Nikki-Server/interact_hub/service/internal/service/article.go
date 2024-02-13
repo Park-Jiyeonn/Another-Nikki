@@ -47,7 +47,7 @@ func (s *ArticleService) GetArticleById(ctx context.Context, req *pb.GetArticleB
 	}
 	resp.ArticleTitle = article.ArticleTitle
 	resp.ArticleDescription = article.ArticleDescription
-	resp.CreateTime = article.CreateTime.Format(time.DateTime)
+	resp.CreateTime = article.CreatedTime.Format(time.DateTime)
 	resp.ArticleContent = article.ArticleContent
 	return resp, nil
 }
@@ -65,7 +65,7 @@ func (s *ArticleService) GetArticleByPage(ctx context.Context, req *pb.GetArticl
 		resp.Articles = append(resp.Articles, &pb.ArticlePageDetail{
 			ArticleId:    val.ArticleId,
 			ArticleTitle: val.ArticleTitle,
-			CreateTime:   val.CreateTime.Format(time.DateTime),
+			CreateTime:   val.CreatedTime.Format(time.DateTime),
 		})
 	}
 	return
