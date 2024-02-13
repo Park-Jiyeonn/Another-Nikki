@@ -12,7 +12,7 @@ import "google/api/annotations.proto";
 service CodeProcessing {
   rpc SubmitCode (SubmitCodeReq) returns (SubmitCodeResp) {
     option (google.api.http) = {
-      post: "/api/problem/post",
+      post: "/api/code/post",
       body: "*",
     };
   };

@@ -27,7 +27,7 @@ type CodeProcessingHTTPServer interface {
 
 func RegisterCodeProcessingHTTPServer(s *http.Server, srv CodeProcessingHTTPServer) {
 	r := s.Route("/")
-	r.POST("/api/problem/post", _CodeProcessing_SubmitCode0_HTTP_Handler(srv))
+	r.POST("/api/code/post", _CodeProcessing_SubmitCode0_HTTP_Handler(srv))
 }
 
 func _CodeProcessing_SubmitCode0_HTTP_Handler(srv CodeProcessingHTTPServer) func(ctx http.Context) error {
@@ -66,7 +66,7 @@ func NewCodeProcessingHTTPClient(client *http.Client) CodeProcessingHTTPClient {
 
 func (c *CodeProcessingHTTPClientImpl) SubmitCode(ctx context.Context, in *SubmitCodeReq, opts ...http.CallOption) (*SubmitCodeResp, error) {
 	var out SubmitCodeResp
-	pattern := "/api/problem/post"
+	pattern := "/api/code/post"
 	path := binding.EncodeURL(pattern, in, false)
 	opts = append(opts, http.Operation(OperationCodeProcessingSubmitCode))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -6,6 +6,7 @@ import (
 	"Another-Nikki/code_processing/service/internal/data"
 	judge "Another-Nikki/judge/service/api"
 	"context"
+	"fmt"
 )
 
 type CodeProcessingService struct {
@@ -14,6 +15,8 @@ type CodeProcessingService struct {
 	judgeClient judge.JudgeClient
 	dao         biz.CodeDataRepo
 }
+
+const maxCodeLength = 400 * 100
 
 func NewCodeProcessingService(globalGrpc *data.GlobalGrpcClient, dao biz.CodeDataRepo) *CodeProcessingService {
 	return &CodeProcessingService{
@@ -24,6 +27,9 @@ func NewCodeProcessingService(globalGrpc *data.GlobalGrpcClient, dao biz.CodeDat
 
 func (s *CodeProcessingService) SubmitCode(ctx context.Context, req *pb.SubmitCodeReq) (resp *pb.SubmitCodeResp, err error) {
 	resp = new(pb.SubmitCodeResp)
+	if len(req.Code) > maxCodeLength {
+		return nil, fmt.Errorf("代码过长, 请化简以后重新提交")
+	}
 	err = s.dao.CreateCode(ctx, req)
 	return resp, err
 }
