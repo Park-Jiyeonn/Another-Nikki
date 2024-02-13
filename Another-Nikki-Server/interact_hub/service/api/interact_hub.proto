@@ -115,16 +115,26 @@ message GetArticleByPageResp {
 
 service User {
   rpc Login(LoginReq) returns (LoginResp) {
-
+    option (google.api.http) = {
+      post: "/api/user/login"
+      body: "*"
+    };
   };
   rpc Register(RegisterReq) returns (RegisterResp) {
-
+    option (google.api.http) = {
+      post: "/api/user/register"
+      body: "*"
+    };
   };
   rpc GetUserByUserName (GetUserByUserNameReq) returns (GetUserByUserNameResp) {
-
+    option (google.api.http) = {
+      get: "/api/user/{username}"
+    };
   };
   rpc GetUserById (GetUserByIdReq) returns (GetUserByIdResp) {
-
+    option (google.api.http) = {
+      get: "/api/user/{user_id}"
+    };
   };
 }
 message LoginReq {
@@ -162,10 +172,27 @@ message GetUserByIdResp {
 
 
 service Comment {
-  rpc PostComment (PostCommentReq) returns (PostCommentResp);
-  rpc GetCommentsByArticleId (GetCommentsByArticleIdReq) returns (GetCommentsByArticleIdResp);
-  rpc GetLastSevenComment (GetLastSevenCommentReq) returns (GetLastSevenCommentResp);
-  rpc GetRandomComment (GetRandomCommentReq) returns (GetRandomCommentResp);
+  rpc PostComment (PostCommentReq) returns (PostCommentResp) {
+    option (google.api.http) = {
+      post: "/api/comment/post"
+      body: "*"
+    };
+  };
+  rpc GetCommentsByArticleId (GetCommentsByArticleIdReq) returns (GetCommentsByArticleIdResp) {
+    option (google.api.http) = {
+      get: "/api/comment/{article_id}"
+    };
+  };
+  rpc GetLastSevenComment (GetLastSevenCommentReq) returns (GetLastSevenCommentResp) {
+    option (google.api.http) = {
+      get: "/api/comment/last_seven/{article_id}"
+    };
+  };
+  rpc GetRandomComment (GetRandomCommentReq) returns (GetRandomCommentResp) {
+    option (google.api.http) = {
+      get: "/api/comment/random/{article_id}"
+    };
+  };
 }
 
 message PostCommentReq {

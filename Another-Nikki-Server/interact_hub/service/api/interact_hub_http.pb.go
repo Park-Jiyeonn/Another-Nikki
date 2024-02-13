@@ -290,3 +290,353 @@ func (c *ArticleHTTPClientImpl) PostArticle(ctx context.Context, in *PostArticle
 	}
 	return &out, err
 }
+
+const OperationUserGetUserById = "/service.problem.api.User/GetUserById"
+const OperationUserGetUserByUserName = "/service.problem.api.User/GetUserByUserName"
+const OperationUserLogin = "/service.problem.api.User/Login"
+const OperationUserRegister = "/service.problem.api.User/Register"
+
+type UserHTTPServer interface {
+	GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error)
+	GetUserByUserName(context.Context, *GetUserByUserNameReq) (*GetUserByUserNameResp, error)
+	Login(context.Context, *LoginReq) (*LoginResp, error)
+	Register(context.Context, *RegisterReq) (*RegisterResp, error)
+}
+
+func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
+	r := s.Route("/")
+	r.POST("/api/user/login", _User_Login0_HTTP_Handler(srv))
+	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
+	r.GET("/api/user/{username}", _User_GetUserByUserName0_HTTP_Handler(srv))
+	r.GET("/api/user/{user_id}", _User_GetUserById0_HTTP_Handler(srv))
+}
+
+func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in LoginReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserLogin)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Login(ctx, req.(*LoginReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*LoginResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_Register0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in RegisterReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserRegister)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.Register(ctx, req.(*RegisterReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*RegisterResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_GetUserByUserName0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserByUserNameReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserByUserName)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserByUserName(ctx, req.(*GetUserByUserNameReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserByUserNameResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _User_GetUserById0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserByIdReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserById)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserById(ctx, req.(*GetUserByIdReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserByIdResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+type UserHTTPClient interface {
+	GetUserById(ctx context.Context, req *GetUserByIdReq, opts ...http.CallOption) (rsp *GetUserByIdResp, err error)
+	GetUserByUserName(ctx context.Context, req *GetUserByUserNameReq, opts ...http.CallOption) (rsp *GetUserByUserNameResp, err error)
+	Login(ctx context.Context, req *LoginReq, opts ...http.CallOption) (rsp *LoginResp, err error)
+	Register(ctx context.Context, req *RegisterReq, opts ...http.CallOption) (rsp *RegisterResp, err error)
+}
+
+type UserHTTPClientImpl struct {
+	cc *http.Client
+}
+
+func NewUserHTTPClient(client *http.Client) UserHTTPClient {
+	return &UserHTTPClientImpl{client}
+}
+
+func (c *UserHTTPClientImpl) GetUserById(ctx context.Context, in *GetUserByIdReq, opts ...http.CallOption) (*GetUserByIdResp, error) {
+	var out GetUserByIdResp
+	pattern := "/api/user/{user_id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUserById))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) GetUserByUserName(ctx context.Context, in *GetUserByUserNameReq, opts ...http.CallOption) (*GetUserByUserNameResp, error) {
+	var out GetUserByUserNameResp
+	pattern := "/api/user/{username}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUserByUserName))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) Login(ctx context.Context, in *LoginReq, opts ...http.CallOption) (*LoginResp, error) {
+	var out LoginResp
+	pattern := "/api/user/login"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserLogin))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) Register(ctx context.Context, in *RegisterReq, opts ...http.CallOption) (*RegisterResp, error) {
+	var out RegisterResp
+	pattern := "/api/user/register"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserRegister))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+const OperationCommentGetCommentsByArticleId = "/service.problem.api.Comment/GetCommentsByArticleId"
+const OperationCommentGetLastSevenComment = "/service.problem.api.Comment/GetLastSevenComment"
+const OperationCommentGetRandomComment = "/service.problem.api.Comment/GetRandomComment"
+const OperationCommentPostComment = "/service.problem.api.Comment/PostComment"
+
+type CommentHTTPServer interface {
+	GetCommentsByArticleId(context.Context, *GetCommentsByArticleIdReq) (*GetCommentsByArticleIdResp, error)
+	GetLastSevenComment(context.Context, *GetLastSevenCommentReq) (*GetLastSevenCommentResp, error)
+	GetRandomComment(context.Context, *GetRandomCommentReq) (*GetRandomCommentResp, error)
+	PostComment(context.Context, *PostCommentReq) (*PostCommentResp, error)
+}
+
+func RegisterCommentHTTPServer(s *http.Server, srv CommentHTTPServer) {
+	r := s.Route("/")
+	r.POST("/api/comment/post", _Comment_PostComment0_HTTP_Handler(srv))
+	r.GET("/api/comment/{article_id}", _Comment_GetCommentsByArticleId0_HTTP_Handler(srv))
+	r.GET("/api/comment/last_seven/{article_id}", _Comment_GetLastSevenComment0_HTTP_Handler(srv))
+	r.GET("/api/comment/random/{article_id}", _Comment_GetRandomComment0_HTTP_Handler(srv))
+}
+
+func _Comment_PostComment0_HTTP_Handler(srv CommentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in PostCommentReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCommentPostComment)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.PostComment(ctx, req.(*PostCommentReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*PostCommentResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Comment_GetCommentsByArticleId0_HTTP_Handler(srv CommentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetCommentsByArticleIdReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCommentGetCommentsByArticleId)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetCommentsByArticleId(ctx, req.(*GetCommentsByArticleIdReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetCommentsByArticleIdResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Comment_GetLastSevenComment0_HTTP_Handler(srv CommentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetLastSevenCommentReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCommentGetLastSevenComment)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetLastSevenComment(ctx, req.(*GetLastSevenCommentReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetLastSevenCommentResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Comment_GetRandomComment0_HTTP_Handler(srv CommentHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetRandomCommentReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCommentGetRandomComment)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetRandomComment(ctx, req.(*GetRandomCommentReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetRandomCommentResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+type CommentHTTPClient interface {
+	GetCommentsByArticleId(ctx context.Context, req *GetCommentsByArticleIdReq, opts ...http.CallOption) (rsp *GetCommentsByArticleIdResp, err error)
+	GetLastSevenComment(ctx context.Context, req *GetLastSevenCommentReq, opts ...http.CallOption) (rsp *GetLastSevenCommentResp, err error)
+	GetRandomComment(ctx context.Context, req *GetRandomCommentReq, opts ...http.CallOption) (rsp *GetRandomCommentResp, err error)
+	PostComment(ctx context.Context, req *PostCommentReq, opts ...http.CallOption) (rsp *PostCommentResp, err error)
+}
+
+type CommentHTTPClientImpl struct {
+	cc *http.Client
+}
+
+func NewCommentHTTPClient(client *http.Client) CommentHTTPClient {
+	return &CommentHTTPClientImpl{client}
+}
+
+func (c *CommentHTTPClientImpl) GetCommentsByArticleId(ctx context.Context, in *GetCommentsByArticleIdReq, opts ...http.CallOption) (*GetCommentsByArticleIdResp, error) {
+	var out GetCommentsByArticleIdResp
+	pattern := "/api/comment/{article_id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationCommentGetCommentsByArticleId))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *CommentHTTPClientImpl) GetLastSevenComment(ctx context.Context, in *GetLastSevenCommentReq, opts ...http.CallOption) (*GetLastSevenCommentResp, error) {
+	var out GetLastSevenCommentResp
+	pattern := "/api/comment/last_seven/{article_id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationCommentGetLastSevenComment))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *CommentHTTPClientImpl) GetRandomComment(ctx context.Context, in *GetRandomCommentReq, opts ...http.CallOption) (*GetRandomCommentResp, error) {
+	var out GetRandomCommentResp
+	pattern := "/api/comment/random/{article_id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationCommentGetRandomComment))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *CommentHTTPClientImpl) PostComment(ctx context.Context, in *PostCommentReq, opts ...http.CallOption) (*PostCommentResp, error) {
+	var out PostCommentResp
+	pattern := "/api/comment/post"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationCommentPostComment))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
