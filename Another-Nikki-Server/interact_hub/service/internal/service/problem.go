@@ -50,7 +50,7 @@ func (s *ProblemService) GetProblemById(ctx context.Context, req *pb.GetProblemB
 	}
 	resp.ProblemTitle = problem.ProblemTitle
 	resp.ProblemDescription = problem.ProblemDescription
-	resp.CreateTime = problem.CreatedTime.Format(time.DateTime)
+	resp.CreatedTime = problem.CreatedTime.Format(time.DateTime)
 	resp.ProblemContent = problem.ProblemContent
 	return resp, nil
 }
@@ -69,7 +69,7 @@ func (s *ProblemService) GetProblemByPage(ctx context.Context, req *pb.GetProble
 		resp.Problems = append(resp.Problems, &pb.ProblemPageDetail{
 			ProblemId:    val.ProblemId,
 			ProblemTitle: val.ProblemTitle,
-			CreateTime:   val.CreatedTime.Format(time.DateTime),
+			CreatedTime:  val.CreatedTime.Format(time.DateTime),
 		})
 	}
 	return
