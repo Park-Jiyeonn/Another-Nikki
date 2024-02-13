@@ -58,13 +58,36 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterReq) (resp *
 		return nil, fmt.Errorf("用户名已经存在")
 	}
 
-	_, err = bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
-	// TODO
+	newPassword, err := bcrypt.GenerateFromPassword([]byte(req.Password), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("注册失败，请换一个密码重试")
+	}
+	err = s.dao.Register(ctx, &biz.RegisterReq{
+		Username: req.Username,
+		Password: string(newPassword),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("注册失败，请重试")
+	}
 	return
 }
-func (s *UserService) GetUserByUserName(ctx context.Context, req *pb.GetUserByUserNameReq) (*pb.GetUserByUserNameResp, error) {
-	return &pb.GetUserByUserNameResp{}, nil
+func (s *UserService) GetUserByUserName(ctx context.Context, req *pb.GetUserByUserNameReq) (resp *pb.GetUserByUserNameResp, err error) {
+	resp = new(pb.GetUserByUserNameResp)
+	user, err := s.dao.GetUserByUserName(ctx, &biz.GetUserByUserNameReq{Username: req.Username})
+	if err != nil {
+		return nil, err
+	}
+	resp.Username = user.Username
+	resp.Avatar = user.Avatar
+	return
 }
-func (s *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (*pb.GetUserByIdResp, error) {
-	return &pb.GetUserByIdResp{}, nil
+func (s *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (resp *pb.GetUserByIdResp, err error) {
+	resp = new(pb.GetUserByIdResp)
+	user, err := s.dao.GetUserById(ctx, &biz.GetUserByIdReq{UserId: req.UserId})
+	if err != nil {
+		return nil, err
+	}
+	resp.Username = user.Username
+	resp.Avatar = user.Avatar
+	return
 }
