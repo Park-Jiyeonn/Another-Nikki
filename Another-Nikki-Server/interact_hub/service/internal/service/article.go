@@ -60,7 +60,7 @@ func (s *ArticleService) GetArticleByPage(ctx context.Context, req *pb.GetArticl
 	if err != nil {
 		return nil, err
 	}
-	resp.Articles = make([]*pb.ArticlePageDetail, len(articles.Articles))
+	resp.Articles = make([]*pb.ArticlePageDetail, 0, len(articles.Articles))
 	for _, val := range articles.Articles {
 		resp.Articles = append(resp.Articles, &pb.ArticlePageDetail{
 			ArticleId:    val.ArticleId,

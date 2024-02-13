@@ -154,3 +154,139 @@ func (c *ProblemHTTPClientImpl) PostProblem(ctx context.Context, in *PostProblem
 	}
 	return &out, err
 }
+
+const OperationArticleGetArticleById = "/service.problem.api.Article/GetArticleById"
+const OperationArticleGetArticleByPage = "/service.problem.api.Article/GetArticleByPage"
+const OperationArticlePostArticle = "/service.problem.api.Article/PostArticle"
+
+type ArticleHTTPServer interface {
+	GetArticleById(context.Context, *GetArticleByIdReq) (*GetArticleByIdResp, error)
+	GetArticleByPage(context.Context, *GetArticleByPageReq) (*GetArticleByPageResp, error)
+	PostArticle(context.Context, *PostArticleReq) (*PostArticleResp, error)
+}
+
+func RegisterArticleHTTPServer(s *http.Server, srv ArticleHTTPServer) {
+	r := s.Route("/")
+	r.POST("/api/article/post", _Article_PostArticle0_HTTP_Handler(srv))
+	r.GET("/api/article/{article_id}", _Article_GetArticleById0_HTTP_Handler(srv))
+	r.GET("/api/article/{page_size}/{page_num}", _Article_GetArticleByPage0_HTTP_Handler(srv))
+}
+
+func _Article_PostArticle0_HTTP_Handler(srv ArticleHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in PostArticleReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationArticlePostArticle)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.PostArticle(ctx, req.(*PostArticleReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*PostArticleResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Article_GetArticleById0_HTTP_Handler(srv ArticleHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetArticleByIdReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationArticleGetArticleById)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetArticleById(ctx, req.(*GetArticleByIdReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetArticleByIdResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+func _Article_GetArticleByPage0_HTTP_Handler(srv ArticleHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetArticleByPageReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationArticleGetArticleByPage)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetArticleByPage(ctx, req.(*GetArticleByPageReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetArticleByPageResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+type ArticleHTTPClient interface {
+	GetArticleById(ctx context.Context, req *GetArticleByIdReq, opts ...http.CallOption) (rsp *GetArticleByIdResp, err error)
+	GetArticleByPage(ctx context.Context, req *GetArticleByPageReq, opts ...http.CallOption) (rsp *GetArticleByPageResp, err error)
+	PostArticle(ctx context.Context, req *PostArticleReq, opts ...http.CallOption) (rsp *PostArticleResp, err error)
+}
+
+type ArticleHTTPClientImpl struct {
+	cc *http.Client
+}
+
+func NewArticleHTTPClient(client *http.Client) ArticleHTTPClient {
+	return &ArticleHTTPClientImpl{client}
+}
+
+func (c *ArticleHTTPClientImpl) GetArticleById(ctx context.Context, in *GetArticleByIdReq, opts ...http.CallOption) (*GetArticleByIdResp, error) {
+	var out GetArticleByIdResp
+	pattern := "/api/article/{article_id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationArticleGetArticleById))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ArticleHTTPClientImpl) GetArticleByPage(ctx context.Context, in *GetArticleByPageReq, opts ...http.CallOption) (*GetArticleByPageResp, error) {
+	var out GetArticleByPageResp
+	pattern := "/api/article/{page_size}/{page_num}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationArticleGetArticleByPage))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ArticleHTTPClientImpl) PostArticle(ctx context.Context, in *PostArticleReq, opts ...http.CallOption) (*PostArticleResp, error) {
+	var out PostArticleResp
+	pattern := "/api/article/post"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationArticlePostArticle))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}

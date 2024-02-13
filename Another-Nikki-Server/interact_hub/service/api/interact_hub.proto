@@ -62,10 +62,24 @@ message GetProblemByPageResp {
 
 
 service Article {
-  rpc PostArticle(PostArticleReq) returns (PostArticleResp);
-  rpc GetArticleById(GetArticleByIdReq) returns (GetArticleByIdResp);
-  rpc GetArticleByPage(GetArticleByPageReq) returns (GetArticleByPageResp);
+  rpc PostArticle(PostArticleReq) returns (PostArticleResp){
+    option (google.api.http) = {
+      post: "/api/article/post",
+      body: "*",
+    };
+  };
+  rpc GetArticleById(GetArticleByIdReq) returns (GetArticleByIdResp){
+    option (google.api.http) = {
+      get: "/api/article/{article_id}"
+    };
+  };
+  rpc GetArticleByPage(GetArticleByPageReq) returns (GetArticleByPageResp){
+    option (google.api.http) = {
+      get: "/api/article/{page_size}/{page_num}"
+    };
+  };
 }
+
 message PostArticleReq {
   int64 article_id = 1;
   string article_title = 2;
@@ -100,10 +114,18 @@ message GetArticleByPageResp {
 
 
 service User {
-  rpc Login(LoginReq) returns (LoginResp);
-  rpc Register(RegisterReq) returns (RegisterResp);
-  rpc GetUserByUserName (GetUserByUserNameReq) returns (GetUserByUserNameResp);
-  rpc GetUserById (GetUserByIdReq) returns (GetUserByIdResp);
+  rpc Login(LoginReq) returns (LoginResp) {
+
+  };
+  rpc Register(RegisterReq) returns (RegisterResp) {
+
+  };
+  rpc GetUserByUserName (GetUserByUserNameReq) returns (GetUserByUserNameResp) {
+
+  };
+  rpc GetUserById (GetUserByIdReq) returns (GetUserByIdResp) {
+
+  };
 }
 message LoginReq {
   string username = 1;

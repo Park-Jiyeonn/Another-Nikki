@@ -13,40 +13,40 @@ type ArticleRepo interface {
 }
 
 type PostArticleReq struct {
-	ArticleTitle       string `json:"article_title"`
-	ArticleDescription string `json:"article_description"`
-	ArticleContent     string `json:"article_content"`
+	ArticleTitle       string `db:"article_title"`
+	ArticleDescription string `db:"article_description"`
+	ArticleContent     string `db:"article_content"`
 }
 
 type UpdateArticleReq struct {
-	ArticleId          int64  `json:"article_id"`
-	ArticleTitle       string `json:"article_title"`
-	ArticleDescription string `json:"article_description"`
-	ArticleContent     string `json:"article_content"`
+	ArticleId          int64  `db:"article_id"`
+	ArticleTitle       string `db:"article_title"`
+	ArticleDescription string `db:"article_description"`
+	ArticleContent     string `db:"article_content"`
 }
 
 type GetArticleByIdReq struct {
-	ArticleId int64 `json:"article_id"`
+	ArticleId int64 `db:"article_id"`
 }
 
 type GetArticleByIdResp struct {
-	ArticleTitle       string    `json:"article_title"`
-	ArticleDescription string    `json:"article_description"`
-	ArticleContent     string    `json:"article_content"`
-	CreatedTime        time.Time `json:"created_time"`
+	ArticleTitle       string    `db:"article_title"`
+	ArticleDescription string    `db:"article_description"`
+	ArticleContent     string    `db:"article_content"`
+	CreatedTime        time.Time `db:"created_time"`
 }
 
 type GetArticleByPageReq struct {
-	PageNum  int64 `json:"page_num"`
-	PageSize int64 `json:"page_size"`
+	PageNum  int64 `db:"page_num"`
+	PageSize int64 `db:"page_size"`
 }
 
 type ArticlePageDetail struct {
-	ArticleId    int64     `json:"article_id"`
-	ArticleTitle string    `json:"article_title"`
-	CreatedTime  time.Time `json:"created_time"`
+	ArticleId    int64     `db:"article_id"`
+	ArticleTitle string    `db:"article_title"`
+	CreatedTime  time.Time `db:"created_time"`
 }
 
 type GetArticleByPageResp struct {
-	Articles []*ArticlePageDetail `json:"articles"`
+	Articles []*ArticlePageDetail `db:"articles"`
 }
