@@ -49,6 +49,7 @@ func (s *problemImpl) GetProblemById(ctx context.Context, req *biz.GetProblemByI
 	return
 }
 func (s *problemImpl) GetProblemByPage(ctx context.Context, req *biz.GetProblemByPageReq) (resp *biz.GetProblemByPageResp, err error) {
+	resp = new(biz.GetProblemByPageResp)
 	rows, err := s.db.QueryxContext(ctx, "SELECT problem_id, problem_title, created_time FROM problems ORDER BY created_time DESC LIMIT ? OFFSET ?",
 		req.PageSize, (req.PageNum-1)*req.PageSize)
 	if err != nil {

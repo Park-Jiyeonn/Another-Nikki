@@ -3,8 +3,7 @@ syntax = "proto3";
 package service.problem.api;
 option go_package = ".;api";
 
-// protoc -I=. -I=$GOPATH/pkg/mod --go-grpc_out=. --go-http_out=. *.proto
-
+// protoc -I=. -I=$GOPATH/pkg/mod --go-grpc_out=. --go-http_out=. --gogo_out=.  *.proto
 // Another-Nikki/interact_hub/service/api
 // kratos proto server *.proto -t ../internal/service
 
@@ -22,7 +21,11 @@ service Problem {
       get: "/api/problem/{problem_id}"
     };
   };
-  rpc GetProblemByPage(GetProblemByPageReq) returns (GetProblemByPageResp);
+  rpc GetProblemByPage(GetProblemByPageReq) returns (GetProblemByPageResp){
+    option (google.api.http) = {
+      get: "/api/problem/{page_size}/{page_num}"
+    };
+  };
 }
 
 message PostProblemReq {

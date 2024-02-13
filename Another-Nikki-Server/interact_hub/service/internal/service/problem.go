@@ -64,7 +64,7 @@ func (s *ProblemService) GetProblemByPage(ctx context.Context, req *pb.GetProble
 	if err != nil {
 		return nil, err
 	}
-	resp.Problems = make([]*pb.ProblemPageDetail, len(problems.Problems))
+	resp.Problems = make([]*pb.ProblemPageDetail, 0, len(problems.Problems))
 	for _, val := range problems.Problems {
 		resp.Problems = append(resp.Problems, &pb.ProblemPageDetail{
 			ProblemId:    val.ProblemId,

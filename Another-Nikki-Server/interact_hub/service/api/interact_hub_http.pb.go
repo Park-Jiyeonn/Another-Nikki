@@ -20,10 +20,12 @@ var _ = binding.EncodeURL
 const _ = http.SupportPackageIsVersion1
 
 const OperationProblemGetProblemById = "/service.problem.api.Problem/GetProblemById"
+const OperationProblemGetProblemByPage = "/service.problem.api.Problem/GetProblemByPage"
 const OperationProblemPostProblem = "/service.problem.api.Problem/PostProblem"
 
 type ProblemHTTPServer interface {
 	GetProblemById(context.Context, *GetProblemByIdReq) (*GetProblemByIdResp, error)
+	GetProblemByPage(context.Context, *GetProblemByPageReq) (*GetProblemByPageResp, error)
 	PostProblem(context.Context, *PostProblemReq) (*PostProblemResp, error)
 }
 
@@ -31,6 +33,7 @@ func RegisterProblemHTTPServer(s *http.Server, srv ProblemHTTPServer) {
 	r := s.Route("/")
 	r.POST("/api/problem/post", _Problem_PostProblem0_HTTP_Handler(srv))
 	r.GET("/api/problem/{problem_id}", _Problem_GetProblemById0_HTTP_Handler(srv))
+	r.GET("/api/problem/{page_size}/{page_num}", _Problem_GetProblemByPage0_HTTP_Handler(srv))
 }
 
 func _Problem_PostProblem0_HTTP_Handler(srv ProblemHTTPServer) func(ctx http.Context) error {
@@ -77,8 +80,31 @@ func _Problem_GetProblemById0_HTTP_Handler(srv ProblemHTTPServer) func(ctx http.
 	}
 }
 
+func _Problem_GetProblemByPage0_HTTP_Handler(srv ProblemHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetProblemByPageReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationProblemGetProblemByPage)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetProblemByPage(ctx, req.(*GetProblemByPageReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetProblemByPageResp)
+		return ctx.Result(200, reply)
+	}
+}
+
 type ProblemHTTPClient interface {
 	GetProblemById(ctx context.Context, req *GetProblemByIdReq, opts ...http.CallOption) (rsp *GetProblemByIdResp, err error)
+	GetProblemByPage(ctx context.Context, req *GetProblemByPageReq, opts ...http.CallOption) (rsp *GetProblemByPageResp, err error)
 	PostProblem(ctx context.Context, req *PostProblemReq, opts ...http.CallOption) (rsp *PostProblemResp, err error)
 }
 
@@ -95,6 +121,19 @@ func (c *ProblemHTTPClientImpl) GetProblemById(ctx context.Context, in *GetProbl
 	pattern := "/api/problem/{problem_id}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationProblemGetProblemById))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *ProblemHTTPClientImpl) GetProblemByPage(ctx context.Context, in *GetProblemByPageReq, opts ...http.CallOption) (*GetProblemByPageResp, error) {
+	var out GetProblemByPageResp
+	pattern := "/api/problem/{page_size}/{page_num}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationProblemGetProblemByPage))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {
