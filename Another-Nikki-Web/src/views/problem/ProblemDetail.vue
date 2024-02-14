@@ -16,18 +16,18 @@ const route = useRoute();
 const router = useRouter();
 
 const problem = ref<Problem>({
-    ID: 1,
-    name: "name",
-    content: "content",
-    CreatedAt: "CreatedAt",
+    problem_id: 1,
+    problem_title: "",
+    problem_content: "",
 })
 
 const get_problem = async (id: number) => {
-    const ret = await ProblemApi.get_problem({ ID: id })
+    const ret = await ProblemApi.get_problem({ problem_id: id })
+    console.log(ret)
     if (ret.data.code < 200 || ret.data.code > 200) {
-        problem.value.ID = -1
-        problem.value.name = "请求错误捏, 请不要填奇奇怪怪的参数哦"
-        problem.value.content = "空"
+        problem.value.problem_id = -1
+        problem.value.problem_title = "请求错误捏, 请不要填奇奇怪怪的参数哦"
+        problem.value.problem_content = "空"
         return
     }
     problem.value = ret.data.data
@@ -40,23 +40,17 @@ const update_problem = () => {
     router.push(`/problem/update/${id}`)
 }
 
-
-
 </script>
 <template>
     <ContentBase>
         <h2>
-            {{ problem.name }}
+            {{ problem.problem_title }}
         </h2>
-
         <el-divider />
-
-        <div class="content markdown-body" v-html="renderMarkdown(problem.content)" />
-
+        <div class="content markdown-body" v-html="renderMarkdown(`${problem.problem_content}`)" />
         <el-divider />
-
-        <RunCode v-if="problem.ID != -1" messageDefault=""
-        :problemName=problem.name
+        <RunCode v-if="problem.problem_id != -1" messageDefault=""
+        :problemName=problem.problem_title
     :id=id
     :inputAreaMinRow=5
     :inputAreaMaxRow=5
@@ -66,9 +60,7 @@ const update_problem = () => {
     :submitCode=true
     :testCode=true
             />
-
         <el-divider />
-
         <div v-if="isLoggedIn" style="text-align: center; margin-top: 10px;">
             <el-button class="button" type="primary" @click="update_problem()">
                 编辑

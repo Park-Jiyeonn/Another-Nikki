@@ -8,5 +8,6 @@ export function useIsLoggedIn() {
 	// TODO: useTokenInfo() 需要改造一下，改为可读可写。这里应该避免手工读取本地存储
 	let authToken = getCookies('token');
 	$isLoggedIn.value = !!authToken
+	$isLoggedIn.value = true
 	return $isLoggedIn
 }

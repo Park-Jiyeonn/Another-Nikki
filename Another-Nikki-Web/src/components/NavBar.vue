@@ -3,9 +3,6 @@
         <el-menu-item v-if="isLoggedIn" index="1" @click="router.push('/jelly')">
             Jelly
         </el-menu-item>
-        <el-menu-item  v-if="isLoggedIn" index="3" @click="router.push('/logs')">
-            Logs
-        </el-menu-item>
         
         <el-menu-item index="5" @click="router.push('/problems')">
             Problem

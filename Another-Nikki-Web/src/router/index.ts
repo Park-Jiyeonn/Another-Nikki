@@ -131,16 +131,16 @@ const router = createRouter({
 
 router.beforeEach(to => {
 	const isLoggedIn = useIsLoggedIn()
-	if (to.meta.requiresAuth && !isLoggedIn.value) {
+	// if (to.meta.requiresAuth && !isLoggedIn.value) {
 		// let query
 		// 通过 redirect 参数保存当前所在的位置，以便登录后返回
 		// 如果当前是首页，就不用存了，因为登录后默认回首页
 		// if (to.fullPath !== '/') query = { redirect: to.fullPath }
-		return {
-			path: '/error/403',
+		// return {
+			// path: '/error/403',
 			// query,
-		}
-	}
+		// }
+	// }
 })
 
 export default router

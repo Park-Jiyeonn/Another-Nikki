@@ -1,37 +1,36 @@
-import { Problem } from '@/types/Problem';
+import { GetProblemByPageResp, GetProblemByIdResp, Problem } from '@/types/Problem';
 import HttpServer from '../http/index';
 
 const page_que = (data:{
-	page: number;
-}) => HttpServer.request<typeof data,Problem[]>({
-    url: `/api/problem/problems`,
+	page_size: number,
+    page_num: number,
+}) => HttpServer.request<typeof data,GetProblemByPageResp[]>({
+    url: `/api/problem/${data.page_num}/${data.page_size}`,
     method: "GET",
-    data
 })
 
 const get_problem = (data:{
-	ID: number;
-}) => HttpServer.request<typeof data,Problem>({
-    url: `/api/problem`,
+	problem_id: number;
+}) => HttpServer.request<typeof data,GetProblemByIdResp>({
+    url: `/api/problem/${data.problem_id}`,
     method: "GET",
-    data
 })
 
 const update_problem = (data:{
-    name: string;
-	ID: number;
-    content: string;
+    problem_title: string;
+	problem_id: number;
+    problem_content: string;
 }) => HttpServer.request<typeof data,Problem>({
-    url: `/api/problem/update`,
+    url: `/api/problem/post`,
     method: "POST",
     data
 })
 
 const post_problem = (data:{
-    name: string;
-    content: string;
+    problem_title: string;
+    problem_content: string;
 }) => HttpServer.request<typeof data,Problem>({
-    url: `/api/problem`,
+    url: `/api/problem/post`,
     method: "POST",
     data
 }) 

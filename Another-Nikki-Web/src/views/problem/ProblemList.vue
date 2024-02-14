@@ -5,15 +5,14 @@ import { ProblemApi } from '@/api';
 import router from '@/router';
 const problems = ref<Problem[]>([])
 
-const problem_page_que = async (page: number) => {
-    const ret = await ProblemApi.page_que({ page: page })
-    problems.value = ret.data.data
-    problems.value.forEach((problem) => {
-        problem.CreatedAt = problem.CreatedAt.substring(0, 10) + " " +
-            problem.CreatedAt.substring(11, 16)
-    });
+const problem_page_que = async (page_num: number, page_size: number) => {
+    const ret = await ProblemApi.page_que({ 
+        page_num,
+        page_size,
+     })
+    problems.value = ret.data.data.problems
 }
-problem_page_que(1)
+problem_page_que(10, 1)
 
 const toProblemDetail = (id: number) => {
     console.log(id)
@@ -24,9 +23,9 @@ const toProblemDetail = (id: number) => {
 
 <template>
     <div class="container">
-        <el-card class="problem-card" v-for="problem in problems" @click="toProblemDetail(problem.ID)">
-            <span> {{ problem.name }} </span>
-            <span class="date">{{ problem.CreatedAt }}</span>
+        <el-card class="problem-card" v-for="problem in problems" @click="toProblemDetail(problem.problem_id)">
+            <span> {{ problem.problem_title }} </span>
+            <span class="date">{{ problem.created_time }}</span>
         </el-card>
     </div>
 </template>

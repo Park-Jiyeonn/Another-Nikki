@@ -11,26 +11,25 @@ import { ProblemApi } from '@/api';
 const route = useRoute();
 const router = useRouter();
 const problem = ref<Problem>({
-    ID: 1,
-    name: "name",
-    content: "content",
-    CreatedAt: "CreatedAt",
+    problem_id: 1,
+    problem_title: "name",
+    problem_content: "content",
+    created_time: "CreatedAt",
 })
 const problem_name = ref('')
 const problem_content = ref('')
 const loading = ref(false);
 
 const get_problem = async (id: number) => {
-    const ret = await ProblemApi.get_problem({ ID: id })
+    const ret = await ProblemApi.get_problem({ problem_id: id })
     if (ret.data.code == 200) {
         problem.value = ret.data.data
-        problem_name.value = problem.value.name
-        problem_content.value = problem.value.content
+        problem_name.value = problem.value.problem_title
+        problem_content.value = problem.value.problem_content
     }
     else {
         return ElMessage.error("获取内容失败！")
     }
-    
 }
 
 const id: number = parseInt(String(route.params.id));
@@ -38,9 +37,9 @@ get_problem(id)
 
 const update_problem = async () => {
     const ret = await ProblemApi.update_problem({ 
-        ID: id, 
-        name: problem_name.value, 
-        content:problem_content.value
+        problem_id: id, 
+        problem_title: problem_name.value, 
+        problem_content:problem_content.value
     })
     // console.log(ret.data)
     if (ret.data.code == 200) {
