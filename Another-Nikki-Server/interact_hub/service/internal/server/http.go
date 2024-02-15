@@ -4,25 +4,36 @@ import (
 	"Another-Nikki/interact_hub/service/api"
 	"Another-Nikki/interact_hub/service/internal/conf"
 	"Another-Nikki/interact_hub/service/internal/service"
+	pkg_jwt "Another-Nikki/pkg/jwt"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
+	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/goccy/go-json"
+	jwt2 "github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/handlers"
+	"golang.org/x/net/context"
 )
 
 func NewHTTPServer(c *conf.Server, logger log.Logger,
 	problem *service.ProblemService,
 	processingService *service.CodeProcessingService,
+	userService *service.UserService,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
 			tracing.Server(),
 			logging.Server(logger),
+			selector.Server(
+				jwt.Server(func(token *jwt2.Token) (interface{}, error) {
+					return []byte(pkg_jwt.JwtSecret), nil
+				}, jwt.WithSigningMethod(jwt2.SigningMethodHS256)),
+			).Match(NewWhiteListMatcher()).Build(),
 		),
 		http.ResponseEncoder(responseEncoder),
 		http.ErrorEncoder(ErrorEncoder),
@@ -45,6 +56,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	srv := http.NewServer(opts...)
 	api.RegisterProblemHTTPServer(srv, problem)
 	api.RegisterCodeProcessingHTTPServer(srv, processingService)
+	api.RegisterUserHTTPServer(srv, userService)
 	return srv
 }
 
@@ -89,4 +101,20 @@ func ErrorEncoder(w http.ResponseWriter, r *http.Request, err error) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(200)
 	w.Write(body)
+}
+
+// NewWhiteListMatcher 白名单不需要token验证的接口
+func NewWhiteListMatcher() selector.MatchFunc {
+	whiteList := make(map[string]struct{})
+	whiteList["/service.problem.api.Problem/GetProblemById"] = struct{}{}
+	//whiteList["/service.problem.api.Problem/GetProblemByPage"] = struct{}{}
+	whiteList["/service.problem.api.Problem/PostProblem"] = struct{}{}
+	whiteList["/service.problem.api.User/Register"] = struct{}{}
+	whiteList["/service.problem.api.User/Login"] = struct{}{}
+	return func(ctx context.Context, operation string) bool {
+		if _, ok := whiteList[operation]; ok {
+			return false
+		}
+		return true
+	}
 }

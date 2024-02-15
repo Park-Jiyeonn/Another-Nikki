@@ -152,6 +152,8 @@ message RegisterReq {
 }
 message RegisterResp {
   string token = 1;
+  string username = 2;
+  int64 user_id = 3;
 }
 
 message GetUserByUserNameReq {

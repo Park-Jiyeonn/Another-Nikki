@@ -3,7 +3,7 @@ package biz
 import "golang.org/x/net/context"
 
 type UserRepo interface {
-	Register(ctx context.Context, req *RegisterReq) error
+	Register(ctx context.Context, req *RegisterReq) (*RegisterResp, error)
 	GetUserByUserName(ctx context.Context, req *GetUserByUserNameReq) (*GetUserByUserNameResp, error)
 	GetUserById(ctx context.Context, req *GetUserByIdReq) (*GetUserByIdResp, error)
 }
@@ -11,6 +11,10 @@ type UserRepo interface {
 type RegisterReq struct {
 	Username string
 	Password string
+}
+
+type RegisterResp struct {
+	UserId int64 `db:"user_id"`
 }
 
 type GetUserByUserNameReq struct {

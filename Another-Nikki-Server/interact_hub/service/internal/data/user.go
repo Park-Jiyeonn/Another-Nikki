@@ -28,11 +28,13 @@ func NewUserImpl(data *Data) biz.UserRepo {
 	}
 }
 
-func (s *userServiceImpl) Register(ctx context.Context, req *biz.RegisterReq) (err error) {
-	_, err = s.db.ExecContext(ctx, "INSERT INTO users (username, password) VALUES (?, ?)", req.Username, req.Password)
+func (s *userServiceImpl) Register(ctx context.Context, req *biz.RegisterReq) (resp *biz.RegisterResp, err error) {
+	ret, err := s.db.ExecContext(ctx, "INSERT INTO users (username, password) VALUES (?, ?)", req.Username, req.Password)
 	if err != nil {
 		return
 	}
+	resp = new(biz.RegisterResp)
+	resp.UserId, err = ret.LastInsertId()
 	return
 }
 

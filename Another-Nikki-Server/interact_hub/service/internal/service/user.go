@@ -3,6 +3,8 @@ package service
 import (
 	pb "Another-Nikki/interact_hub/service/api"
 	"Another-Nikki/interact_hub/service/internal/biz"
+	"Another-Nikki/pkg/jwt"
+	"Another-Nikki/pkg/log"
 	"context"
 	"database/sql"
 	"fmt"
@@ -62,13 +64,22 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterReq) (resp *
 	if err != nil {
 		return nil, fmt.Errorf("注册失败，请换一个密码重试")
 	}
-	err = s.dao.Register(ctx, &biz.RegisterReq{
+	user, err := s.dao.Register(ctx, &biz.RegisterReq{
 		Username: req.Username,
 		Password: string(newPassword),
 	})
 	if err != nil {
 		return nil, fmt.Errorf("注册失败，请重试")
 	}
+
+	resp = new(pb.RegisterResp)
+	resp.Token, err = jwt.GenToken(user.UserId, req.Username)
+	if err != nil {
+		log.Error(ctx, "gen jwt token err: %v", err)
+		return
+	}
+	resp.Username = req.Username
+	resp.UserId = user.UserId
 	return
 }
 func (s *UserService) GetUserByUserName(ctx context.Context, req *pb.GetUserByUserNameReq) (resp *pb.GetUserByUserNameResp, err error) {
