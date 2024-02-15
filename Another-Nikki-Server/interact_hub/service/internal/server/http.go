@@ -14,7 +14,10 @@ import (
 	"github.com/gorilla/handlers"
 )
 
-func NewHTTPServer(c *conf.Server, problem *service.ProblemService, logger log.Logger) *http.Server {
+func NewHTTPServer(c *conf.Server, logger log.Logger,
+	problem *service.ProblemService,
+	processingService *service.CodeProcessingService,
+) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
@@ -41,6 +44,7 @@ func NewHTTPServer(c *conf.Server, problem *service.ProblemService, logger log.L
 	)))
 	srv := http.NewServer(opts...)
 	api.RegisterProblemHTTPServer(srv, problem)
+	api.RegisterCodeProcessingHTTPServer(srv, processingService)
 	return srv
 }
 

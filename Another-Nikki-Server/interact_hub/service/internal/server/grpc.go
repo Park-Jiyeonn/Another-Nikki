@@ -12,11 +12,13 @@ import (
 )
 
 func NewGRPCServer(c *conf.Server,
+	logger log.Logger,
 	problemService *service.ProblemService,
 	articleService *service.ArticleService,
 	commentService *service.CommentService,
 	userService *service.UserService,
-	logger log.Logger) *grpc.Server {
+	processingService *service.CodeProcessingService,
+) *grpc.Server {
 	var opts = []grpc.ServerOption{
 		grpc.Middleware(
 			recovery.Recovery(),
@@ -38,5 +40,6 @@ func NewGRPCServer(c *conf.Server,
 	api.RegisterArticleServer(srv, articleService)
 	api.RegisterCommentServer(srv, commentService)
 	api.RegisterUserServer(srv, userService)
+	api.RegisterCodeProcessingServer(srv, processingService)
 	return srv
 }

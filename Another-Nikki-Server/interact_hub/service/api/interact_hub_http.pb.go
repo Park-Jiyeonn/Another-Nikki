@@ -640,3 +640,61 @@ func (c *CommentHTTPClientImpl) PostComment(ctx context.Context, in *PostComment
 	}
 	return &out, err
 }
+
+const OperationCodeProcessingSubmitCode = "/service.problem.api.CodeProcessing/SubmitCode"
+
+type CodeProcessingHTTPServer interface {
+	SubmitCode(context.Context, *SubmitCodeReq) (*SubmitCodeResp, error)
+}
+
+func RegisterCodeProcessingHTTPServer(s *http.Server, srv CodeProcessingHTTPServer) {
+	r := s.Route("/")
+	r.POST("/api/code/post", _CodeProcessing_SubmitCode0_HTTP_Handler(srv))
+}
+
+func _CodeProcessing_SubmitCode0_HTTP_Handler(srv CodeProcessingHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in SubmitCodeReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationCodeProcessingSubmitCode)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.SubmitCode(ctx, req.(*SubmitCodeReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*SubmitCodeResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+type CodeProcessingHTTPClient interface {
+	SubmitCode(ctx context.Context, req *SubmitCodeReq, opts ...http.CallOption) (rsp *SubmitCodeResp, err error)
+}
+
+type CodeProcessingHTTPClientImpl struct {
+	cc *http.Client
+}
+
+func NewCodeProcessingHTTPClient(client *http.Client) CodeProcessingHTTPClient {
+	return &CodeProcessingHTTPClientImpl{client}
+}
+
+func (c *CodeProcessingHTTPClientImpl) SubmitCode(ctx context.Context, in *SubmitCodeReq, opts ...http.CallOption) (*SubmitCodeResp, error) {
+	var out SubmitCodeResp
+	pattern := "/api/code/post"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationCodeProcessingSubmitCode))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}

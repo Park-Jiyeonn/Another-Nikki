@@ -234,3 +234,45 @@ message GetRandomCommentReq {
 message GetRandomCommentResp {
   Comments comments = 1;
 }
+
+
+service CodeProcessing {
+  rpc SubmitCode (SubmitCodeReq) returns (SubmitCodeResp) {
+    option (google.api.http) = {
+      post: "/api/code/post",
+      body: "*",
+    };
+  };
+  rpc UpdateCodeCompileStatus(UpdateCodeCompileStatusReq) returns (UpdateCodeCompileStatusResp);
+  rpc UpdateCodeJudgeStatus(UpdateCodeJudgeStatusReq) returns (UpdateCodeJudgeStatusResp);
+}
+
+message SubmitCodeReq {
+  int64 user_id = 1;
+  string user_name = 2;
+  int64 problem_id = 3;
+  string problem_name = 4;
+  string language = 5;
+  string code = 6;
+}
+message SubmitCodeResp {
+}
+
+message UpdateCodeCompileStatusReq {
+  int64 code_id = 1;
+  string compile_status = 2;
+  string compile_log = 3;
+}
+message UpdateCodeCompileStatusResp {
+
+}
+
+message UpdateCodeJudgeStatusReq {
+  int64 code_id = 1;
+  string compile_status = 2;
+  string judge_status = 3;
+  string cpu_time_used = 4;
+  string memory_used = 5;
+}
+message UpdateCodeJudgeStatusResp {
+}

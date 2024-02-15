@@ -1,35 +1,18 @@
 package data
 
 import (
-	"Another-Nikki/code_processing/service/api"
-	"Another-Nikki/code_processing/service/internal/biz"
+	"Another-Nikki/interact_hub/service/internal/biz"
 	"Another-Nikki/pkg/log"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/net/context"
-	"time"
 )
 
-type CodeDataMysql struct {
-	ID            int64 `db:"id"`
-	CreatedAt     time.Time
-	UpdatedAt     time.Time
-	UserID        int64  `db:"user_id"`
-	UserName      string `db:"user_name"`
-	ProblemID     int64  `db:"problem_id"`
-	ProblemName   string `db:"problem_name"`
-	Language      string `db:"language"`
-	Code          string `db:"code"`
-	CompileStatus string `db:"compile_status"`
-	CompileLog    string `json:"compile_log"`
-	JudgeStatus   string `db:"judge_status"`
-}
-
-type codeProcessingRepo struct {
+type codeProcessingImpl struct {
 	db *sqlx.DB
 }
 
-func NewCodeProcessingRepo(data *Data) biz.CodeDataRepo {
-	return &codeProcessingRepo{
+func NewCodeProcessingImpl(data *Data) biz.CodeDataRepo {
+	return &codeProcessingImpl{
 		db: data.GlobalDB,
 	}
 }
@@ -51,12 +34,12 @@ func NewCodeProcessingRepo(data *Data) biz.CodeDataRepo {
 //    memory_used VARCHAR(255) NOT NULL DEFAULT '0'
 // );
 
-func (c *codeProcessingRepo) CreateCode(ctx context.Context, req *api.SubmitCodeReq) (err error) {
+func (c *codeProcessingImpl) CreateCode(ctx context.Context, req *biz.CreateCodeReq) (err error) {
 	const sqlStr = "INSERT INTO judge (user_id, user_name, problem_id, problem_name, language, code) VALUES (?, ?, ?, ?, ?, ?)"
 	_, err = c.db.ExecContext(ctx, sqlStr,
-		req.UserID,
+		req.UserId,
 		req.UserName,
-		req.ProblemID,
+		req.ProblemId,
 		req.ProblemName,
 		req.Language,
 		req.Code,
@@ -67,24 +50,24 @@ func (c *codeProcessingRepo) CreateCode(ctx context.Context, req *api.SubmitCode
 	return
 }
 
-func (c *codeProcessingRepo) UpdateCodeCompileStatus(ctx context.Context, codeId int64, status, compile_log string) (err error) {
+func (c *codeProcessingImpl) UpdateCodeCompileStatus(ctx context.Context, req *biz.UpdateCodeCompileStatusReq) (err error) {
 	const sqlStr = "update judge set compile_status = ?, compile_log = ? where id = ?"
 	_, err = c.db.ExecContext(ctx, sqlStr,
-		status,
-		compile_log,
-		codeId,
+		req.CompileStatus,
+		req.CompileLog,
+		req.CodeId,
 	)
 	return
 }
 
-func (c *codeProcessingRepo) UpdateCodeJudgeStatus(ctx context.Context, codeId int64, compileStatus, judgeStatus, cpuTimeUsed, memoryUsed string) (err error) {
+func (c *codeProcessingImpl) UpdateCodeJudgeStatus(ctx context.Context, req *biz.UpdateCodeJudgeStatusReq) (err error) {
 	const sqlStr = "update judge set compile_status = ?, judge_status = ?, cpu_time_used = ?, memory_used = ? where id = ?"
 	_, err = c.db.ExecContext(ctx, sqlStr,
-		compileStatus,
-		judgeStatus,
-		cpuTimeUsed,
-		memoryUsed,
-		codeId,
+		req.CompileStatus,
+		req.JudgeStatus,
+		req.CpuTimeUsed,
+		req.MemoryUsed,
+		req.CodeId,
 	)
 	return
 }
