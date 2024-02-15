@@ -28,7 +28,6 @@ const inputArea = ref("")
 const language = ref('c++')
 const codeLoading = ref(false)
 
-
 const codeMsg = ref<CodeRet>({
     state: "",
     message: "空",
@@ -36,7 +35,6 @@ const codeMsg = ref<CodeRet>({
     memory_used: "-",
     exit_code: "",
 })
-
 
 const options = [
     {
@@ -81,42 +79,21 @@ const runCode = async (code: string, input: string) => {
         return ElMessage.error("运行失败！")
     }
 }
-
-const codeInit1 = async () => {
-    codeLoading.value = true
-
-    const ret = await RunCode.codeInit({ lang: language.value })
-    codeLoading.value = false
-    console.log(ret.data)
-    if (ret.data.code == 200) {
-        textarea.value = ret.data.data.code
-        inputArea.value = ret.data.data.input
-    }
-}
-
-const codeClear = () => {
-    textarea.value = ""
-    inputArea.value = ""
-}
-
-const judgeCode = async (code: string, input: string, name: string) => {
+const judgeCode = async (user_id : number, user_name : string, problem_id:number, code: string) => {
     codeLoading.value = true
 
     codeMsg.value = {
         state: "",
-        message: "docker正在努力工作中...",
+        message: "提交中...",
         cpu_time_used: "-",
         memory_used: "-",
         exit_code: "",
     }
-    const problem_name = String(props.id) + "." + name
-    const ret = await RunCode.judgeCode({ input: input, lang: language.value, code: code, problem_name: problem_name })
+    const ret = await RunCode.judgeCode({ user_id:user_id,user_name:user_name,problem_id:props.id,problem_name:props.problemName,language: language.value, code:code})
 
     codeLoading.value = false
-    console.log(ret.data)
 
     if (ret.data.code == 200) {
-        codeMsg.value = ret.data.data
         return ElMessage.success(ret?.data?.message ?? 'success')
     }
     else {
@@ -153,27 +130,9 @@ const judgeCode = async (code: string, input: string, name: string) => {
             </el-col>
             <el-col :span="1"></el-col>
             <el-col :span="10">
-                <el-row v-if="run" style="margin-top: 20px;">
-                    <el-button class="button" type="success" :loading="loading" @click="runCode(textarea, inputArea)">
-                        运行
-                    </el-button>
-                </el-row>
-
-                <el-row v-if="defaultCode" style="margin-top: 30px;">
-                    <el-button class="button" type="primary" :loading="codeLoading" @click="codeInit1()">
-                        默认代码
-                    </el-button>
-                </el-row>
-
-                <el-row v-if="clearCode" style="margin-top: 30px;">
-                    <el-button class="button" :icon="Delete" type="danger" @click="codeClear()">
-                        清空
-                    </el-button>
-                </el-row>
-
                 <el-row v-if="submitCode" style="margin-top: 30px;">
                     <el-button class="button" type="primary" :loading="codeLoading"
-                        @click="judgeCode(textarea, inputArea, props.problemName)">
+                        @click="judgeCode(1,'Jiyeon',1,textarea)">
                         提交代码
                     </el-button>
                 </el-row>

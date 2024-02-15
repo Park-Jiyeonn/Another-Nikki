@@ -12,12 +12,14 @@ const runCode = (data:{
 })
 
 const judgeCode = (data:{
-    input: string,
-    lang: string,
+    user_id: string,
+    user_name : string,
+    problem_id: string,
+    problem_name:string,
+    language: string,
     code: string, 
-    problem_name:string
 }) => HttpServer.request<typeof data,CodeRet>({
-    url: `/api/runcode/judge`,
+    url: `/api/code/post`,
     method: "POST",
     data
 })
