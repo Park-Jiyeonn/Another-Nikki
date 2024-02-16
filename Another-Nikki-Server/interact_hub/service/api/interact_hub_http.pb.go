@@ -311,7 +311,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
 	r.GET("/api/user/{username}", _User_GetUserByUserName0_HTTP_Handler(srv))
 	r.GET("/api/user/{user_id}", _User_GetUserById0_HTTP_Handler(srv))
-	r.GET("/api/user/profile/{user_id}/commit-record", _User_GetUserCommitRecord0_HTTP_Handler(srv))
+	r.GET("/api/user/profile/commit-record", _User_GetUserCommitRecord0_HTTP_Handler(srv))
 }
 
 func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -408,9 +408,6 @@ func _User_GetUserCommitRecord0_HTTP_Handler(srv UserHTTPServer) func(ctx http.C
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		if err := ctx.BindVars(&in); err != nil {
-			return err
-		}
 		http.SetOperation(ctx, OperationUserGetUserCommitRecord)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetUserCommitRecord(ctx, req.(*GetUserCommitRecordReq))
@@ -468,7 +465,7 @@ func (c *UserHTTPClientImpl) GetUserByUserName(ctx context.Context, in *GetUserB
 
 func (c *UserHTTPClientImpl) GetUserCommitRecord(ctx context.Context, in *GetUserCommitRecordReq, opts ...http.CallOption) (*GetUserCommitRecordResp, error) {
 	var out GetUserCommitRecordResp
-	pattern := "/api/user/profile/{user_id}/commit-record"
+	pattern := "/api/user/profile/commit-record"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserGetUserCommitRecord))
 	opts = append(opts, http.PathTemplate(pattern))

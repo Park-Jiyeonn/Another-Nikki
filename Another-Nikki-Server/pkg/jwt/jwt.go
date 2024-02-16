@@ -2,7 +2,9 @@ package jwt
 
 import (
 	"errors"
+	kratosJwt "github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/golang-jwt/jwt/v4"
+	"golang.org/x/net/context"
 	"time"
 )
 
@@ -43,4 +45,22 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 		return mc, nil
 	}
 	return nil, errors.New("invalid token")
+}
+
+func GetUserFromCtx(ctx context.Context) (userId int64, username string) {
+	c, ok := kratosJwt.FromContext(ctx)
+	if !ok {
+		return
+	}
+	C, ok := c.(jwt.MapClaims)
+	if !ok {
+		return
+	}
+	user_id, ok := C["user_id"].(float64)
+	if !ok {
+		return
+	}
+	userId = int64(user_id)
+	username = C["username"].(string)
+	return
 }

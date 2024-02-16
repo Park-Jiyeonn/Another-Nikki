@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import ContentBase from '@/components/ContentBase.vue';
-import { getCookies } from "@/hooks/useCookies";
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus';
 import { User } from '@/api';
 import { Commits } from '@types/User';
-const user_id : number = parseInt(String(getCookies("user_id")))
 const commits = ref<Commits[]>([])
-const get_commits = async (user_id: number) => {
-    const ret = await User.commit_records({ user_id:user_id})
+const get_commits = async () => {
+    const ret = await User.commit_records({ })
     if (ret.data.code == 200) {
         commits.value = ret.data.data.commits
     }
@@ -16,7 +14,7 @@ const get_commits = async (user_id: number) => {
         return ElMessage.error(ret.data.message)
     }
 }
-get_commits(user_id)
+get_commits()
 </script>
 
 <template>

@@ -22,7 +22,7 @@ const register = (data:{
 const commit_records = (data: {
     user_id : number,
 }) => HttpServer.request<typeof data, Commits>({
-    url: `api/user/profile/${data.user_id}/commit-record`,
+    url: `api/user/profile/commit-record`,
     method: "GET",
 })
 

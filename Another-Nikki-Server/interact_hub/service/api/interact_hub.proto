@@ -138,7 +138,7 @@ service User {
   };
   rpc GetUserCommitRecord (GetUserCommitRecordReq) returns (GetUserCommitRecordResp) {
     option (google.api.http) = {
-      get: "/api/user/profile/{user_id}/commit-record"
+      get: "/api/user/profile/commit-record"
     };
   }
 }
@@ -181,7 +181,6 @@ message GetUserByIdResp {
 }
 
 message GetUserCommitRecordReq {
-  int64 user_id = 1;
 }
 message Commits {
   int64 judge_id = 1;
