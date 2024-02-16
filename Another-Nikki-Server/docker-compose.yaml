@@ -9,6 +9,7 @@ services:
       - MYSQL_DATABASE=Another_Nikki
       - MYSQL_USER=jiyeon
       - MYSQL_PASSWORD=1234
+      - TZ=Asia/Shanghai
       - MYSQL_ROOT_PASSWORD=1234
 
   canal-server:

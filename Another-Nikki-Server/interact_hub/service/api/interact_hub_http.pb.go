@@ -293,14 +293,16 @@ func (c *ArticleHTTPClientImpl) PostArticle(ctx context.Context, in *PostArticle
 
 const OperationUserGetUserById = "/service.problem.api.User/GetUserById"
 const OperationUserGetUserByUserName = "/service.problem.api.User/GetUserByUserName"
-const OperationUserGetUserCommitRecord = "/service.problem.api.User/GetUserCommitRecord"
+const OperationUserGetUserCommitRecordByPage = "/service.problem.api.User/GetUserCommitRecordByPage"
+const OperationUserGetUserSumCommit = "/service.problem.api.User/GetUserSumCommit"
 const OperationUserLogin = "/service.problem.api.User/Login"
 const OperationUserRegister = "/service.problem.api.User/Register"
 
 type UserHTTPServer interface {
 	GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error)
 	GetUserByUserName(context.Context, *GetUserByUserNameReq) (*GetUserByUserNameResp, error)
-	GetUserCommitRecord(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error)
+	GetUserCommitRecordByPage(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error)
+	GetUserSumCommit(context.Context, *GetUserSumCommitReq) (*GetUserSumCommitResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 }
@@ -311,7 +313,8 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
 	r.GET("/api/user/{username}", _User_GetUserByUserName0_HTTP_Handler(srv))
 	r.GET("/api/user/{user_id}", _User_GetUserById0_HTTP_Handler(srv))
-	r.GET("/api/user/profile/commit-record", _User_GetUserCommitRecord0_HTTP_Handler(srv))
+	r.GET("/api/user/profile/commit-record/{page_num}/{page_size}", _User_GetUserCommitRecordByPage0_HTTP_Handler(srv))
+	r.GET("/api/user/profile/commit-record/sum", _User_GetUserSumCommit0_HTTP_Handler(srv))
 }
 
 func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -402,15 +405,18 @@ func _User_GetUserById0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) 
 	}
 }
 
-func _User_GetUserCommitRecord0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+func _User_GetUserCommitRecordByPage0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
 	return func(ctx http.Context) error {
 		var in GetUserCommitRecordReq
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
-		http.SetOperation(ctx, OperationUserGetUserCommitRecord)
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserCommitRecordByPage)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
-			return srv.GetUserCommitRecord(ctx, req.(*GetUserCommitRecordReq))
+			return srv.GetUserCommitRecordByPage(ctx, req.(*GetUserCommitRecordReq))
 		})
 		out, err := h(ctx, &in)
 		if err != nil {
@@ -421,10 +427,30 @@ func _User_GetUserCommitRecord0_HTTP_Handler(srv UserHTTPServer) func(ctx http.C
 	}
 }
 
+func _User_GetUserSumCommit0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserSumCommitReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserSumCommit)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserSumCommit(ctx, req.(*GetUserSumCommitReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserSumCommitResp)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
 	GetUserById(ctx context.Context, req *GetUserByIdReq, opts ...http.CallOption) (rsp *GetUserByIdResp, err error)
 	GetUserByUserName(ctx context.Context, req *GetUserByUserNameReq, opts ...http.CallOption) (rsp *GetUserByUserNameResp, err error)
-	GetUserCommitRecord(ctx context.Context, req *GetUserCommitRecordReq, opts ...http.CallOption) (rsp *GetUserCommitRecordResp, err error)
+	GetUserCommitRecordByPage(ctx context.Context, req *GetUserCommitRecordReq, opts ...http.CallOption) (rsp *GetUserCommitRecordResp, err error)
+	GetUserSumCommit(ctx context.Context, req *GetUserSumCommitReq, opts ...http.CallOption) (rsp *GetUserSumCommitResp, err error)
 	Login(ctx context.Context, req *LoginReq, opts ...http.CallOption) (rsp *LoginResp, err error)
 	Register(ctx context.Context, req *RegisterReq, opts ...http.CallOption) (rsp *RegisterResp, err error)
 }
@@ -463,11 +489,24 @@ func (c *UserHTTPClientImpl) GetUserByUserName(ctx context.Context, in *GetUserB
 	return &out, err
 }
 
-func (c *UserHTTPClientImpl) GetUserCommitRecord(ctx context.Context, in *GetUserCommitRecordReq, opts ...http.CallOption) (*GetUserCommitRecordResp, error) {
+func (c *UserHTTPClientImpl) GetUserCommitRecordByPage(ctx context.Context, in *GetUserCommitRecordReq, opts ...http.CallOption) (*GetUserCommitRecordResp, error) {
 	var out GetUserCommitRecordResp
-	pattern := "/api/user/profile/commit-record"
+	pattern := "/api/user/profile/commit-record/{page_num}/{page_size}"
 	path := binding.EncodeURL(pattern, in, true)
-	opts = append(opts, http.Operation(OperationUserGetUserCommitRecord))
+	opts = append(opts, http.Operation(OperationUserGetUserCommitRecordByPage))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) GetUserSumCommit(ctx context.Context, in *GetUserSumCommitReq, opts ...http.CallOption) (*GetUserSumCommitResp, error) {
+	var out GetUserSumCommitResp
+	pattern := "/api/user/profile/commit-record/sum"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUserSumCommit))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

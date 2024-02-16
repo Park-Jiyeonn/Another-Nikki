@@ -30,8 +30,8 @@ func NewCodeProcessingImpl(data *Data) biz.CodeDataRepo {
 //    compile_status VARCHAR(255) NOT NULL DEFAULT 'in queue',
 //    compile_log VARCHAR(255) NOT NULL DEFAULT '',
 //    judge_status VARCHAR(255) NOT NULL DEFAULT '-',
-//    cpu_time_used VARCHAR(255) NOT NULL DEFAULT '0',
-//    memory_used VARCHAR(255) NOT NULL DEFAULT '0'
+//    cpu_time_used VARCHAR(255) NOT NULL DEFAULT '-',
+//    memory_used VARCHAR(255) NOT NULL DEFAULT '-'
 // );
 
 func (c *codeProcessingImpl) CreateCode(ctx context.Context, req *biz.CreateCodeReq) (err error) {

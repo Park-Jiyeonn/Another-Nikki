@@ -10,6 +10,7 @@ type UserRepo interface {
 	GetUserByUserName(ctx context.Context, req *GetUserByUserNameReq) (*GetUserByUserNameResp, error)
 	GetUserById(ctx context.Context, req *GetUserByIdReq) (*GetUserByIdResp, error)
 	GetUserCommitRecord(ctx context.Context, req *GetUserCommitRecordReq) (resp []*GetUserCommitRecordResp, err error)
+	GetUserSumCommit(ctx context.Context, req *GetUserSumCommitReq) (resp *GetUserSumCommitResp, err error)
 }
 
 type RegisterReq struct {
@@ -44,7 +45,9 @@ type GetUserByIdResp struct {
 }
 
 type GetUserCommitRecordReq struct {
-	UserId int64
+	UserId   int64
+	PageNum  int64
+	PageSize int64
 }
 
 type GetUserCommitRecordResp struct {
@@ -56,4 +59,11 @@ type GetUserCommitRecordResp struct {
 	MemoryUsed    string    `db:"memory_used"`
 	Language      string    `db:"language"`
 	CreatedTime   time.Time `db:"created_time"`
+}
+
+type GetUserSumCommitReq struct {
+	UserId int64
+}
+type GetUserSumCommitResp struct {
+	Sum int64
 }

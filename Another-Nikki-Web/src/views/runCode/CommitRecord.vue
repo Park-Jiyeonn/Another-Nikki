@@ -2,11 +2,13 @@
 import ContentBase from '@/components/ContentBase.vue';
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus';
-import { User } from '@/api';
+import { User  } from '@/api';
 import { Commits } from '@types/User';
 const commits = ref<Commits[]>([])
-const get_commits = async () => {
-    const ret = await User.commit_records({ })
+const sum = ref(0)
+const currentPage = ref(1)
+const get_commits_by_page = async (page : number) => {
+    const ret = await User.commit_records({ page_num: page, page_size: 20 })
     if (ret.data.code == 200) {
         commits.value = ret.data.data.commits
     }
@@ -14,7 +16,12 @@ const get_commits = async () => {
         return ElMessage.error(ret.data.message)
     }
 }
-get_commits()
+const get_count = async() => {
+    const ret = await User.count()
+    sum.value = ret.data.data.sum
+}
+get_commits_by_page(1)
+get_count()
 </script>
 
 <template>
@@ -36,5 +43,6 @@ get_commits()
             <el-table-column prop="created_time" label="提交时间" width="180"/>
         </el-table>
     </div>
+    <el-pagination background layout="prev, pager, next" :total="sum" v-model:current-page="currentPage"  :page-size="20" @current-change="get_commits_by_page(currentPage)" />
     </ContentBase>
 </template>

@@ -111,10 +111,14 @@ func (s *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (
 	return
 }
 
-func (s *UserService) GetUserCommitRecord(ctx context.Context, _ *pb.GetUserCommitRecordReq) (resp *pb.GetUserCommitRecordResp, err error) {
+func (s *UserService) GetUserCommitRecordByPage(ctx context.Context, req *pb.GetUserCommitRecordReq) (resp *pb.GetUserCommitRecordResp, err error) {
 	resp = new(pb.GetUserCommitRecordResp)
 	userId, _ := jwt.GetUserFromCtx(ctx)
-	commits, err := s.dao.GetUserCommitRecord(ctx, &biz.GetUserCommitRecordReq{UserId: userId})
+	commits, err := s.dao.GetUserCommitRecord(ctx, &biz.GetUserCommitRecordReq{
+		UserId:   userId,
+		PageSize: req.PageSize,
+		PageNum:  req.PageNum,
+	})
 	if err != nil {
 		log.Error(ctx, "get commit record err: %v", err)
 		return nil, err
@@ -131,5 +135,16 @@ func (s *UserService) GetUserCommitRecord(ctx context.Context, _ *pb.GetUserComm
 			CreatedTime:   val.CreatedTime.Format(time.DateTime),
 		})
 	}
+	return
+}
+
+func (s *UserService) GetUserSumCommit(ctx context.Context, _ *pb.GetUserSumCommitReq) (resp *pb.GetUserSumCommitResp, err error) {
+	resp = new(pb.GetUserSumCommitResp)
+	userId, _ := jwt.GetUserFromCtx(ctx)
+	res, err := s.dao.GetUserSumCommit(ctx, &biz.GetUserSumCommitReq{userId})
+	if err != nil {
+		return
+	}
+	resp.Sum = res.Sum
 	return
 }

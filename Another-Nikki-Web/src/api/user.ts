@@ -20,9 +20,15 @@ const register = (data:{
 })
 
 const commit_records = (data: {
-    user_id : number,
+    page_num : number,
+    page_size: number,
 }) => HttpServer.request<typeof data, Commits>({
-    url: `api/user/profile/commit-record`,
+    url: `api/user/profile/commit-record/${data.page_num}/${data.page_size}`,
+    method: "GET",
+})
+
+const count = () => HttpServer.request<null,{sum:number}>({
+    url: `/api/user/profile/commit-record/sum`,
     method: "GET",
 })
 
@@ -30,4 +36,5 @@ export {
 	login,
     register,
     commit_records,
+    count,
 }

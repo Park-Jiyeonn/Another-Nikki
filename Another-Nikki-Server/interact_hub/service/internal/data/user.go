@@ -65,8 +65,8 @@ func (s *userServiceImpl) GetUserById(ctx context.Context, req *biz.GetUserByIdR
 }
 
 func (s *userServiceImpl) GetUserCommitRecord(ctx context.Context, req *biz.GetUserCommitRecordReq) (resp []*biz.GetUserCommitRecordResp, err error) {
-	sqlStr := "SELECT judge_id, problem_name, compile_status, judge_status, cpu_time_used, memory_used, language, created_time from judges where user_id = ?"
-	rows, err := s.db.QueryxContext(ctx, sqlStr, req.UserId)
+	sqlStr := "SELECT judge_id, problem_name, compile_status, judge_status, cpu_time_used, memory_used, language, created_time from judges where user_id = ? LIMIT ? OFFSET ?"
+	rows, err := s.db.QueryxContext(ctx, sqlStr, req.UserId, req.PageSize, (req.PageNum-1)*req.PageSize)
 	if err != nil {
 		return nil, err
 	}
@@ -79,5 +79,11 @@ func (s *userServiceImpl) GetUserCommitRecord(ctx context.Context, req *biz.GetU
 			return
 		}
 	}
+	return
+}
+
+func (s *userServiceImpl) GetUserSumCommit(ctx context.Context, req *biz.GetUserSumCommitReq) (resp *biz.GetUserSumCommitResp, err error) {
+	resp = new(biz.GetUserSumCommitResp)
+	err = s.db.QueryRowContext(ctx, "SELECT COUNT(judge_id) from judges where user_id = ?", req.UserId).Scan(&resp.Sum)
 	return
 }

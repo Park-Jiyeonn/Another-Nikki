@@ -136,11 +136,16 @@ service User {
       get: "/api/user/{user_id}"
     };
   };
-  rpc GetUserCommitRecord (GetUserCommitRecordReq) returns (GetUserCommitRecordResp) {
+  rpc GetUserCommitRecordByPage (GetUserCommitRecordReq) returns (GetUserCommitRecordResp) {
     option (google.api.http) = {
-      get: "/api/user/profile/commit-record"
+      get: "/api/user/profile/commit-record/{page_num}/{page_size}"
     };
   }
+  rpc GetUserSumCommit (GetUserSumCommitReq) returns (GetUserSumCommitResp) {
+    option (google.api.http) = {
+      get: "/api/user/profile/commit-record/sum"
+    };
+  };
 }
 message LoginReq {
   string username = 1;
@@ -181,6 +186,8 @@ message GetUserByIdResp {
 }
 
 message GetUserCommitRecordReq {
+  int64 page_size = 1;
+  int64 page_num = 2;
 }
 message Commits {
   int64 judge_id = 1;
@@ -196,6 +203,11 @@ message GetUserCommitRecordResp {
   repeated Commits commits = 1;
 }
 
+message GetUserSumCommitReq {
+}
+message GetUserSumCommitResp {
+  int64 sum = 1;
+}
 
 service Comment {
   rpc PostComment (PostCommentReq) returns (PostCommentResp) {
