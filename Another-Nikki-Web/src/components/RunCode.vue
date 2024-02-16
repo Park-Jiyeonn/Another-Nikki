@@ -15,10 +15,6 @@ import { ElMessage } from 'element-plus';
 
 import { ref } from 'vue'
 
-import {
-    Delete,
-} from '@element-plus/icons-vue'
-
 import { CodeRet } from '@/types/runCode';
 import { RunCode } from '@/api'
 import { getCookies } from "@/hooks/useCookies";
@@ -95,7 +91,7 @@ const judgeCode = async (code: string) => {
     const ret = await RunCode.judgeCode({ user_id:user_id,user_name:user_name,problem_id:props.id,problem_name:props.problemName,language: language.value, code:code})
 
     codeLoading.value = false
-
+    codeMsg.value.message = "等待编译中..."
     if (ret.data.code == 200) {
         return ElMessage.success(ret?.data?.message ?? 'success')
     }

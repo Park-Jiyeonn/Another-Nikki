@@ -136,6 +136,11 @@ service User {
       get: "/api/user/{user_id}"
     };
   };
+  rpc GetUserCommitRecord (GetUserCommitRecordReq) returns (GetUserCommitRecordResp) {
+    option (google.api.http) = {
+      get: "/api/user/profile/{user_id}/commit-record"
+    };
+  }
 }
 message LoginReq {
   string username = 1;
@@ -173,6 +178,23 @@ message GetUserByIdReq {
 message GetUserByIdResp {
   string username = 1;
   string avatar = 2;
+}
+
+message GetUserCommitRecordReq {
+  int64 user_id = 1;
+}
+message Commits {
+  int64 judge_id = 1;
+  string problem_name = 2;
+  string compile_status = 3;
+  string judge_status = 4;
+  string cpu_time_used = 5;
+  string memory_used = 6;
+  string language = 7;
+  string created_time = 8;
+}
+message GetUserCommitRecordResp {
+  repeated Commits commits = 1;
 }
 
 

@@ -1,11 +1,15 @@
 package biz
 
-import "golang.org/x/net/context"
+import (
+	"golang.org/x/net/context"
+	"time"
+)
 
 type UserRepo interface {
 	Register(ctx context.Context, req *RegisterReq) (*RegisterResp, error)
 	GetUserByUserName(ctx context.Context, req *GetUserByUserNameReq) (*GetUserByUserNameResp, error)
 	GetUserById(ctx context.Context, req *GetUserByIdReq) (*GetUserByIdResp, error)
+	GetUserCommitRecord(ctx context.Context, req *GetUserCommitRecordReq) (resp []*GetUserCommitRecordResp, err error)
 }
 
 type RegisterReq struct {
@@ -37,4 +41,19 @@ type GetUserByIdResp struct {
 	Password string
 	Avatar   string
 	UserId   int64
+}
+
+type GetUserCommitRecordReq struct {
+	UserId int64
+}
+
+type GetUserCommitRecordResp struct {
+	JudgeId       int64     `db:"judge_id"`
+	ProblemName   string    `db:"problem_name"`
+	CompileStatus string    `db:"compile_status"`
+	JudgeStatus   string    `db:"judge_status"`
+	CpuTimeUsed   string    `db:"cpu_time_used"`
+	MemoryUsed    string    `db:"memory_used"`
+	Language      string    `db:"language"`
+	CreatedTime   time.Time `db:"created_time"`
 }

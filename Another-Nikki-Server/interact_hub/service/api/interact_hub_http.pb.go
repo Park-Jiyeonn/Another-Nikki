@@ -293,12 +293,14 @@ func (c *ArticleHTTPClientImpl) PostArticle(ctx context.Context, in *PostArticle
 
 const OperationUserGetUserById = "/service.problem.api.User/GetUserById"
 const OperationUserGetUserByUserName = "/service.problem.api.User/GetUserByUserName"
+const OperationUserGetUserCommitRecord = "/service.problem.api.User/GetUserCommitRecord"
 const OperationUserLogin = "/service.problem.api.User/Login"
 const OperationUserRegister = "/service.problem.api.User/Register"
 
 type UserHTTPServer interface {
 	GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error)
 	GetUserByUserName(context.Context, *GetUserByUserNameReq) (*GetUserByUserNameResp, error)
+	GetUserCommitRecord(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 }
@@ -309,6 +311,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
 	r.GET("/api/user/{username}", _User_GetUserByUserName0_HTTP_Handler(srv))
 	r.GET("/api/user/{user_id}", _User_GetUserById0_HTTP_Handler(srv))
+	r.GET("/api/user/profile/{user_id}/commit-record", _User_GetUserCommitRecord0_HTTP_Handler(srv))
 }
 
 func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -399,9 +402,32 @@ func _User_GetUserById0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) 
 	}
 }
 
+func _User_GetUserCommitRecord0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserCommitRecordReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserCommitRecord)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserCommitRecord(ctx, req.(*GetUserCommitRecordReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserCommitRecordResp)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
 	GetUserById(ctx context.Context, req *GetUserByIdReq, opts ...http.CallOption) (rsp *GetUserByIdResp, err error)
 	GetUserByUserName(ctx context.Context, req *GetUserByUserNameReq, opts ...http.CallOption) (rsp *GetUserByUserNameResp, err error)
+	GetUserCommitRecord(ctx context.Context, req *GetUserCommitRecordReq, opts ...http.CallOption) (rsp *GetUserCommitRecordResp, err error)
 	Login(ctx context.Context, req *LoginReq, opts ...http.CallOption) (rsp *LoginResp, err error)
 	Register(ctx context.Context, req *RegisterReq, opts ...http.CallOption) (rsp *RegisterResp, err error)
 }
@@ -432,6 +458,19 @@ func (c *UserHTTPClientImpl) GetUserByUserName(ctx context.Context, in *GetUserB
 	pattern := "/api/user/{username}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserGetUserByUserName))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) GetUserCommitRecord(ctx context.Context, in *GetUserCommitRecordReq, opts ...http.CallOption) (*GetUserCommitRecordResp, error) {
+	var out GetUserCommitRecordResp
+	pattern := "/api/user/profile/{user_id}/commit-record"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUserCommitRecord))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

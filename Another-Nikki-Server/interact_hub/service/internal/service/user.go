@@ -9,6 +9,7 @@ import (
 	"database/sql"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
+	"time"
 )
 
 type UserService struct {
@@ -107,5 +108,27 @@ func (s *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (
 	}
 	resp.Username = user.Username
 	resp.Avatar = user.Avatar
+	return
+}
+
+func (s *UserService) GetUserCommitRecord(ctx context.Context, req *pb.GetUserCommitRecordReq) (resp *pb.GetUserCommitRecordResp, err error) {
+	resp = new(pb.GetUserCommitRecordResp)
+	commits, err := s.dao.GetUserCommitRecord(ctx, &biz.GetUserCommitRecordReq{UserId: req.UserId})
+	if err != nil {
+		log.Error(ctx, "get commit record err: %v", err)
+		return nil, err
+	}
+	for _, val := range commits {
+		resp.Commits = append(resp.Commits, &pb.Commits{
+			JudgeId:       val.JudgeId,
+			ProblemName:   val.ProblemName,
+			CompileStatus: val.CompileStatus,
+			JudgeStatus:   val.JudgeStatus,
+			CpuTimeUsed:   val.CpuTimeUsed,
+			MemoryUsed:    val.MemoryUsed,
+			Language:      val.Language,
+			CreatedTime:   val.CreatedTime.Format(time.DateTime),
+		})
+	}
 	return
 }

@@ -63,3 +63,21 @@ func (s *userServiceImpl) GetUserById(ctx context.Context, req *biz.GetUserByIdR
 		Avatar:   avatar,
 	}, nil
 }
+
+func (s *userServiceImpl) GetUserCommitRecord(ctx context.Context, req *biz.GetUserCommitRecordReq) (resp []*biz.GetUserCommitRecordResp, err error) {
+	sqlStr := "SELECT judge_id, problem_name, compile_status, judge_status, cpu_time_used, memory_used, language, created_time from judges where user_id = ?"
+	rows, err := s.db.QueryxContext(ctx, sqlStr, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+	resp = make([]*biz.GetUserCommitRecordResp, 0)
+	for rows.Next() {
+		var res biz.GetUserCommitRecordResp
+		err = rows.StructScan(&res)
+		resp = append(resp, &res)
+		if err != nil {
+			return
+		}
+	}
+	return
+}

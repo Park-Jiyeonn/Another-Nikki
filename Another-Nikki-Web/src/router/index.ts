@@ -92,8 +92,8 @@ const systemRoutes = [
 
 const RunCodeRoutes = [
 	{
-		path:'/runcode',
-		component: () => import('@/views/runCode/RunCodeView.vue'),
+		path:'/profile',
+		component: () => import('@/views/runCode/CommitRecord.vue'),
 	},
 ]
 

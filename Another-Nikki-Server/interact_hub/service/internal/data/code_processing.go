@@ -17,8 +17,8 @@ func NewCodeProcessingImpl(data *Data) biz.CodeDataRepo {
 	}
 }
 
-// CREATE TABLE judge (
-//    id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+// CREATE TABLE judges (
+//    judge_id BIGINT NOT NULL AUTO_INCREMENT PRIMARY KEY,
 //    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
 //    user_id BIGINT NOT NULL DEFAULT 0,
@@ -35,7 +35,7 @@ func NewCodeProcessingImpl(data *Data) biz.CodeDataRepo {
 // );
 
 func (c *codeProcessingImpl) CreateCode(ctx context.Context, req *biz.CreateCodeReq) (err error) {
-	const sqlStr = "INSERT INTO judge (user_id, user_name, problem_id, problem_name, language, code) VALUES (?, ?, ?, ?, ?, ?)"
+	const sqlStr = "INSERT INTO judges (user_id, user_name, problem_id, problem_name, language, code) VALUES (?, ?, ?, ?, ?, ?)"
 	_, err = c.db.ExecContext(ctx, sqlStr,
 		req.UserId,
 		req.UserName,
@@ -51,7 +51,7 @@ func (c *codeProcessingImpl) CreateCode(ctx context.Context, req *biz.CreateCode
 }
 
 func (c *codeProcessingImpl) UpdateCodeCompileStatus(ctx context.Context, req *biz.UpdateCodeCompileStatusReq) (err error) {
-	const sqlStr = "update judge set compile_status = ?, compile_log = ? where id = ?"
+	const sqlStr = "update judges set compile_status = ?, compile_log = ? where judge_id = ?"
 	_, err = c.db.ExecContext(ctx, sqlStr,
 		req.CompileStatus,
 		req.CompileLog,
@@ -61,7 +61,7 @@ func (c *codeProcessingImpl) UpdateCodeCompileStatus(ctx context.Context, req *b
 }
 
 func (c *codeProcessingImpl) UpdateCodeJudgeStatus(ctx context.Context, req *biz.UpdateCodeJudgeStatusReq) (err error) {
-	const sqlStr = "update judge set compile_status = ?, judge_status = ?, cpu_time_used = ?, memory_used = ? where id = ?"
+	const sqlStr = "update judges set compile_status = ?, judge_status = ?, cpu_time_used = ?, memory_used = ? where judge_id = ?"
 	_, err = c.db.ExecContext(ctx, sqlStr,
 		req.CompileStatus,
 		req.JudgeStatus,

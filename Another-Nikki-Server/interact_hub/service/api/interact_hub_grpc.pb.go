@@ -347,10 +347,11 @@ var Article_ServiceDesc = grpc.ServiceDesc{
 }
 
 const (
-	User_Login_FullMethodName             = "/service.problem.api.User/Login"
-	User_Register_FullMethodName          = "/service.problem.api.User/Register"
-	User_GetUserByUserName_FullMethodName = "/service.problem.api.User/GetUserByUserName"
-	User_GetUserById_FullMethodName       = "/service.problem.api.User/GetUserById"
+	User_Login_FullMethodName               = "/service.problem.api.User/Login"
+	User_Register_FullMethodName            = "/service.problem.api.User/Register"
+	User_GetUserByUserName_FullMethodName   = "/service.problem.api.User/GetUserByUserName"
+	User_GetUserById_FullMethodName         = "/service.problem.api.User/GetUserById"
+	User_GetUserCommitRecord_FullMethodName = "/service.problem.api.User/GetUserCommitRecord"
 )
 
 // UserClient is the client API for User service.
@@ -361,6 +362,7 @@ type UserClient interface {
 	Register(ctx context.Context, in *RegisterReq, opts ...grpc.CallOption) (*RegisterResp, error)
 	GetUserByUserName(ctx context.Context, in *GetUserByUserNameReq, opts ...grpc.CallOption) (*GetUserByUserNameResp, error)
 	GetUserById(ctx context.Context, in *GetUserByIdReq, opts ...grpc.CallOption) (*GetUserByIdResp, error)
+	GetUserCommitRecord(ctx context.Context, in *GetUserCommitRecordReq, opts ...grpc.CallOption) (*GetUserCommitRecordResp, error)
 }
 
 type userClient struct {
@@ -407,6 +409,15 @@ func (c *userClient) GetUserById(ctx context.Context, in *GetUserByIdReq, opts .
 	return out, nil
 }
 
+func (c *userClient) GetUserCommitRecord(ctx context.Context, in *GetUserCommitRecordReq, opts ...grpc.CallOption) (*GetUserCommitRecordResp, error) {
+	out := new(GetUserCommitRecordResp)
+	err := c.cc.Invoke(ctx, User_GetUserCommitRecord_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -415,6 +426,7 @@ type UserServer interface {
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	GetUserByUserName(context.Context, *GetUserByUserNameReq) (*GetUserByUserNameResp, error)
 	GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error)
+	GetUserCommitRecord(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -433,6 +445,9 @@ func (UnimplementedUserServer) GetUserByUserName(context.Context, *GetUserByUser
 }
 func (UnimplementedUserServer) GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserById not implemented")
+}
+func (UnimplementedUserServer) GetUserCommitRecord(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserCommitRecord not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -519,6 +534,24 @@ func _User_GetUserById_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_GetUserCommitRecord_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserCommitRecordReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GetUserCommitRecord(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_GetUserCommitRecord_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GetUserCommitRecord(ctx, req.(*GetUserCommitRecordReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -541,6 +574,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserById",
 			Handler:    _User_GetUserById_Handler,
+		},
+		{
+			MethodName: "GetUserCommitRecord",
+			Handler:    _User_GetUserCommitRecord_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

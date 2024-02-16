@@ -1,5 +1,5 @@
 import HttpServer from '../http/index';
-import { UserType } from '@/types/User';
+import { UserType, Commits } from '@/types/User';
 const login = (data:{
 	username: string;
     password: string;
@@ -19,7 +19,15 @@ const register = (data:{
     data
 })
 
+const commit_records = (data: {
+    user_id : number,
+}) => HttpServer.request<typeof data, Commits>({
+    url: `api/user/profile/${data.user_id}/commit-record`,
+    method: "GET",
+})
+
 export {
 	login,
     register,
+    commit_records,
 }
