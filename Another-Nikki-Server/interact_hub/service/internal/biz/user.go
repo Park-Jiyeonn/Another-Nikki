@@ -11,6 +11,7 @@ type UserRepo interface {
 	GetUserById(ctx context.Context, req *GetUserByIdReq) (*GetUserByIdResp, error)
 	GetUserCommitRecord(ctx context.Context, req *GetUserCommitRecordReq) (resp []*GetUserCommitRecordResp, err error)
 	GetUserSumCommit(ctx context.Context, req *GetUserSumCommitReq) (resp *GetUserSumCommitResp, err error)
+	UpdateUser(ctx context.Context, req *UpdateUserReq) (resp *UpdateUserResp, err error)
 }
 
 type RegisterReq struct {
@@ -66,4 +67,12 @@ type GetUserSumCommitReq struct {
 }
 type GetUserSumCommitResp struct {
 	Sum int64
+}
+
+type UpdateUserReq struct {
+	UserId   int64
+	Username string
+	Avatar   string
+}
+type UpdateUserResp struct {
 }

@@ -87,3 +87,10 @@ func (s *userServiceImpl) GetUserSumCommit(ctx context.Context, req *biz.GetUser
 	err = s.db.QueryRowContext(ctx, "SELECT COUNT(judge_id) from judges where user_id = ?", req.UserId).Scan(&resp.Sum)
 	return
 }
+
+func (s *userServiceImpl) UpdateUser(ctx context.Context, req *biz.UpdateUserReq) (resp *biz.UpdateUserResp, err error) {
+	resp = new(biz.UpdateUserResp)
+	sqlStr := "UPDATE users set username = ?, avatar = ? where user_id = ?"
+	_, err = s.db.ExecContext(ctx, sqlStr, req.Username, req.Avatar, req.UserId)
+	return
+}

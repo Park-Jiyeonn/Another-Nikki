@@ -11,18 +11,35 @@
         </el-menu-item>
         <div class="flex-grow" />
         <el-menu-item index="4" @click="router.push('/profile')">
-            <el-avatar src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"/>
+            <el-dropdown trigger="click">
+                <el-avatar :src="user_avatar"/>
+                <template #dropdown> <el-dropdown-menu>
+                    <el-dropdown-item> 我的主页 </el-dropdown-item>
+                    <el-dropdown-item @click="logout()"> 退出登录 </el-dropdown-item>
+                  </el-dropdown-menu> </template>
+            </el-dropdown>
         </el-menu-item>
     </el-menu>
 </template>
   
 <script lang="ts" setup>
+import { ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
-
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
-
+import { getCookies, removeCookies } from "@/hooks/useCookies";
 const router = useRouter()
 const isLoggedIn = useIsLoggedIn()
+const user_avatar = ref(getCookies("avatar"))
+const logout = async () => {
+    removeCookies("username")
+    removeCookies("avatar")
+    removeCookies("user_id")
+    removeCookies("token")
+    location.reload();
+}
+watch(() => {
+  user_avatar.value = getCookies("avatar");
+});
 </script>
 
 <style>

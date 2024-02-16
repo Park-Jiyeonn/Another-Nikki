@@ -353,6 +353,7 @@ const (
 	User_GetUserById_FullMethodName               = "/service.problem.api.User/GetUserById"
 	User_GetUserCommitRecordByPage_FullMethodName = "/service.problem.api.User/GetUserCommitRecordByPage"
 	User_GetUserSumCommit_FullMethodName          = "/service.problem.api.User/GetUserSumCommit"
+	User_UpdateUser_FullMethodName                = "/service.problem.api.User/UpdateUser"
 )
 
 // UserClient is the client API for User service.
@@ -365,6 +366,7 @@ type UserClient interface {
 	GetUserById(ctx context.Context, in *GetUserByIdReq, opts ...grpc.CallOption) (*GetUserByIdResp, error)
 	GetUserCommitRecordByPage(ctx context.Context, in *GetUserCommitRecordReq, opts ...grpc.CallOption) (*GetUserCommitRecordResp, error)
 	GetUserSumCommit(ctx context.Context, in *GetUserSumCommitReq, opts ...grpc.CallOption) (*GetUserSumCommitResp, error)
+	UpdateUser(ctx context.Context, in *UpdateUserReq, opts ...grpc.CallOption) (*UpdateUserResp, error)
 }
 
 type userClient struct {
@@ -429,6 +431,15 @@ func (c *userClient) GetUserSumCommit(ctx context.Context, in *GetUserSumCommitR
 	return out, nil
 }
 
+func (c *userClient) UpdateUser(ctx context.Context, in *UpdateUserReq, opts ...grpc.CallOption) (*UpdateUserResp, error) {
+	out := new(UpdateUserResp)
+	err := c.cc.Invoke(ctx, User_UpdateUser_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -439,6 +450,7 @@ type UserServer interface {
 	GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error)
 	GetUserCommitRecordByPage(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error)
 	GetUserSumCommit(context.Context, *GetUserSumCommitReq) (*GetUserSumCommitResp, error)
+	UpdateUser(context.Context, *UpdateUserReq) (*UpdateUserResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -463,6 +475,9 @@ func (UnimplementedUserServer) GetUserCommitRecordByPage(context.Context, *GetUs
 }
 func (UnimplementedUserServer) GetUserSumCommit(context.Context, *GetUserSumCommitReq) (*GetUserSumCommitResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetUserSumCommit not implemented")
+}
+func (UnimplementedUserServer) UpdateUser(context.Context, *UpdateUserReq) (*UpdateUserResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateUser not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -585,6 +600,24 @@ func _User_GetUserSumCommit_Handler(srv interface{}, ctx context.Context, dec fu
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_UpdateUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateUserReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).UpdateUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_UpdateUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).UpdateUser(ctx, req.(*UpdateUserReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -615,6 +648,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetUserSumCommit",
 			Handler:    _User_GetUserSumCommit_Handler,
+		},
+		{
+			MethodName: "UpdateUser",
+			Handler:    _User_UpdateUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

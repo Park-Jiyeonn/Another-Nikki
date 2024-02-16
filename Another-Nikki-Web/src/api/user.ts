@@ -32,9 +32,19 @@ const count = () => HttpServer.request<null,{sum:number}>({
     method: "GET",
 })
 
+const update = (data:{
+	username: string,
+    avatar: string,
+}) => HttpServer.request<typeof data, UserType>({
+    url: `/api/user/update`,
+    method: "POST",
+    data
+})
+
 export {
 	login,
     register,
     commit_records,
     count,
+    update,
 }

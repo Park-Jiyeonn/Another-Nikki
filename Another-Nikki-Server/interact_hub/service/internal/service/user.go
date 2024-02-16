@@ -148,3 +148,14 @@ func (s *UserService) GetUserSumCommit(ctx context.Context, _ *pb.GetUserSumComm
 	resp.Sum = res.Sum
 	return
 }
+
+func (s *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (resp *pb.UpdateUserResp, err error) {
+	resp = new(pb.UpdateUserResp)
+	userId, _ := jwt.GetUserFromCtx(ctx)
+	_, err = s.dao.UpdateUser(ctx, &biz.UpdateUserReq{
+		UserId:   userId,
+		Username: req.Username,
+		Avatar:   req.Avatar,
+	})
+	return
+}

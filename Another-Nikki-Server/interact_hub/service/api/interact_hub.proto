@@ -146,6 +146,12 @@ service User {
       get: "/api/user/profile/commit-record/sum"
     };
   };
+  rpc UpdateUser (UpdateUserReq) returns (UpdateUserResp) {
+    option (google.api.http) = {
+      post: "/api/user/update"
+      body: "*"
+    };
+  };
 }
 message LoginReq {
   string username = 1;
@@ -207,6 +213,13 @@ message GetUserSumCommitReq {
 }
 message GetUserSumCommitResp {
   int64 sum = 1;
+}
+
+message UpdateUserReq {
+  string username = 1;
+  string avatar = 2;
+}
+message UpdateUserResp {
 }
 
 service Comment {
