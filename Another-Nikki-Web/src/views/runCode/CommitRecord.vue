@@ -34,7 +34,7 @@ get_count()
         height="500"  
         >
             <el-table-column prop="judge_id" label="#" width="70" />
-            <el-table-column prop="problem_name" label="题目" width="100"/>
+            <el-table-column prop="problem_name" label="题目" width="150"/>
             <el-table-column prop="compile_status" label="编译结果" width="100"/>
             <el-table-column prop="judge_status" label="运行结果" width="100"/>
             <el-table-column prop="cpu_time_used" label="运行时间" width="100"/>
