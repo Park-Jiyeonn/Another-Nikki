@@ -25,6 +25,7 @@ type GetUserByUserNameResp struct {
 	Username string
 	Password string
 	Avatar   string
+	UserId   int64
 }
 
 type GetUserByIdReq struct {
@@ -33,5 +34,7 @@ type GetUserByIdReq struct {
 
 type GetUserByIdResp struct {
 	Username string
+	Password string
 	Avatar   string
+	UserId   int64
 }

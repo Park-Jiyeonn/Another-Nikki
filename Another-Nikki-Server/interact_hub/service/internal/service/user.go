@@ -40,9 +40,16 @@ func (s *UserService) Login(ctx context.Context, req *pb.LoginReq) (resp *pb.Log
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.Password))
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("登录失败，请重试")
 	}
-
+	resp.Token, err = jwt.GenToken(user.UserId, req.Username)
+	if err != nil {
+		log.Error(ctx, "gen jwt token err: %v", err)
+		return
+	}
+	resp.Username = req.Username
+	resp.UserId = user.UserId
+	resp.Avatar = user.Avatar
 	return
 }
 func (s *UserService) Register(ctx context.Context, req *pb.RegisterReq) (resp *pb.RegisterResp, err error) {

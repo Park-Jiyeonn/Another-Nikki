@@ -11,12 +11,11 @@ const password = ref('')
 
 const login = async () => {
     const ret = await User.login({username:username.value, password:password.value})
-    if (ret.data.code != 404) {
+    if (ret.data.code == 200) {
         setCookies("token", ret.data.data.token)
         setCookies("user_id", ret.data.data.user_id)
-        setCookies("user_name", ret.data.data.user_name)
-        setCookies("user_avatar", ret.data.data.avatar)
-        router.push("/jelly")
+        setCookies("username", ret.data.data.username)
+        setCookies("avatar", ret.data.data.avatar)
         return ElMessage.success("登录成功")
     }
     else {

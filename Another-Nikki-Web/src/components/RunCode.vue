@@ -21,12 +21,16 @@ import {
 
 import { CodeRet } from '@/types/runCode';
 import { RunCode } from '@/api'
+import { getCookies } from "@/hooks/useCookies";
 
 const textarea = ref('')
 const loading = ref(false);
 const inputArea = ref("")
 const language = ref('c++')
 const codeLoading = ref(false)
+
+const user_id = getCookies("user_id")
+const user_name = getCookies("username")
 
 const codeMsg = ref<CodeRet>({
     state: "",
@@ -79,9 +83,8 @@ const runCode = async (code: string, input: string) => {
         return ElMessage.error("运行失败！")
     }
 }
-const judgeCode = async (user_id : number, user_name : string, problem_id:number, code: string) => {
+const judgeCode = async (code: string) => {
     codeLoading.value = true
-
     codeMsg.value = {
         state: "",
         message: "提交中...",
@@ -132,7 +135,7 @@ const judgeCode = async (user_id : number, user_name : string, problem_id:number
             <el-col :span="10">
                 <el-row v-if="submitCode" style="margin-top: 30px;">
                     <el-button class="button" type="primary" :loading="codeLoading"
-                        @click="judgeCode(1,'Jiyeon',1,textarea)">
+                        @click="judgeCode(textarea)">
                         提交代码
                     </el-button>
                 </el-row>

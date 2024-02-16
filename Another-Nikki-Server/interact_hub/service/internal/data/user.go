@@ -14,7 +14,7 @@ type userServiceImpl struct {
 //    user_id SERIAL PRIMARY KEY,
 //    username VARCHAR(255) UNIQUE NOT NULL,
 //    password VARCHAR(255) NOT NULL,
-//    avatar VARCHAR(255),
+//    avatar VARCHAR(255) DEFAULT '',
 //    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // );
@@ -40,11 +40,16 @@ func (s *userServiceImpl) Register(ctx context.Context, req *biz.RegisterReq) (r
 
 func (s *userServiceImpl) GetUserByUserName(ctx context.Context, req *biz.GetUserByUserNameReq) (*biz.GetUserByUserNameResp, error) {
 	var username, avatar, password string
-	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, password FROM users WHERE username = ?", req.Username).Scan(&username, &avatar, &password)
+	var user_id int64
+	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, password, user_id FROM users WHERE username = ?", req.Username).Scan(&username, &avatar, &password, &user_id)
 	if err != nil {
 		return nil, err
 	}
-	return &biz.GetUserByUserNameResp{Username: username, Avatar: avatar}, nil
+	return &biz.GetUserByUserNameResp{Username: username,
+		Avatar:   avatar,
+		UserId:   user_id,
+		Password: password,
+	}, nil
 }
 
 func (s *userServiceImpl) GetUserById(ctx context.Context, req *biz.GetUserByIdReq) (*biz.GetUserByIdResp, error) {
@@ -53,5 +58,8 @@ func (s *userServiceImpl) GetUserById(ctx context.Context, req *biz.GetUserByIdR
 	if err != nil {
 		return nil, err
 	}
-	return &biz.GetUserByIdResp{Username: username, Avatar: avatar}, nil
+	return &biz.GetUserByIdResp{
+		Username: username,
+		Avatar:   avatar,
+	}, nil
 }

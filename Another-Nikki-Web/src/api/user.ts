@@ -11,8 +11,8 @@ const login = (data:{
 
 const register = (data:{
 	username: string;
-    password1: string;
-    password2: string;
+    password: string;
+    confirm_password: string;
 }) => HttpServer.request<typeof data,UserType>({
     url: `/api/user/register`,
     method: "POST",

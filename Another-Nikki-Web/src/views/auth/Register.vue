@@ -11,15 +11,14 @@ const password1 = ref('')
 const password2 = ref('')
 
 const register = async () => {
-    const ret = await User.register({username:username.value, password1:password1.value, password2:password2.value})
+    const ret = await User.register({username:username.value, password:password1.value, confirm_password:password2.value})
     if (ret.data.code != 200) {
         return ElMessage.warning(ret.data.message ?? 'Something went wrong, please try again.')
     }
     else {
         setCookies("token", ret.data.data.token)
         setCookies("user_id", ret.data.data.user_id)
-        setCookies("user_name", ret.data.data.user_name)
-        router.push("/runcode")
+        setCookies("username", ret.data.data.username)
         return ElMessage.success("注册成功，为您自动跳转")
     }
 }

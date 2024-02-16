@@ -143,6 +143,9 @@ message LoginReq {
 }
 message LoginResp {
   string token = 1;
+  string username = 2;
+  int64 user_id = 3;
+  string avatar = 4;
 }
 
 message RegisterReq {
