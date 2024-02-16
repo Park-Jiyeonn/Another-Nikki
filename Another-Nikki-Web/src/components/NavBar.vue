@@ -23,7 +23,7 @@
 </template>
   
 <script lang="ts" setup>
-import { ref, watch } from 'vue'
+import { ref, watchEffect } from 'vue'
 import { useRouter } from 'vue-router'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
 import { getCookies, removeCookies } from "@/hooks/useCookies";
@@ -37,7 +37,7 @@ const logout = async () => {
     removeCookies("token")
     location.reload();
 }
-watch(() => {
+watchEffect(() => {
   user_avatar.value = getCookies("avatar");
 });
 </script>

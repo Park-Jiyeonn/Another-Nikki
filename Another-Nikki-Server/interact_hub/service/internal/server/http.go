@@ -23,6 +23,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	problem *service.ProblemService,
 	processingService *service.CodeProcessingService,
 	userService *service.UserService,
+	articleService *service.ArticleService,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -57,6 +58,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	api.RegisterProblemHTTPServer(srv, problem)
 	api.RegisterCodeProcessingHTTPServer(srv, processingService)
 	api.RegisterUserHTTPServer(srv, userService)
+	api.RegisterArticleHTTPServer(srv, articleService)
 	return srv
 }
 
@@ -107,8 +109,7 @@ func ErrorEncoder(w http.ResponseWriter, r *http.Request, err error) {
 func NewWhiteListMatcher() selector.MatchFunc {
 	whiteList := make(map[string]struct{})
 	whiteList["/service.problem.api.Problem/GetProblemById"] = struct{}{}
-	//whiteList["/service.problem.api.Problem/GetProblemByPage"] = struct{}{}
-	whiteList["/service.problem.api.Problem/PostProblem"] = struct{}{}
+	whiteList["/service.problem.api.Problem/GetProblemByPage"] = struct{}{}
 	whiteList["/service.problem.api.User/Register"] = struct{}{}
 	whiteList["/service.problem.api.User/Login"] = struct{}{}
 	return func(ctx context.Context, operation string) bool {

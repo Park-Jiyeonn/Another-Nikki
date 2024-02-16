@@ -53,6 +53,7 @@ type GetUserCommitRecordReq struct {
 
 type GetUserCommitRecordResp struct {
 	JudgeId       int64     `db:"judge_id"`
+	ProblemId     int64     `db:"problem_id"`
 	ProblemName   string    `db:"problem_name"`
 	CompileStatus string    `db:"compile_status"`
 	JudgeStatus   string    `db:"judge_status"`

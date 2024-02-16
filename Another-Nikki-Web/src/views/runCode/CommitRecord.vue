@@ -43,6 +43,12 @@ const update_user = async() => {
         return ElMessage.error(ret.data.message)
     }
 }
+const handleRowClick = async(row: Commits, column: any, event: Event) => {
+    if (column.property === 'problem_name') {
+      const problemId: number = row.problem_id;
+      window.open(`${import.meta.env.VITE_HTTP_URL}/problem/${problemId}`, '_blank');
+    }
+}
 get_count()
 get_commits_by_page(1)
 </script>
@@ -84,12 +90,9 @@ get_commits_by_page(1)
         </el-row>
     </ContentBase>
     <ContentBase>
-        <el-table
-        :data="commits" 
-        height="500"  
-        >
+        <el-table :data="commits" height="500" @row-click="handleRowClick">
             <el-table-column prop="judge_id" label="#" width="70" />
-            <el-table-column prop="problem_name" label="题目" width="150"/>
+            <el-table-column prop="problem_name" label="题目" width="150" class-name="custom-hover-column"/>
             <el-table-column prop="compile_status" label="编译结果" width="100"/>
             <el-table-column prop="judge_status" label="运行结果" width="100"/>
             <el-table-column prop="cpu_time_used" label="运行时间" width="100"/>
@@ -100,3 +103,9 @@ get_commits_by_page(1)
         <el-pagination background layout="prev, pager, next" :total="sum" v-model:current-page="currentPage"  :page-size="20" @current-change="get_commits_by_page(currentPage)" />
     </ContentBase>
 </template>
+<style>
+.custom-hover-column:hover {
+  cursor: pointer;
+  color: chocolate;
+}
+</style>

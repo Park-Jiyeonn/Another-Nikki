@@ -204,6 +204,7 @@ message Commits {
   string memory_used = 6;
   string language = 7;
   string created_time = 8;
+  int64 problem_id = 9;
 }
 message GetUserCommitRecordResp {
   repeated Commits commits = 1;

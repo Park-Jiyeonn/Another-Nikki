@@ -14,4 +14,5 @@ export interface Commits {
     memory_used: string,
     language: string,
     created_time: string,
+    problem_id :number,
 }

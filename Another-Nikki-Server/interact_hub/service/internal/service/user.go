@@ -133,6 +133,7 @@ func (s *UserService) GetUserCommitRecordByPage(ctx context.Context, req *pb.Get
 			MemoryUsed:    val.MemoryUsed,
 			Language:      val.Language,
 			CreatedTime:   val.CreatedTime.Format(time.DateTime),
+			ProblemId:     val.ProblemId,
 		})
 	}
 	return
