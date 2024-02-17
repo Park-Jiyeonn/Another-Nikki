@@ -15,7 +15,7 @@ const user_avatar = ref("")
 const username = ref("")
 const user_description = ref("")
 const get_commits_by_page = async (page : number, user_id : number) => {
-    const ret = await User.commit_records({user_id : user_id, page_num: page, page_size: 20 })
+    const ret = await User.commit_records({user_id : user_id, page_num: page, page_size: 10 })
     if (ret.data.code == 200) {
         commits.value = ret.data.data.commits
     }
@@ -50,18 +50,22 @@ const handleRowClick = async(row: Commits, column: any, event: Event) => {
 }
 function formatJudgeStatus({ row, column, rowIndex, columnIndex }: { row: Commits, column: any, rowIndex: number, columnIndex: number }){
     if (column.property === 'compile_status') {
-      if (row.compile_status !== 'Compile Success') {
-        return { cursor:'pointer',color: '#409eff',}
-      }
+        if (row.compile_status === 'Compile Failed') {
+            return { cursor:'pointer',color: 'red',}
+        } 
+        if (row.compile_status !== 'Compile Success') {
+            return { cursor:'pointer',color: '#409eff',}
+        }
+        return { cursor:'pointer',}
     }
     if (column.property === 'judge_status') {
-      if (row.compile_status === 'Wrong Answer') {
-        return { cursor:'pointer',color: 'red',}
-      }
-      if (row.compile_status === 'Accept') {
-        return { cursor:'pointer',color: '#25bb9b',}
-      }
-      return { cursor:'pointer',}
+        if (row.judge_status === 'Wrong Answer') {
+            return { cursor:'pointer',color: 'red',}
+        }
+        if (row.judge_status === 'Accept') {
+            return { cursor:'pointer',color: '#25bb9b',}
+        }
+        return { cursor:'pointer',}
     }
 }
 get_user(user_id)
@@ -98,7 +102,7 @@ get_commits_by_page(1, user_id)
             <el-table-column prop="language" label="使用语言" width="100"/>
             <el-table-column prop="created_time" label="提交时间" width="180"/>
         </el-table>
-        <el-pagination background layout="prev, pager, next" :total="sum" v-model:current-page="currentPage"  :page-size="20" @current-change="get_commits_by_page(currentPage)" />
+        <el-pagination background layout="prev, pager, next" :total="sum" v-model:current-page="currentPage"  :page-size="10" @current-change="get_commits_by_page(currentPage, user_id)" />
     </ContentBase>
 </template>
 <style>

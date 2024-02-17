@@ -34,7 +34,8 @@ get_commit_byId(judge_id)
         <span class="custom-hover-column" @click="router.push({ path: `/profile/${commit.user_id}` })" style="color: #25bb9b"> {{commit.username}}</span> 提交的代码 
         <br/><br/>
         <div style="font-size: 90%;"> 提交时间: {{commit.created_time}} &emsp;  语言: {{commit.language}} &emsp;  运行时间: {{commit.cpu_time_used}} &emsp;  占用内存: {{commit.memory_used}}</div> 
-        <div style="font-size: 90%;"> 运行状态: {{commit.judge_status}}</div> 
+        <div style="font-size: 90%;"> 运行状态: {{commit.judge_status}}</div>
+        <div style="font-size: 90%;"> 编译结果: {{commit.compile_status}}, {{commit.compile_log}}</div>
         <el-divider />
         <div class="content markdown-body" v-html="renderMarkdown(`${commit.code}`)" />
         <el-divider />

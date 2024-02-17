@@ -1,7 +1,7 @@
 package service
 
 import (
-	codeService "Another-Nikki/code_processing/service/api"
+	codeService "Another-Nikki/interact_hub/service/api"
 	"Another-Nikki/judge/job/internal/data"
 	judge "Another-Nikki/judge/service/api"
 	"Another-Nikki/pkg/log"
@@ -16,16 +16,19 @@ type JudgeBinlogConsumer struct {
 }
 
 type Judge struct {
-	ID            string
-	UserID        string `json:"user_id"`
+	JudgeId       string `json:"judge_id"`
+	CreatedTime   string `json:"created_time"`
+	UserId        string `json:"user_id"`
 	UserName      string `json:"user_name"`
-	ProblemID     string `json:"problem_id"`
+	ProblemId     string `json:"problem_id"`
 	ProblemName   string `json:"problem_name"`
 	Language      string `json:"language"`
 	Code          string `json:"code"`
-	CompileStatus string `json:"compile_status"`
 	CompileLog    string `json:"compile_log"`
+	CompileStatus string `json:"compile_status"`
 	JudgeStatus   string `json:"judge_status"`
+	CpuTimeUsed   string `json:"cpu_time_used"`
+	MemoryUsed    string `json:"memory_used"`
 }
 
 type Value struct {
@@ -48,16 +51,28 @@ func (s *JudgeBinlogConsumer) Handle(ctx context.Context, _ string, _ broker.Hea
 	if msg.Type != "INSERT" {
 		return
 	}
-	codeId, err := strconv.ParseInt(msg.NewData[0].ID, 10, 64)
+	if msg == nil || len(msg.NewData) == 0 {
+		log.Error(ctx, "binlog message was nil")
+		return
+	}
+	if len(msg.NewData) != 1 {
+		log.Error(ctx, "binlog message was not 1")
+		return
+	}
+	return s.judge(ctx, msg.NewData[0])
+}
+
+func (s *JudgeBinlogConsumer) judge(ctx context.Context, data *Judge) (err error) {
+	judgeId, err := strconv.ParseInt(data.JudgeId, 10, 64)
 	if err != nil {
 		log.Error(ctx, "judge err: %v", err)
 		return
 	}
 
 	_, err = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
-		CodeId:     codeId,
-		Status:     "Compiling...",
-		CompileLog: "",
+		CodeId:        judgeId,
+		CompileStatus: "Compiling",
+		CompileLog:    "",
 	})
 	if err != nil {
 		log.Error(ctx, "modify compile status err: %v", err)
@@ -66,24 +81,30 @@ func (s *JudgeBinlogConsumer) Handle(ctx context.Context, _ string, _ broker.Hea
 
 	var judgeResp *judge.JudgeResp
 	judgeResp, err = s.judgeClient.Judge(ctx, &judge.JudgeReq{
-		Code:        msg.NewData[0].Code,
-		Language:    judge.Language(judge.Language_value[msg.NewData[0].Language]),
-		ProblemName: msg.NewData[0].ProblemName,
+		Code:        data.Code,
+		Language:    judge.Language(judge.Language_value[data.Language]),
+		ProblemName: data.ProblemId + "." + data.ProblemName,
 	})
 	if err != nil {
 		log.Error(ctx, "judge err: %v", err)
+		_, _ = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
+			CodeId:        judgeId,
+			CompileStatus: "未知错误",
+			CompileLog:    err.Error(),
+		})
+		return
 	}
 	if judgeResp.IsCompileError {
 		_, _ = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
-			CodeId:     codeId,
-			Status:     judgeResp.CompileState,
-			CompileLog: judgeResp.CompileLog,
+			CodeId:        judgeId,
+			CompileStatus: judgeResp.CompileState,
+			CompileLog:    judgeResp.CompileLog,
 		})
 		return
 	}
 
 	_, err = s.codeProcessingClient.UpdateCodeJudgeStatus(ctx, &codeService.UpdateCodeJudgeStatusReq{
-		CodeId:        codeId,
+		CodeId:        judgeId,
 		CompileStatus: judgeResp.CompileState,
 		JudgeStatus:   judgeResp.JudgeResult,
 		CpuTimeUsed:   judgeResp.CpuTimeUsed,

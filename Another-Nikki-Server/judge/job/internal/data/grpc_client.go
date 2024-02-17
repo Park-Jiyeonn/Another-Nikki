@@ -1,7 +1,7 @@
 package data
 
 import (
-	codeService "Another-Nikki/code_processing/service/api"
+	codeService "Another-Nikki/interact_hub/service/api"
 	"Another-Nikki/judge/job/internal/conf"
 	judge "Another-Nikki/judge/service/api"
 	etcdregitry "github.com/go-kratos/kratos/contrib/registry/etcd/v2"

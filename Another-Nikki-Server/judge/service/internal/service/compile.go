@@ -17,6 +17,8 @@ const (
 	PythonFileName = "py.py"
 )
 
+const compileCmd = "docker exec oj sh -c 'cd tmp-%s; "
+
 func compile(ctx context.Context, ID, code, input string, language api.Language) (compileLog string, isCompileError bool) {
 	var (
 		err            error
@@ -51,14 +53,14 @@ func compile(ctx context.Context, ID, code, input string, language api.Language)
 		log.Error(ctx, "compile error, err = %v, code = %v, language = %v", err, code, language)
 
 		var readErr error
-		compileLogByte, readErr = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
+		compileLogByte, readErr = os.ReadFile(fmt.Sprintf(OnlineJudgePath+"tmp-%s/compile.log", ID))
 		compileLog = string(compileLogByte)
 		isCompileError = true
 
 		log.Error(ctx, "compile log = %v, read compile err = %v", compileLog, readErr)
 		return
 	}
-	compileLogByte, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/compile.log", ID))
+	compileLogByte, err = os.ReadFile(fmt.Sprintf(OnlineJudgePath+"tmp-%s/compile.log", ID))
 	if err != nil {
 		compileLog = "服务出错"
 		isCompileError = true
@@ -78,7 +80,7 @@ func cpp_compile(ID, code, input string) (cmd string, err error) {
 	if err = writeInFile(ID, code, input, CppFileName); err != nil {
 		return
 	}
-	cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; g++ %s -o %s -O2 -std=c++11 2> compile.log'", ID, CppFileName, CppAppName)
+	cmd = fmt.Sprintf(compileCmd+"g++ %s -o %s -O2 -std=c++11 2> compile.log'", ID, CppFileName, CppAppName)
 	return
 }
 
@@ -86,7 +88,7 @@ func java_compile(ID, code, input string) (cmd string, err error) {
 	if err = writeInFile(ID, code, input, JavaFileName); err != nil {
 		return
 	}
-	cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; javac %s 2> compile.log'", ID, JavaFileName)
+	cmd = fmt.Sprintf(compileCmd+"javac %s 2> compile.log'", ID, JavaFileName)
 	return
 }
 
@@ -94,8 +96,7 @@ func golang_compile(ID, code, input string) (cmd string, err error) {
 	if err = writeInFile(ID, code, input, GolangFileName); err != nil {
 		return
 	}
-	// docker run -d -i -m 256m --name oj -v $(pwd)/onlineJudge:/dox oj:1
-	cmd = fmt.Sprintf("docker exec oj sh -c 'cd tmp-%s; go build %s 2> compile.log'", ID, GolangFileName)
+	cmd = fmt.Sprintf(compileCmd+"go build %s 2> compile.log'", ID, GolangFileName)
 	return
 }
 

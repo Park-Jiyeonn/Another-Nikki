@@ -79,5 +79,6 @@ func (s *CodeProcessingService) GetCommitByJudgeId(ctx context.Context, req *pb.
 	resp.ProblemName = res.ProblemName
 	resp.Username = res.UserName
 	resp.UserId = res.UserId
+	resp.CompileLog = res.CompileLog.String
 	return
 }

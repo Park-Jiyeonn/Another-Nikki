@@ -28,7 +28,7 @@ func NewCodeProcessingImpl(data *Data) biz.CodeDataRepo {
 //    language VARCHAR(255) NOT NULL DEFAULT '',
 //    code TEXT NOT NULL,
 //    compile_status VARCHAR(255) NOT NULL DEFAULT 'in queue',
-//    compile_log VARCHAR(255) NOT NULL DEFAULT '',
+//    compile_log TEXT,
 //    judge_status VARCHAR(255) NOT NULL DEFAULT '-',
 //    cpu_time_used VARCHAR(255) NOT NULL DEFAULT '-',
 //    memory_used VARCHAR(255) NOT NULL DEFAULT '-'
@@ -73,7 +73,7 @@ func (c *codeProcessingImpl) UpdateCodeJudgeStatus(ctx context.Context, req *biz
 }
 
 func (c *codeProcessingImpl) GetCommitByJudgeId(ctx context.Context, req *biz.GetCommitByJudgeIdReq) (resp *biz.GetCommitByJudgeIdResp, err error) {
-	const sqlStr = "SELECT problem_name, compile_status, judge_status, cpu_time_used, memory_used, language, created_time, problem_id, code, user_name, user_id from judges where judge_id = ?"
+	const sqlStr = "SELECT problem_name, compile_status, judge_status, cpu_time_used, memory_used, language, created_time, problem_id, code, user_name, user_id, compile_log from judges where judge_id = ?"
 	resp = new(biz.GetCommitByJudgeIdResp)
 	err = c.db.GetContext(ctx, resp, sqlStr, req.JudgeId)
 	return

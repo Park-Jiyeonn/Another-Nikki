@@ -19,7 +19,7 @@ import (
 )
 
 var (
-	ServiceName = "Another-Nikki.Problem-Service"
+	ServiceName = "Another-Nikki.Interact-Service"
 	// flagconf is the config flag.
 	flagconf string
 

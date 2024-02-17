@@ -7,6 +7,8 @@ import (
 	"strings"
 )
 
+const OnlineJudgePath = "../../onlineJudge/"
+
 func writeInFile(ID, code, input, filename string) (err error) {
 	defer func() {
 		if err != nil {
@@ -24,7 +26,7 @@ func writeInFile(ID, code, input, filename string) (err error) {
 
 func writeContentInFile(ID, content, filename string) (err error) {
 	var f *os.File
-	dirPath := fmt.Sprintf("./onlineJudge/tmp-%s", ID)
+	dirPath := fmt.Sprintf(OnlineJudgePath+"tmp-%s", ID)
 	err = os.MkdirAll(dirPath, os.ModePerm)
 	if err != nil {
 		return
@@ -44,7 +46,7 @@ func writeContentInFile(ID, content, filename string) (err error) {
 func readJudgeRet(ID string) (memoryUsed, cpuTimeUsed, JudgeResult string, err error) {
 	defer deleteFile(ID)
 	var ret []byte
-	if ret, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/data.out", ID)); err != nil {
+	if ret, err = os.ReadFile(fmt.Sprintf(OnlineJudgePath+"tmp-%s/data.out", ID)); err != nil {
 		return
 	}
 	retString := string(ret)
@@ -59,7 +61,7 @@ func readJudgeRet(ID string) (memoryUsed, cpuTimeUsed, JudgeResult string, err e
 func readRunRet(ID string) (output, memoryUsed, cpuTimeUsed string, err error) {
 	defer deleteFile(ID)
 	var ret []byte
-	if ret, err = os.ReadFile(fmt.Sprintf("./onlineJudge/tmp-%s/data.out", ID)); err != nil {
+	if ret, err = os.ReadFile(fmt.Sprintf(OnlineJudgePath+"tmp-%s/data.out", ID)); err != nil {
 		return
 	}
 	retString := string(ret)
@@ -72,6 +74,6 @@ func readRunRet(ID string) (output, memoryUsed, cpuTimeUsed string, err error) {
 }
 
 func deleteFile(ID string) {
-	dirPath := fmt.Sprintf("./onlineJudge/tmp-%s", ID)
+	dirPath := fmt.Sprintf(OnlineJudgePath+"tmp-%s", ID)
 	_ = os.RemoveAll(dirPath)
 }

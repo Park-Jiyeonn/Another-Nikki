@@ -8,12 +8,12 @@ import (
 	"golang.org/x/net/context"
 )
 
-const CodeProcessingAppID = "Another-Nikki.InteractHub-Service"
+const InteractHubAppID = "Another-Nikki.Interact-Service"
 
-func NewClientProblem(r registry.Discovery) ProblemClient {
+func NewClientCodeProcessing(r registry.Discovery) CodeProcessingClient {
 	connGRPC, err := grpc.DialInsecure(
 		context.Background(),
-		grpc.WithEndpoint("discovery://default/"+CodeProcessingAppID), // 服务发现
+		grpc.WithEndpoint("discovery://default/"+InteractHubAppID), // 服务发现
 		grpc.WithDiscovery(r), // 传入etcd registry
 		grpc.WithMiddleware(
 			tracing.Client(),
@@ -25,5 +25,5 @@ func NewClientProblem(r registry.Discovery) ProblemClient {
 	if err != nil {
 		panic(err)
 	}
-	return NewProblemClient(connGRPC)
+	return NewCodeProcessingClient(connGRPC)
 }

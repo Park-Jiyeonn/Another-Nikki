@@ -350,4 +350,5 @@ message GetCommitByJudgeIdResp {
   string code = 9;
   string username = 10;
   int64 user_id = 11;
+  string compile_log = 12;
 }
