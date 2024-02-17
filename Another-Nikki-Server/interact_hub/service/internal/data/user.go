@@ -15,6 +15,7 @@ type userServiceImpl struct {
 //    username VARCHAR(255) UNIQUE NOT NULL,
 //    password VARCHAR(255) NOT NULL,
 //    avatar VARCHAR(255) DEFAULT '',
+//	  description VARCHAR(255) DEFAULT '这个人很懒，没有个性签名',
 //    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // );

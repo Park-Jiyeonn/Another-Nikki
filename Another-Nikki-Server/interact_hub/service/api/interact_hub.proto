@@ -126,19 +126,15 @@ service User {
       body: "*"
     };
   };
-  rpc GetUserByUserName (GetUserByUserNameReq) returns (GetUserByUserNameResp) {
-    option (google.api.http) = {
-      get: "/api/user/{username}"
-    };
-  };
+  rpc GetUserByUserName (GetUserByUserNameReq) returns (GetUserByUserNameResp);
   rpc GetUserById (GetUserByIdReq) returns (GetUserByIdResp) {
     option (google.api.http) = {
-      get: "/api/user/{user_id}"
+      get: "/api/user/profile/{user_id}"
     };
   };
   rpc GetUserCommitRecordByPage (GetUserCommitRecordReq) returns (GetUserCommitRecordResp) {
     option (google.api.http) = {
-      get: "/api/user/profile/commit-record/{page_num}/{page_size}"
+      get: "/api/user/profile/{user_id}/commit-record/{page_num}/{page_size}"
     };
   }
   rpc GetUserSumCommit (GetUserSumCommitReq) returns (GetUserSumCommitResp) {
@@ -194,6 +190,7 @@ message GetUserByIdResp {
 message GetUserCommitRecordReq {
   int64 page_size = 1;
   int64 page_num = 2;
+  int64 user_id = 3;
 }
 message Commits {
   int64 judge_id = 1;
@@ -347,4 +344,6 @@ message GetCommitByJudgeIdResp {
   string created_time = 7;
   int64 problem_id = 8;
   string code = 9;
+  string username = 10;
+  int64 user_id = 11;
 }

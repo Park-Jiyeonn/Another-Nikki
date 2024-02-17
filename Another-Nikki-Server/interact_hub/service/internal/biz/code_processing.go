@@ -2,6 +2,7 @@ package biz
 
 import (
 	"golang.org/x/net/context"
+	"time"
 )
 
 type CodeDataRepo interface {
@@ -38,13 +39,15 @@ type GetCommitByJudgeIdReq struct {
 	JudgeId int64 `db:"judge_id"`
 }
 type GetCommitByJudgeIdResp struct {
-	ProblemName   string `db:"problem_name"`
-	CompileStatus string `db:"compile_status"`
-	JudgeStatus   string `db:"judge_status"`
-	CpuTimeUsed   string `db:"cpu_time_used"`
-	MemoryUsed    string `db:"memory_used"`
-	Language      string `db:"language"`
-	CreatedTime   string `db:"created_time"`
-	ProblemId     int64  `db:"problem_id"`
-	Code          string `db:"code"`
+	ProblemName   string    `db:"problem_name"`
+	CompileStatus string    `db:"compile_status"`
+	JudgeStatus   string    `db:"judge_status"`
+	CpuTimeUsed   string    `db:"cpu_time_used"`
+	MemoryUsed    string    `db:"memory_used"`
+	Language      string    `db:"language"`
+	CreatedTime   time.Time `db:"created_time"`
+	ProblemId     int64     `db:"problem_id"`
+	Code          string    `db:"code"`
+	UserName      string    `db:"user_name"`
+	UserId        int64     `db:"user_id"`
 }

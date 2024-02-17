@@ -92,7 +92,7 @@ const systemRoutes = [
 
 const RunCodeRoutes = [
 	{
-		path:'/profile',
+		path:'/profile/:user_id',
 		component: () => import('@/views/runCode/CommitRecord.vue'),
 	},
 	{

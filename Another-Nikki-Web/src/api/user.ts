@@ -22,8 +22,9 @@ const register = (data:{
 const commit_records = (data: {
     page_num : number,
     page_size: number,
+    user_id: number,
 }) => HttpServer.request<typeof data, Commits>({
-    url: `api/user/profile/commit-record/${data.page_num}/${data.page_size}`,
+    url: `api/user/profile/${data.user_id}/commit-record/${data.page_num}/${data.page_size}`,
     method: "GET",
 })
 
@@ -48,6 +49,13 @@ const get_commit_by_id = (data: {
     method: "GET",
 })
 
+const get_user_by_id = (data: {
+    user_id : number,
+}) => HttpServer.request<typeof data, UserType>({
+    url: `/api/user/profile/${data.user_id}`,
+    method: "GET",
+})
+
 export {
 	login,
     register,
@@ -55,4 +63,5 @@ export {
     count,
     update,
     get_commit_by_id,
+    get_user_by_id,
 }

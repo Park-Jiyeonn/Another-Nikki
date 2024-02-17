@@ -10,26 +10,55 @@
             Articles
         </el-menu-item>
         <div class="flex-grow" />
-        <el-menu-item index="4" @click="router.push('/profile')">
+        <el-menu-item index="4" @click="router.push(`/profile/${user_id}`)">
             <el-dropdown trigger="click">
                 <el-avatar :src="user_avatar"/>
                 <template #dropdown> <el-dropdown-menu>
-                    <el-dropdown-item> 我的主页 </el-dropdown-item>
+                    <el-dropdown-item @click="dialogFormVisible=true"> 修改资料 </el-dropdown-item>
                     <el-dropdown-item @click="logout()"> 退出登录 </el-dropdown-item>
                   </el-dropdown-menu> </template>
             </el-dropdown>
         </el-menu-item>
     </el-menu>
+
+    <el-dialog v-model="dialogFormVisible" title="编辑资料" width="500">
+        <el-form :model="form">
+            <el-form-item label="用户名" :label-width="formLabelWidth">
+                <el-input v-model="form.name" autocomplete="off" />
+            </el-form-item>
+            <el-form-item label="头像链接" :label-width="formLabelWidth">
+                <el-input v-model="form.avatar_url" autocomplete="off" />
+            </el-form-item>
+        </el-form>
+        <template #footer>
+          <div class="dialog-footer">
+            <el-button @click="dialogFormVisible = false">取消</el-button>
+            <el-button type="primary" @click="update_user()">
+              确认
+            </el-button>
+          </div>
+        </template>
+    </el-dialog>
 </template>
-  
+
 <script lang="ts" setup>
-import { ref, watchEffect } from 'vue'
+import { reactive,ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
-import { getCookies, removeCookies } from "@/hooks/useCookies";
+import { getCookies, removeCookies, setCookies } from "@/hooks/useCookies";
+import { ElMessage } from 'element-plus';
+import { User  } from '@/api';
 const router = useRouter()
 const isLoggedIn = useIsLoggedIn()
+const user_id : number = getCookies("user_id")
 const user_avatar = ref(getCookies("avatar"))
+const username = ref<string>(getCookies("username").toString())
+const dialogFormVisible = ref(false)
+const formLabelWidth = '140px'
+const form = reactive({
+  name: username.value,
+  avatar_url: user_avatar.value,
+})
 const logout = async () => {
     removeCookies("username")
     removeCookies("avatar")
@@ -37,9 +66,22 @@ const logout = async () => {
     removeCookies("token")
     location.reload();
 }
-watchEffect(() => {
-  user_avatar.value = getCookies("avatar");
-});
+const update_user = async() => {
+    const ret = await User.update({username : form.name, avatar: form.avatar_url})
+    dialogFormVisible.value = false
+    if (ret.data.code == 200) {
+        setCookies("username", form.name)
+        setCookies("avatar", form.avatar_url)
+        user_avatar.value = form.avatar_url
+        username.value = form.name
+        ElMessage.success("更新成功")
+    }
+    else {
+        form.name = username.value
+        form.avatar_url = user_avatar.value
+        return ElMessage.error(ret.data.message)
+    }
+}
 </script>
 
 <style>

@@ -22,17 +22,19 @@ const get_commit_byId = async (page : number) => {
         return ElMessage.error(ret.data.message)
     }
 }
-const toProblemDetail = (id: number) => {
-    router.push({ path: `/problem/${id}` })
-}
 get_commit_byId(judge_id)
 </script>
 
 <template>
     <ContentBase>
-        <h2 class="custom-hover-column" @click="toProblemDetail(commit.problem_id)">
+        <h2 class="custom-hover-column" @click="router.push({ path: `/problem/${commit.problem_id}` })">
             {{commit.problem_name}}
         </h2>
+        <el-divider />
+        <span class="custom-hover-column" @click="router.push({ path: `/profile/${commit.user_id}` })" style="color: #25bb9b"> {{commit.username}}</span> 提交的代码 
+        <br/><br/>
+        <div style="font-size: 90%;"> 提交时间: {{commit.created_time}} &emsp;  语言: {{commit.language}} &emsp;  运行时间: {{commit.cpu_time_used}} &emsp;  占用内存: {{commit.memory_used}}</div> 
+        <div style="font-size: 90%;"> 运行状态: {{commit.judge_status}}</div> 
         <el-divider />
         <div class="content markdown-body" v-html="renderMarkdown(`${commit.code}`)" />
         <el-divider />

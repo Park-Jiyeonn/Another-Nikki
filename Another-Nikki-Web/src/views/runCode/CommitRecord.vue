@@ -1,23 +1,21 @@
 <script setup lang="ts">
 import ContentBase from '@/components/ContentBase.vue';
-import { reactive,ref } from 'vue'
+import { ref } from 'vue'
 import { ElMessage } from 'element-plus';
 import { User  } from '@/api';
 import { Commits } from '@types/User';
 import { getCookies, setCookies } from "@/hooks/useCookies";
+import { useRoute } from 'vue-router'
+const route = useRoute();
+const user_id: number = parseInt(String(route.params.user_id));
 const commits = ref<Commits[]>([])
 const sum = ref(0)
 const currentPage = ref(1)
-const dialogFormVisible = ref(false)
-const formLabelWidth = '140px'
-const user_avatar = ref(getCookies("avatar"))
-const username = ref<string>(getCookies("username").toString())
-const form = reactive({
-  name: username.value,
-  avatar_url: user_avatar.value,
-})
-const get_commits_by_page = async (page : number) => {
-    const ret = await User.commit_records({ page_num: page, page_size: 20 })
+const user_avatar = ref("")
+const username = ref("")
+const user_description = ref("")
+const get_commits_by_page = async (page : number, user_id : number) => {
+    const ret = await User.commit_records({user_id : user_id, page_num: page, page_size: 20 })
     if (ret.data.code == 200) {
         commits.value = ret.data.data.commits
     }
@@ -29,21 +27,15 @@ const get_count = async() => {
     const ret = await User.count()
     sum.value = ret.data.data.sum
 }
-const update_user = async() => {
-    const ret = await User.update({username : form.name, avatar: form.avatar_url})
-    dialogFormVisible.value = false
+const get_user = async(user_id : number) => {
+    const ret = await User.get_user_by_id({user_id : user_id})
     if (ret.data.code == 200) {
-        setCookies("username", form.name)
-        setCookies("avatar", form.avatar_url)
-        user_avatar.value = form.avatar_url
-        username.value = form.name
-        ElMessage.success("更新成功")
+        username.value = ret.data.data.username
+        user_avatar.value = ret.data.data.avatar
     }
     else {
-        form.name = username.value
-        form.avatar_url = user_avatar.value
         return ElMessage.error(ret.data.message)
-    }
+    } 
 }
 const handleRowClick = async(row: Commits, column: any, event: Event) => {
     if (column.property === 'problem_name') {
@@ -58,7 +50,7 @@ const handleRowClick = async(row: Commits, column: any, event: Event) => {
 function formatJudgeStatus({ row, column, rowIndex, columnIndex }: { row: Commits, column: any, rowIndex: number, columnIndex: number }){
     if (column.property === 'compile_status') {
       if (row.compile_status !== 'Compile Success') {
-        return { cursor:'pointer',color: 'blue',}
+        return { cursor:'pointer',color: '#409eff',}
       }
     }
     if (column.property === 'judge_status') {
@@ -66,43 +58,24 @@ function formatJudgeStatus({ row, column, rowIndex, columnIndex }: { row: Commit
         return { cursor:'pointer',color: 'red',}
       }
       if (row.compile_status === 'Accept') {
-        return { cursor:'pointer',color: 'green',}
+        return { cursor:'pointer',color: '#25bb9b',}
       }
       return { cursor:'pointer',}
     }
 }
+get_user(user_id)
 get_count()
-get_commits_by_page(1)
+get_commits_by_page(1, user_id)
 </script>
 
 <template>
-    <el-dialog v-model="dialogFormVisible" title="编辑资料" width="500">
-        <el-form :model="form">
-            <el-form-item label="用户名" :label-width="formLabelWidth">
-                <el-input v-model="form.name" autocomplete="off" />
-            </el-form-item>
-            <el-form-item label="头像链接" :label-width="formLabelWidth">
-                <el-input v-model="form.avatar_url" autocomplete="off" />
-            </el-form-item>
-        </el-form>
-        <template #footer>
-          <div class="dialog-footer">
-            <el-button @click="dialogFormVisible = false">取消</el-button>
-            <el-button type="primary" @click="update_user()">
-              确认
-            </el-button>
-          </div>
-        </template>
-    </el-dialog>
-
     <ContentBase>
         <el-row :gutter="20">
             <el-col :span="2">
                 <el-avatar :size="60" :src="user_avatar" />
             </el-col>
-            <el-col :span="5" style="text-align: left;">
+            <el-col :span="5" style="text-align: left; color:#25bb9b;">
                 {{username}}
-                <div style="margin-top: 10px;"><el-button text @click="dialogFormVisible = true"> 编辑资料 </el-button></div>
             </el-col>
             <el-col :span="13"></el-col>
             <el-col :span="3" style="margin-top: 5px; text-align: center;">

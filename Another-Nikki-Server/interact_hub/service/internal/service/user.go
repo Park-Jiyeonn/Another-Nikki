@@ -113,9 +113,8 @@ func (s *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (
 
 func (s *UserService) GetUserCommitRecordByPage(ctx context.Context, req *pb.GetUserCommitRecordReq) (resp *pb.GetUserCommitRecordResp, err error) {
 	resp = new(pb.GetUserCommitRecordResp)
-	userId, _ := jwt.GetUserFromCtx(ctx)
 	commits, err := s.dao.GetUserCommitRecord(ctx, &biz.GetUserCommitRecordReq{
-		UserId:   userId,
+		UserId:   req.UserId,
 		PageSize: req.PageSize,
 		PageNum:  req.PageNum,
 	})

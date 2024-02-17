@@ -5,6 +5,7 @@ import (
 	"Another-Nikki/interact_hub/service/internal/data"
 	"context"
 	"fmt"
+	"time"
 
 	pb "Another-Nikki/interact_hub/service/api"
 )
@@ -67,7 +68,7 @@ func (s *CodeProcessingService) GetCommitByJudgeId(ctx context.Context, req *pb.
 	if err != nil {
 		return
 	}
-	resp.CreatedTime = res.CreatedTime
+	resp.CreatedTime = res.CreatedTime.Format(time.DateTime)
 	resp.Language = res.Language
 	resp.ProblemId = res.ProblemId
 	resp.JudgeStatus = res.JudgeStatus
@@ -76,5 +77,7 @@ func (s *CodeProcessingService) GetCommitByJudgeId(ctx context.Context, req *pb.
 	resp.CpuTimeUsed = res.CpuTimeUsed
 	resp.CompileStatus = res.CompileStatus
 	resp.ProblemName = res.ProblemName
+	resp.Username = res.UserName
+	resp.UserId = res.UserId
 	return
 }

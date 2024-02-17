@@ -28,10 +28,11 @@ type GetUserByUserNameReq struct {
 }
 
 type GetUserByUserNameResp struct {
-	Username string
-	Password string
-	Avatar   string
-	UserId   int64
+	Username    string
+	Password    string
+	Avatar      string
+	UserId      int64
+	Description string
 }
 
 type GetUserByIdReq struct {
@@ -39,10 +40,11 @@ type GetUserByIdReq struct {
 }
 
 type GetUserByIdResp struct {
-	Username string
-	Password string
-	Avatar   string
-	UserId   int64
+	Username    string
+	Password    string
+	Avatar      string
+	UserId      int64
+	Description string
 }
 
 type GetUserCommitRecordReq struct {

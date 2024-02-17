@@ -27,4 +27,6 @@ export interface Commit {
     created_time: string,
     problem_id :number,
     code: string,
+    user_id:number,
+    username:string,
 }
