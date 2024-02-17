@@ -15,7 +15,6 @@ const problem_page_que = async (page_num: number, page_size: number) => {
 problem_page_que(10, 1)
 
 const toProblemDetail = (id: number) => {
-    console.log(id)
     router.push({ path: `/problem/${id}` })
 }
 

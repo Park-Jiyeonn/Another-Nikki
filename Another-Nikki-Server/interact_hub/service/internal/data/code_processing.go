@@ -71,3 +71,10 @@ func (c *codeProcessingImpl) UpdateCodeJudgeStatus(ctx context.Context, req *biz
 	)
 	return
 }
+
+func (c *codeProcessingImpl) GetCommitByJudgeId(ctx context.Context, req *biz.GetCommitByJudgeIdReq) (resp *biz.GetCommitByJudgeIdResp, err error) {
+	const sqlStr = "SELECT problem_name, compile_status, judge_status, cpu_time_used, memory_used, language, created_time, problem_id, code from judges where judge_id = ?"
+	resp = new(biz.GetCommitByJudgeIdResp)
+	err = c.db.GetContext(ctx, resp, sqlStr, req.JudgeId)
+	return
+}

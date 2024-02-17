@@ -95,6 +95,10 @@ const RunCodeRoutes = [
 		path:'/profile',
 		component: () => import('@/views/runCode/CommitRecord.vue'),
 	},
+	{
+		path: '/user/code/:judge_id',
+		component: () => import('@/views/runCode/CodeDetail.vue'),
+	}
 ]
 
 const privateRoutes = [

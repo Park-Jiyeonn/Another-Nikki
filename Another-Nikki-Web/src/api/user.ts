@@ -41,10 +41,18 @@ const update = (data:{
     data
 })
 
+const get_commit_by_id = (data: {
+    judge_id : number,
+}) => HttpServer.request<typeof data, Commits>({
+    url: `/api/code/view-submission/${data.judge_id}`,
+    method: "GET",
+})
+
 export {
 	login,
     register,
     commit_records,
     count,
     update,
+    get_commit_by_id,
 }

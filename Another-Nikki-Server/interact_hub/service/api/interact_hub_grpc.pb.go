@@ -863,6 +863,7 @@ const (
 	CodeProcessing_SubmitCode_FullMethodName              = "/service.problem.api.CodeProcessing/SubmitCode"
 	CodeProcessing_UpdateCodeCompileStatus_FullMethodName = "/service.problem.api.CodeProcessing/UpdateCodeCompileStatus"
 	CodeProcessing_UpdateCodeJudgeStatus_FullMethodName   = "/service.problem.api.CodeProcessing/UpdateCodeJudgeStatus"
+	CodeProcessing_GetCommitByJudgeId_FullMethodName      = "/service.problem.api.CodeProcessing/GetCommitByJudgeId"
 )
 
 // CodeProcessingClient is the client API for CodeProcessing service.
@@ -872,6 +873,7 @@ type CodeProcessingClient interface {
 	SubmitCode(ctx context.Context, in *SubmitCodeReq, opts ...grpc.CallOption) (*SubmitCodeResp, error)
 	UpdateCodeCompileStatus(ctx context.Context, in *UpdateCodeCompileStatusReq, opts ...grpc.CallOption) (*UpdateCodeCompileStatusResp, error)
 	UpdateCodeJudgeStatus(ctx context.Context, in *UpdateCodeJudgeStatusReq, opts ...grpc.CallOption) (*UpdateCodeJudgeStatusResp, error)
+	GetCommitByJudgeId(ctx context.Context, in *GetCommitByJudgeIdReq, opts ...grpc.CallOption) (*GetCommitByJudgeIdResp, error)
 }
 
 type codeProcessingClient struct {
@@ -909,6 +911,15 @@ func (c *codeProcessingClient) UpdateCodeJudgeStatus(ctx context.Context, in *Up
 	return out, nil
 }
 
+func (c *codeProcessingClient) GetCommitByJudgeId(ctx context.Context, in *GetCommitByJudgeIdReq, opts ...grpc.CallOption) (*GetCommitByJudgeIdResp, error) {
+	out := new(GetCommitByJudgeIdResp)
+	err := c.cc.Invoke(ctx, CodeProcessing_GetCommitByJudgeId_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // CodeProcessingServer is the server API for CodeProcessing service.
 // All implementations must embed UnimplementedCodeProcessingServer
 // for forward compatibility
@@ -916,6 +927,7 @@ type CodeProcessingServer interface {
 	SubmitCode(context.Context, *SubmitCodeReq) (*SubmitCodeResp, error)
 	UpdateCodeCompileStatus(context.Context, *UpdateCodeCompileStatusReq) (*UpdateCodeCompileStatusResp, error)
 	UpdateCodeJudgeStatus(context.Context, *UpdateCodeJudgeStatusReq) (*UpdateCodeJudgeStatusResp, error)
+	GetCommitByJudgeId(context.Context, *GetCommitByJudgeIdReq) (*GetCommitByJudgeIdResp, error)
 	mustEmbedUnimplementedCodeProcessingServer()
 }
 
@@ -931,6 +943,9 @@ func (UnimplementedCodeProcessingServer) UpdateCodeCompileStatus(context.Context
 }
 func (UnimplementedCodeProcessingServer) UpdateCodeJudgeStatus(context.Context, *UpdateCodeJudgeStatusReq) (*UpdateCodeJudgeStatusResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UpdateCodeJudgeStatus not implemented")
+}
+func (UnimplementedCodeProcessingServer) GetCommitByJudgeId(context.Context, *GetCommitByJudgeIdReq) (*GetCommitByJudgeIdResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetCommitByJudgeId not implemented")
 }
 func (UnimplementedCodeProcessingServer) mustEmbedUnimplementedCodeProcessingServer() {}
 
@@ -999,6 +1014,24 @@ func _CodeProcessing_UpdateCodeJudgeStatus_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
+func _CodeProcessing_GetCommitByJudgeId_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetCommitByJudgeIdReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(CodeProcessingServer).GetCommitByJudgeId(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: CodeProcessing_GetCommitByJudgeId_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(CodeProcessingServer).GetCommitByJudgeId(ctx, req.(*GetCommitByJudgeIdReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // CodeProcessing_ServiceDesc is the grpc.ServiceDesc for CodeProcessing service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -1017,6 +1050,10 @@ var CodeProcessing_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UpdateCodeJudgeStatus",
 			Handler:    _CodeProcessing_UpdateCodeJudgeStatus_Handler,
+		},
+		{
+			MethodName: "GetCommitByJudgeId",
+			Handler:    _CodeProcessing_GetCommitByJudgeId_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
