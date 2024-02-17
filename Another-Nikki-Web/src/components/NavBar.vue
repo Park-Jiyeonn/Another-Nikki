@@ -81,7 +81,7 @@ const update_user = async() => {
         username.value = form.name
         ElMessage.success("更新成功")
     }
-    else {·
+    else {
         form.name = username.value
         form.avatar_url = user_avatar.value
         form.description = description.value
