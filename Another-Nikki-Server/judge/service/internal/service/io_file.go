@@ -77,3 +77,16 @@ func deleteFile(ID string) {
 	dirPath := fmt.Sprintf(OnlineJudgePath+"tmp-%s", ID)
 	_ = os.RemoveAll(dirPath)
 }
+
+func checkPythonSyntaxError(ID string) (string, bool) {
+	ret, err := os.ReadFile(fmt.Sprintf(OnlineJudgePath+"tmp-%s/data.out", ID))
+	if err != nil {
+		return "", false
+	}
+	retString := string(ret)
+	if strings.Contains(retString, "Error") {
+		ans := strings.Split(retString, "\n")
+		return strings.Join(ans[:len(ans)-5], "\n"), true
+	}
+	return "", false
+}
