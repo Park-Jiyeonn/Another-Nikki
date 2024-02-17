@@ -3,6 +3,7 @@ export interface UserType {
     user_id:        number,
     username:      string,
     avatar:         string,
+    description : string,
 }
 
 export interface Commits {

@@ -40,28 +40,30 @@ func (s *userServiceImpl) Register(ctx context.Context, req *biz.RegisterReq) (r
 }
 
 func (s *userServiceImpl) GetUserByUserName(ctx context.Context, req *biz.GetUserByUserNameReq) (*biz.GetUserByUserNameResp, error) {
-	var username, avatar, password string
+	var username, avatar, password, description string
 	var user_id int64
-	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, password, user_id FROM users WHERE username = ?", req.Username).Scan(&username, &avatar, &password, &user_id)
+	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, password, user_id, description FROM users WHERE username = ?", req.Username).Scan(&username, &avatar, &password, &user_id, &description)
 	if err != nil {
 		return nil, err
 	}
 	return &biz.GetUserByUserNameResp{Username: username,
-		Avatar:   avatar,
-		UserId:   user_id,
-		Password: password,
+		Avatar:      avatar,
+		UserId:      user_id,
+		Password:    password,
+		Description: description,
 	}, nil
 }
 
 func (s *userServiceImpl) GetUserById(ctx context.Context, req *biz.GetUserByIdReq) (*biz.GetUserByIdResp, error) {
-	var username, avatar string
-	err := s.db.QueryRowContext(ctx, "SELECT username, avatar FROM users WHERE user_id = ?", req.UserId).Scan(&username, &avatar)
+	var username, avatar, description string
+	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, description FROM users WHERE user_id = ?", req.UserId).Scan(&username, &avatar, &description)
 	if err != nil {
 		return nil, err
 	}
 	return &biz.GetUserByIdResp{
-		Username: username,
-		Avatar:   avatar,
+		Username:    username,
+		Avatar:      avatar,
+		Description: description,
 	}, nil
 }
 
@@ -91,7 +93,7 @@ func (s *userServiceImpl) GetUserSumCommit(ctx context.Context, req *biz.GetUser
 
 func (s *userServiceImpl) UpdateUser(ctx context.Context, req *biz.UpdateUserReq) (resp *biz.UpdateUserResp, err error) {
 	resp = new(biz.UpdateUserResp)
-	sqlStr := "UPDATE users set username = ?, avatar = ? where user_id = ?"
-	_, err = s.db.ExecContext(ctx, sqlStr, req.Username, req.Avatar, req.UserId)
+	sqlStr := "UPDATE users set username = ?, avatar = ?, description = ? where user_id = ?"
+	_, err = s.db.ExecContext(ctx, sqlStr, req.Username, req.Avatar, req.Description, req.UserId)
 	return
 }

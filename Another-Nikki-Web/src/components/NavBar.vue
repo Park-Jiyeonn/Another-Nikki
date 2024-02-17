@@ -29,6 +29,9 @@
             <el-form-item label="头像链接" :label-width="formLabelWidth">
                 <el-input v-model="form.avatar_url" autocomplete="off" />
             </el-form-item>
+            <el-form-item label="个性签名" :label-width="formLabelWidth">
+                <el-input v-model="form.description" autocomplete="off" />
+            </el-form-item>
         </el-form>
         <template #footer>
           <div class="dialog-footer">
@@ -53,11 +56,13 @@ const isLoggedIn = useIsLoggedIn()
 const user_id : number = getCookies("user_id")
 const user_avatar = ref(getCookies("avatar"))
 const username = ref<string>(getCookies("username").toString())
+const description = ref<string>(getCookies("description").toString())
 const dialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 const form = reactive({
   name: username.value,
   avatar_url: user_avatar.value,
+  description: description.value,
 })
 const logout = async () => {
     removeCookies("username")
@@ -67,7 +72,7 @@ const logout = async () => {
     location.reload();
 }
 const update_user = async() => {
-    const ret = await User.update({username : form.name, avatar: form.avatar_url})
+    const ret = await User.update({username : form.name, avatar: form.avatar_url, description: form.description})
     dialogFormVisible.value = false
     if (ret.data.code == 200) {
         setCookies("username", form.name)
@@ -76,9 +81,10 @@ const update_user = async() => {
         username.value = form.name
         ElMessage.success("更新成功")
     }
-    else {
+    else {·
         form.name = username.value
         form.avatar_url = user_avatar.value
+        form.description = description.value
         return ElMessage.error(ret.data.message)
     }
 }

@@ -158,6 +158,7 @@ message LoginResp {
   string username = 2;
   int64 user_id = 3;
   string avatar = 4;
+  string description = 5;
 }
 
 message RegisterReq {
@@ -177,6 +178,7 @@ message GetUserByUserNameReq {
 message GetUserByUserNameResp {
   string username = 1;
   string avatar = 2;
+  string description = 3;
 }
 
 message GetUserByIdReq {
@@ -185,6 +187,7 @@ message GetUserByIdReq {
 message GetUserByIdResp {
   string username = 1;
   string avatar = 2;
+  string description = 3;
 }
 
 message GetUserCommitRecordReq {
@@ -216,6 +219,7 @@ message GetUserSumCommitResp {
 message UpdateUserReq {
   string username = 1;
   string avatar = 2;
+  string description = 3;
 }
 message UpdateUserResp {
 }

@@ -51,6 +51,7 @@ func (s *UserService) Login(ctx context.Context, req *pb.LoginReq) (resp *pb.Log
 	resp.Username = req.Username
 	resp.UserId = user.UserId
 	resp.Avatar = user.Avatar
+	resp.Description = user.Description
 	return
 }
 func (s *UserService) Register(ctx context.Context, req *pb.RegisterReq) (resp *pb.RegisterResp, err error) {
@@ -98,6 +99,7 @@ func (s *UserService) GetUserByUserName(ctx context.Context, req *pb.GetUserByUs
 	}
 	resp.Username = user.Username
 	resp.Avatar = user.Avatar
+	resp.Description = user.Description
 	return
 }
 func (s *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (resp *pb.GetUserByIdResp, err error) {
@@ -108,6 +110,7 @@ func (s *UserService) GetUserById(ctx context.Context, req *pb.GetUserByIdReq) (
 	}
 	resp.Username = user.Username
 	resp.Avatar = user.Avatar
+	resp.Description = user.Description
 	return
 }
 
@@ -153,9 +156,10 @@ func (s *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (re
 	resp = new(pb.UpdateUserResp)
 	userId, _ := jwt.GetUserFromCtx(ctx)
 	_, err = s.dao.UpdateUser(ctx, &biz.UpdateUserReq{
-		UserId:   userId,
-		Username: req.Username,
-		Avatar:   req.Avatar,
+		UserId:      userId,
+		Username:    req.Username,
+		Avatar:      req.Avatar,
+		Description: req.Description,
 	})
 	return
 }

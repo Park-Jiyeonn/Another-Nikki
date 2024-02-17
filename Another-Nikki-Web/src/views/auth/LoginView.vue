@@ -16,6 +16,7 @@ const login = async () => {
         setCookies("user_id", ret.data.data.user_id)
         setCookies("username", ret.data.data.username)
         setCookies("avatar", ret.data.data.avatar)
+        setCookies("description", ret.data.data.description)
         return ElMessage.success("登录成功")
     }
     else {

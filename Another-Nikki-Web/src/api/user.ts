@@ -36,6 +36,7 @@ const count = () => HttpServer.request<null,{sum:number}>({
 const update = (data:{
 	username: string,
     avatar: string,
+    description: string,
 }) => HttpServer.request<typeof data, UserType>({
     url: `/api/user/update`,
     method: "POST",

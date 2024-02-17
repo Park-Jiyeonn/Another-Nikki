@@ -32,6 +32,7 @@ const get_user = async(user_id : number) => {
     if (ret.data.code == 200) {
         username.value = ret.data.data.username
         user_avatar.value = ret.data.data.avatar
+        user_description.value = ret.data.data.description
     }
     else {
         return ElMessage.error(ret.data.message)
@@ -74,8 +75,10 @@ get_commits_by_page(1, user_id)
             <el-col :span="2">
                 <el-avatar :size="60" :src="user_avatar" />
             </el-col>
-            <el-col :span="5" style="text-align: left; color:#25bb9b;">
-                {{username}}
+            <el-col :span="5">
+                <div style="text-align: left; color:#25bb9b;">{{username}}</div>
+                <br/>
+                <div>{{user_description}}</div>
             </el-col>
             <el-col :span="13"></el-col>
             <el-col :span="3" style="margin-top: 5px; text-align: center;">

@@ -73,9 +73,10 @@ type GetUserSumCommitResp struct {
 }
 
 type UpdateUserReq struct {
-	UserId   int64
-	Username string
-	Avatar   string
+	UserId      int64
+	Username    string
+	Avatar      string
+	Description string
 }
 type UpdateUserResp struct {
 }
