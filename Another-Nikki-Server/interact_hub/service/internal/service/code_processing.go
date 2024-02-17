@@ -43,7 +43,7 @@ func (s *CodeProcessingService) SubmitCode(ctx context.Context, req *pb.SubmitCo
 func (s *CodeProcessingService) UpdateCodeCompileStatus(ctx context.Context, req *pb.UpdateCodeCompileStatusReq) (resp *pb.UpdateCodeCompileStatusResp, err error) {
 	resp = new(pb.UpdateCodeCompileStatusResp)
 	err = s.dao.UpdateCodeCompileStatus(ctx, &biz.UpdateCodeCompileStatusReq{
-		CodeId:        req.CodeId,
+		CodeId:        req.JudgeId,
 		CompileStatus: req.CompileStatus,
 		CompileLog:    req.CompileLog,
 	})
@@ -53,7 +53,7 @@ func (s *CodeProcessingService) UpdateCodeCompileStatus(ctx context.Context, req
 func (s *CodeProcessingService) UpdateCodeJudgeStatus(ctx context.Context, req *pb.UpdateCodeJudgeStatusReq) (resp *pb.UpdateCodeJudgeStatusResp, err error) {
 	resp = new(pb.UpdateCodeJudgeStatusResp)
 	err = s.dao.UpdateCodeJudgeStatus(ctx, &biz.UpdateCodeJudgeStatusReq{
-		CodeId:        req.CodeId,
+		CodeId:        req.JudgeId,
 		CompileStatus: req.CompileStatus,
 		JudgeStatus:   req.JudgeStatus,
 		CpuTimeUsed:   req.CpuTimeUsed,

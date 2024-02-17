@@ -86,6 +86,7 @@ func checkPythonSyntaxError(ID string) (string, bool) {
 	retString := string(ret)
 	if strings.Contains(retString, "Error") {
 		ans := strings.Split(retString, "\n")
+		deleteFile(ID)
 		return strings.Join(ans[:len(ans)-5], "\n"), true
 	}
 	return "", false

@@ -70,7 +70,7 @@ func (s *JudgeBinlogConsumer) judge(ctx context.Context, data *Judge) (err error
 	}
 
 	_, err = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
-		CodeId:        judgeId,
+		JudgeId:       judgeId,
 		CompileStatus: "Compiling",
 		CompileLog:    "",
 	})
@@ -88,7 +88,7 @@ func (s *JudgeBinlogConsumer) judge(ctx context.Context, data *Judge) (err error
 	if err != nil {
 		log.Error(ctx, "judge err: %v", err)
 		_, _ = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
-			CodeId:        judgeId,
+			JudgeId:       judgeId,
 			CompileStatus: "未知错误",
 			CompileLog:    err.Error(),
 		})
@@ -96,7 +96,7 @@ func (s *JudgeBinlogConsumer) judge(ctx context.Context, data *Judge) (err error
 	}
 	if judgeResp.IsCompileError {
 		_, _ = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
-			CodeId:        judgeId,
+			JudgeId:       judgeId,
 			CompileStatus: judgeResp.CompileState,
 			CompileLog:    judgeResp.CompileLog,
 		})
@@ -104,7 +104,7 @@ func (s *JudgeBinlogConsumer) judge(ctx context.Context, data *Judge) (err error
 	}
 
 	_, err = s.codeProcessingClient.UpdateCodeJudgeStatus(ctx, &codeService.UpdateCodeJudgeStatusReq{
-		CodeId:        judgeId,
+		JudgeId:       judgeId,
 		CompileStatus: judgeResp.CompileState,
 		JudgeStatus:   judgeResp.JudgeResult,
 		CpuTimeUsed:   judgeResp.CpuTimeUsed,
