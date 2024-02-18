@@ -92,7 +92,7 @@ get_commits_by_page(1, user_id)
         </el-row>
     </ContentBase>
     <ContentBase>
-        <el-table :data="commits" :cell-style="formatJudgeStatus" height="500" @row-click="handleRowClick">
+        <el-table :data="commits" :cell-style="formatJudgeStatus"  @row-click="handleRowClick">
             <el-table-column prop="judge_id" label="#" width="70" class-name="custom-hover-column"/>
             <el-table-column prop="problem_name" label="题目" width="150" class-name="custom-hover-column"/>
             <el-table-column prop="compile_status" label="编译结果" width="100"/>
@@ -102,7 +102,8 @@ get_commits_by_page(1, user_id)
             <el-table-column prop="language" label="使用语言" width="100"/>
             <el-table-column prop="created_time" label="提交时间" width="180"/>
         </el-table>
-        <el-pagination background layout="prev, pager, next" :total="sum" v-model:current-page="currentPage"  :page-size="10" @current-change="get_commits_by_page(currentPage, user_id)" />
+        <br/>
+        <el-pagination style="display: flex; justify-content: center; align-items: center;" background layout="prev, pager, next" :total="sum" v-model:current-page="currentPage"  :page-size="10" @current-change="get_commits_by_page(currentPage, user_id)" />
     </ContentBase>
 </template>
 <style>

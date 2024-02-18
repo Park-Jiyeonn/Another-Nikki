@@ -43,8 +43,6 @@ get_commit_byId(judge_id)
 </template>
 
 <style scoped>
-@import url('https://cdnjs.cloudflare.com/ajax/libs/KaTeX/0.5.1/katex.min.css');
-@import url('https://cdn.jsdelivr.net/github-markdown-css/2.2.1/github-markdown.css');
 .custom-hover-column:hover {
   cursor: pointer;
   color: chocolate;
