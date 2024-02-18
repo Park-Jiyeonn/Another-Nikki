@@ -139,7 +139,7 @@ service User {
   }
   rpc GetUserSumCommit (GetUserSumCommitReq) returns (GetUserSumCommitResp) {
     option (google.api.http) = {
-      get: "/api/user/profile/commit-record/sum"
+      get: "/api/user/profile/{user_id}/commit-record/sum"
     };
   };
   rpc UpdateUser (UpdateUserReq) returns (UpdateUserResp) {
@@ -211,6 +211,7 @@ message GetUserCommitRecordResp {
 }
 
 message GetUserSumCommitReq {
+  int64 user_id = 1;
 }
 message GetUserSumCommitResp {
   int64 sum = 1;

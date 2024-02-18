@@ -141,10 +141,9 @@ func (s *UserService) GetUserCommitRecordByPage(ctx context.Context, req *pb.Get
 	return
 }
 
-func (s *UserService) GetUserSumCommit(ctx context.Context, _ *pb.GetUserSumCommitReq) (resp *pb.GetUserSumCommitResp, err error) {
+func (s *UserService) GetUserSumCommit(ctx context.Context, req *pb.GetUserSumCommitReq) (resp *pb.GetUserSumCommitResp, err error) {
 	resp = new(pb.GetUserSumCommitResp)
-	userId, _ := jwt.GetUserFromCtx(ctx)
-	res, err := s.dao.GetUserSumCommit(ctx, &biz.GetUserSumCommitReq{userId})
+	res, err := s.dao.GetUserSumCommit(ctx, &biz.GetUserSumCommitReq{UserId: req.UserId})
 	if err != nil {
 		return
 	}

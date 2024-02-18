@@ -23,8 +23,8 @@ const get_commits_by_page = async (page : number, user_id : number) => {
         return ElMessage.error(ret.data.message)
     }
 }
-const get_count = async() => {
-    const ret = await User.count()
+const get_count = async(user_id : number) => {
+    const ret = await User.count({user_id:user_id})
     sum.value = ret.data.data.sum
 }
 const get_user = async(user_id : number) => {
@@ -69,7 +69,7 @@ function formatJudgeStatus({ row, column, rowIndex, columnIndex }: { row: Commit
     }
 }
 get_user(user_id)
-get_count()
+get_count(user_id)
 get_commits_by_page(1, user_id)
 </script>
 

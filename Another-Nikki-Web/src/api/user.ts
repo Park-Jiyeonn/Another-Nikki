@@ -28,8 +28,10 @@ const commit_records = (data: {
     method: "GET",
 })
 
-const count = () => HttpServer.request<null,{sum:number}>({
-    url: `/api/user/profile/commit-record/sum`,
+const count = (data: {
+    user_id: number,
+}) => HttpServer.request<null,{sum:number}>({
+    url: `/api/user/profile/${data.user_id}/commit-record/sum`,
     method: "GET",
 })
 

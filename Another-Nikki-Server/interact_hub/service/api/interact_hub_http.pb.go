@@ -313,7 +313,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.POST("/api/user/register", _User_Register0_HTTP_Handler(srv))
 	r.GET("/api/user/profile/{user_id}", _User_GetUserById0_HTTP_Handler(srv))
 	r.GET("/api/user/profile/{user_id}/commit-record/{page_num}/{page_size}", _User_GetUserCommitRecordByPage0_HTTP_Handler(srv))
-	r.GET("/api/user/profile/commit-record/sum", _User_GetUserSumCommit0_HTTP_Handler(srv))
+	r.GET("/api/user/profile/{user_id}/commit-record/sum", _User_GetUserSumCommit0_HTTP_Handler(srv))
 	r.POST("/api/user/update", _User_UpdateUser0_HTTP_Handler(srv))
 }
 
@@ -411,6 +411,9 @@ func _User_GetUserSumCommit0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Cont
 		if err := ctx.BindQuery(&in); err != nil {
 			return err
 		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
 		http.SetOperation(ctx, OperationUserGetUserSumCommit)
 		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
 			return srv.GetUserSumCommit(ctx, req.(*GetUserSumCommitReq))
@@ -491,7 +494,7 @@ func (c *UserHTTPClientImpl) GetUserCommitRecordByPage(ctx context.Context, in *
 
 func (c *UserHTTPClientImpl) GetUserSumCommit(ctx context.Context, in *GetUserSumCommitReq, opts ...http.CallOption) (*GetUserSumCommitResp, error) {
 	var out GetUserSumCommitResp
-	pattern := "/api/user/profile/commit-record/sum"
+	pattern := "/api/user/profile/{user_id}/commit-record/sum"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserGetUserSumCommit))
 	opts = append(opts, http.PathTemplate(pattern))
