@@ -16,10 +16,11 @@ func NewCommentImpl(db *sqlx.DB) biz.CommentRepo {
 
 // CREATE TABLE comments (
 //    comment_id SERIAL PRIMARY KEY,
-//    content VARCHAR(255) NOT NULL,
+//    content VARCHAR(255) NOT NULL DEFAULT '',
 //    article_id INT NOT NULL,
-//    author_name VARCHAR(255) NOT NULL,
-//    author_avatar VARCHAR(255),
+//	  user_id INT NOT NULL,
+//    username VARCHAR(255) NOT NULL DEFAULT '',
+//    user_avatar VARCHAR(255) DEFAULT '',
 //    parent_id INT,
 //    root_id INT,
 //    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -27,13 +28,26 @@ func NewCommentImpl(db *sqlx.DB) biz.CommentRepo {
 // );
 
 func (s *CommentServiceImpl) PostComment(ctx context.Context, req *biz.PostCommentReq) (err error) {
-	_, err = s.db.ExecContext(ctx, "INSERT INTO comments (content, article_id, author_name, author_avatar, parent_id, root_id) VALUES (?, ?, ?, ?, ?, ?)",
-		req.Content, req.ArticleId, req.AuthorName, req.AuthorAvatar, req.ParentId, req.RootId)
+	_, err = s.db.ExecContext(ctx, "INSERT INTO comments (content, article_id, username, user_avatar, parent_id, root_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		req.Content, req.ArticleId, req.Username, req.UserAvatar, req.ParentId, req.RootId, req.UserId)
 	return
 }
 
+func (s *CommentServiceImpl) getChildren(ctx context.Context, rootId int64) (resp []*biz.Comments, err error) {
+	resp = make([]*biz.Comments, 0)
+	rows, err := s.db.QueryxContext(ctx, "SELECT content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE root_id = ?", rootId)
+	for rows.Next() {
+		var comment biz.Comments
+		err = rows.StructScan(&comment)
+		if err != nil {
+			return nil, err
+		}
+		resp = append(resp, &comment)
+	}
+	return
+}
 func (s *CommentServiceImpl) GetCommentsByArticleId(ctx context.Context, req *biz.GetCommentsByArticleIdReq) (*biz.GetCommentsByArticleIdResp, error) {
-	rows, err := s.db.QueryxContext(ctx, "SELECT content, author_name, author_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ?", req.ArticleId)
+	rows, err := s.db.QueryxContext(ctx, "SELECT content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and root_id = 0", req.ArticleId)
 	if err != nil {
 		return nil, err
 	}
@@ -46,6 +60,11 @@ func (s *CommentServiceImpl) GetCommentsByArticleId(ctx context.Context, req *bi
 		if err != nil {
 			return nil, err
 		}
+		children, err := s.getChildren(ctx, comment.CommentId)
+		if err != nil {
+			return nil, err
+		}
+		comment.Children = append(comment.Children, children...)
 		comments = append(comments, &comment)
 	}
 
@@ -53,7 +72,7 @@ func (s *CommentServiceImpl) GetCommentsByArticleId(ctx context.Context, req *bi
 }
 
 func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.GetLastSevenCommentReq) (*biz.GetLastSevenCommentResp, error) {
-	rows, err := s.db.QueryxContext(ctx, "SELECT content, author_name, author_avatar, parent_id, root_id FROM comments WHERE article_id = ? ORDER BY created_time DESC LIMIT 7", req.ArticleId)
+	rows, err := s.db.QueryxContext(ctx, "SELECT comment_id, content, username, user_avatar, parent_id, root_id FROM comments WHERE article_id = ? and root_id = 0 ORDER BY created_time DESC LIMIT ?", req.ArticleId, req.NumLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -66,6 +85,11 @@ func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.G
 		if err != nil {
 			return nil, err
 		}
+		children, err := s.getChildren(ctx, comment.CommentId)
+		if err != nil {
+			return nil, err
+		}
+		comment.Children = append(comment.Children, children...)
 		comments = append(comments, &comment)
 	}
 
@@ -74,7 +98,7 @@ func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.G
 
 func (s *CommentServiceImpl) GetCommentById(ctx context.Context, req *biz.GetRandomCommentReq) (*biz.GetRandomCommentResp, error) {
 	var comment biz.Comments
-	err := s.db.GetContext(ctx, &comment, "SELECT content, author_name, author_avatar, parent_id, root_id FROM comments WHERE article_id = ? and comment_id = ?",
+	err := s.db.GetContext(ctx, &comment, "SELECT content, username, user_avatar, parent_id, root_id FROM comments WHERE article_id = ? and comment_id = ?",
 		req.ArticleId,
 		req.CommentId,
 	)

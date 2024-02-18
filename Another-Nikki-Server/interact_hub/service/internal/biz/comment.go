@@ -14,44 +14,48 @@ type CommentRepo interface {
 }
 
 type PostCommentReq struct {
-	Content      string `json:"content"`
-	ArticleId    int64  `json:"article_id"`
-	AuthorName   string `json:"author_name"`
-	AuthorAvatar string `json:"author_avatar"`
-	ParentId     int64  `json:"parent_id"`
-	RootId       int64  `json:"root_id"`
+	Content    string `db:"content"`
+	ArticleId  int64  `db:"article_id"`
+	Username   string `db:"username"`
+	UserAvatar string `db:"user_avatar"`
+	ParentId   int64  `db:"parent_id"`
+	RootId     int64  `db:"root_id"`
+	UserId     int64  `db:"user_id"`
 }
 
 type GetCommentsByArticleIdReq struct {
-	ArticleId int64 `json:"article_id"`
+	ArticleId int64 `db:"article_id"`
 }
 
 type Comments struct {
-	Content      string    `json:"content"`
-	AuthorName   string    `json:"author_name"`
-	AuthorAvatar string    `json:"author_avatar"`
-	ParentId     int64     `json:"parent_id"`
-	RootId       int64     `json:"root_id"`
-	CreatedTime  time.Time `json:"created_time"`
+	CommentId   int64       `db:"comment_id"`
+	Content     string      `db:"content"`
+	Username    string      `db:"username"`
+	UserAvatar  string      `db:"user_avatar"`
+	ParentId    int64       `db:"parent_id"`
+	RootId      int64       `db:"root_id"`
+	CreatedTime time.Time   `db:"created_time"`
+	Children    []*Comments `db:"-"`
 }
 
 type GetCommentsByArticleIdResp struct {
-	Comments []*Comments `json:"comments"`
+	Comments []*Comments `db:"comments"`
 }
 
 type GetLastSevenCommentReq struct {
-	ArticleId int64 `json:"article_id"`
+	ArticleId int64 `db:"article_id"`
+	NumLimit  int64
 }
 
 type GetLastSevenCommentResp struct {
-	Comments []*Comments `json:"comments"`
+	Comments []*Comments `db:"comments"`
 }
 
 type GetRandomCommentReq struct {
-	ArticleId int64 `json:"article_id"`
-	CommentId int64 `json:"comment_id"`
+	ArticleId int64 `db:"article_id"`
+	CommentId int64 `db:"comment_id"`
 }
 
 type GetRandomCommentResp struct {
-	Comments *Comments `json:"comments"`
+	Comments *Comments `db:"comments"`
 }

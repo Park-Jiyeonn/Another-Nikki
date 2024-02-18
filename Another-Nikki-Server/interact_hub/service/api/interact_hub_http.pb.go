@@ -560,7 +560,7 @@ func RegisterCommentHTTPServer(s *http.Server, srv CommentHTTPServer) {
 	r := s.Route("/")
 	r.POST("/api/comment/post", _Comment_PostComment0_HTTP_Handler(srv))
 	r.GET("/api/comment/{article_id}", _Comment_GetCommentsByArticleId0_HTTP_Handler(srv))
-	r.GET("/api/comment/last_seven/{article_id}", _Comment_GetLastSevenComment0_HTTP_Handler(srv))
+	r.GET("/api/comment/last_seven/{article_id}/{num}", _Comment_GetLastSevenComment0_HTTP_Handler(srv))
 	r.GET("/api/comment/random/{article_id}", _Comment_GetRandomComment0_HTTP_Handler(srv))
 }
 
@@ -682,7 +682,7 @@ func (c *CommentHTTPClientImpl) GetCommentsByArticleId(ctx context.Context, in *
 
 func (c *CommentHTTPClientImpl) GetLastSevenComment(ctx context.Context, in *GetLastSevenCommentReq, opts ...http.CallOption) (*GetLastSevenCommentResp, error) {
 	var out GetLastSevenCommentResp
-	pattern := "/api/comment/last_seven/{article_id}"
+	pattern := "/api/comment/last_seven/{article_id}/{num}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationCommentGetLastSevenComment))
 	opts = append(opts, http.PathTemplate(pattern))

@@ -24,6 +24,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	processingService *service.CodeProcessingService,
 	userService *service.UserService,
 	articleService *service.ArticleService,
+	commentService *service.CommentService,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
@@ -59,6 +60,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	api.RegisterCodeProcessingHTTPServer(srv, processingService)
 	api.RegisterUserHTTPServer(srv, userService)
 	api.RegisterArticleHTTPServer(srv, articleService)
+	api.RegisterCommentHTTPServer(srv, commentService)
 	return srv
 }
 

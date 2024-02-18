@@ -25,12 +25,12 @@ func NewCommentService(dao biz.CommentRepo) *CommentService {
 func (s *CommentService) PostComment(ctx context.Context, req *pb.PostCommentReq) (resp *pb.PostCommentResp, err error) {
 	resp = new(pb.PostCommentResp)
 	err = s.dao.PostComment(ctx, &biz.PostCommentReq{
-		Content:      req.Content,
-		ArticleId:    req.ArticleId,
-		AuthorName:   req.AuthorName,
-		AuthorAvatar: req.AuthorAvatar,
-		ParentId:     req.ParentId,
-		RootId:       req.RootId,
+		Content:    req.Content,
+		ArticleId:  req.ArticleId,
+		Username:   req.Username,
+		UserAvatar: req.UserAvatar,
+		ParentId:   req.ParentId,
+		RootId:     req.RootId,
 	})
 	return
 }
@@ -42,15 +42,15 @@ func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.Get
 	if err != nil {
 		return nil, err
 	}
-	resp.Comments = make([]*pb.Comments, len(comments.Comments))
+	resp.Comments = make([]*pb.CommentDetail, len(comments.Comments))
 	for _, val := range comments.Comments {
-		resp.Comments = append(resp.Comments, &pb.Comments{
-			Content:      val.Content,
-			AuthorName:   val.AuthorName,
-			AuthorAvatar: val.AuthorAvatar,
-			ParentId:     val.ParentId,
-			RootId:       val.RootId,
-			CreatedTime:  val.CreatedTime.Format(time.DateTime),
+		resp.Comments = append(resp.Comments, &pb.CommentDetail{
+			Content:     val.Content,
+			Username:    val.Username,
+			UserAvatar:  val.UserAvatar,
+			ParentId:    val.ParentId,
+			RootId:      val.RootId,
+			CreatedTime: val.CreatedTime.Format(time.DateTime),
 		})
 	}
 	return
@@ -59,20 +59,34 @@ func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLas
 	resp = new(pb.GetLastSevenCommentResp)
 	comments, err := s.dao.GetLastSevenComment(ctx, &biz.GetLastSevenCommentReq{
 		ArticleId: req.GetArticleId(),
+		NumLimit:  req.Num,
 	})
 	if err != nil {
 		return nil, err
 	}
-	resp.Comments = make([]*pb.Comments, len(comments.Comments))
+	resp.Comments = make([]*pb.CommentDetail, 0, len(comments.Comments))
 	for _, val := range comments.Comments {
-		resp.Comments = append(resp.Comments, &pb.Comments{
-			Content:      val.Content,
-			AuthorName:   val.AuthorName,
-			AuthorAvatar: val.AuthorAvatar,
-			ParentId:     val.ParentId,
-			RootId:       val.RootId,
-			CreatedTime:  val.CreatedTime.Format(time.DateTime),
-		})
+		comment := &pb.CommentDetail{
+			CommentId:   val.CommentId,
+			Content:     val.Content,
+			Username:    val.Username,
+			UserAvatar:  val.UserAvatar,
+			ParentId:    val.ParentId,
+			RootId:      val.RootId,
+			CreatedTime: val.CreatedTime.Format(time.DateTime),
+		}
+		for _, child := range val.Children {
+			comment.Children = append(comment.Children, &pb.CommentDetail{
+				CommentId:   child.CommentId,
+				Content:     child.Content,
+				Username:    child.Username,
+				UserAvatar:  child.UserAvatar,
+				ParentId:    child.ParentId,
+				RootId:      child.RootId,
+				CreatedTime: child.CreatedTime.Format(time.DateTime),
+			})
+		}
+		resp.Comments = append(resp.Comments, comment)
 	}
 	return
 }
@@ -86,13 +100,13 @@ func (s *CommentService) GetRandomComment(ctx context.Context, req *pb.GetRandom
 		ArticleId: req.ArticleId,
 		CommentId: s.rx.Int63n(n),
 	})
-	resp.Comments = &pb.Comments{
-		Content:      comment.Comments.Content,
-		AuthorName:   comment.Comments.AuthorName,
-		AuthorAvatar: comment.Comments.AuthorAvatar,
-		ParentId:     comment.Comments.ParentId,
-		RootId:       comment.Comments.RootId,
-		CreatedTime:  comment.Comments.CreatedTime.Format(time.DateTime),
+	resp.Comment = &pb.CommentDetail{
+		Content:     comment.Comments.Content,
+		Username:    comment.Comments.Username,
+		UserAvatar:  comment.Comments.UserAvatar,
+		ParentId:    comment.Comments.ParentId,
+		RootId:      comment.Comments.RootId,
+		CreatedTime: comment.Comments.CreatedTime.Format(time.DateTime),
 	}
 	return
 }

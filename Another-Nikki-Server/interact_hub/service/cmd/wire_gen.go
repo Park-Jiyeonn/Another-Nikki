@@ -41,7 +41,7 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger) (*
 	codeDataRepo := data.NewCodeProcessingImpl(dataData)
 	codeProcessingService := service.NewCodeProcessingService(globalGrpcClient, codeDataRepo)
 	grpcServer := server.NewGRPCServer(confServer, logger, problemService, articleService, commentService, userService, codeProcessingService)
-	httpServer := server.NewHTTPServer(confServer, logger, problemService, codeProcessingService, userService, articleService)
+	httpServer := server.NewHTTPServer(confServer, logger, problemService, codeProcessingService, userService, articleService, commentService)
 	registrar := data.NewRegistry()
 	app := newApp(logger, grpcServer, httpServer, registrar)
 	return app, func() {

@@ -239,7 +239,7 @@ service Comment {
   };
   rpc GetLastSevenComment (GetLastSevenCommentReq) returns (GetLastSevenCommentResp) {
     option (google.api.http) = {
-      get: "/api/comment/last_seven/{article_id}"
+      get: "/api/comment/last_seven/{article_id}/{num}"
     };
   };
   rpc GetRandomComment (GetRandomCommentReq) returns (GetRandomCommentResp) {
@@ -252,10 +252,11 @@ service Comment {
 message PostCommentReq {
   string content = 1;
   int64 article_id = 2;
-  string author_name = 3;
-  string author_avatar = 4;
+  string username = 3;
+  string user_avatar = 4;
   int64 parent_id = 5;
   int64 root_id = 6;
+  int64 user_id = 7;
 }
 message PostCommentResp {
 }
@@ -263,30 +264,34 @@ message PostCommentResp {
 message GetCommentsByArticleIdReq {
   int64 article_id = 1;
 }
-message Comments {
+message CommentDetail {
   string content = 1;
-  string author_name = 2;
-  string author_avatar = 3;
+  string username = 2;
+  string user_avatar = 3;
   int64 parent_id = 4;
   int64 root_id = 5;
   string created_time = 6;
+  int64 user_id = 7;
+  int64 comment_id = 8;
+  repeated CommentDetail children = 9;
 }
 message GetCommentsByArticleIdResp {
-  repeated Comments comments = 1;
+  repeated CommentDetail comments = 1;
 }
 
 message GetLastSevenCommentReq {
   int64 article_id = 1;
+  int64 num = 2;
 }
 message GetLastSevenCommentResp {
-  repeated Comments comments = 1;
+  repeated CommentDetail comments = 1;
 }
 
 message GetRandomCommentReq {
   int64 article_id = 1;
 }
 message GetRandomCommentResp {
-  Comments comments = 1;
+  CommentDetail comment = 1;
 }
 
 

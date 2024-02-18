@@ -42,18 +42,18 @@ const post_comment = async (content: string) => {
     textarea.value = ''
 
     const user_id = getCookies("user_id")
-    const user_name = getCookies("user_name")
-    const user_avatar = getCookies("user_avatar")
+    const user_name = getCookies("username")
+    const user_avatar = getCookies("avatar")
 
     const ret = await CommentApi.post_comment({
         content: content,
         article_id:props.article_id,
-        author_id: user_id,
-        author_name: user_name,
+        user_id: user_id,
+        username: user_name,
         parent_id: 0,
         root_id: 0,
         parent_name: "",
-        author_avatar: user_avatar,
+        user_avatar: user_avatar,
     })
 
     loading.value = false
@@ -64,29 +64,23 @@ const post_comment = async (content: string) => {
 
 const get_last_seven_comments = async () => {
     const ret = await CommentApi.get_last_seven_comments({ num: 7, article_id:props.article_id, })
-    comments.value = ret.data.data
-    comments.value.forEach((blog) => {
-        blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
-        blog.children.forEach((chl) => {
-            chl.CreatedAt = chl.CreatedAt.substring(5, 10) + " " + chl.CreatedAt.substring(11, 16)
-        })
-    });
+    comments.value = ret.data.data.comments
 }
 
-const reply_comment = async (content: string, parentID: number, root_id: number, parent_name: string) => {
+const reply_comment = async (content: string, parentcomment_id: number, root_id: number, parent_name: string) => {
     const user_id = getCookies("user_id")
-    const user_name = getCookies("user_name")
-    const user_avatar = getCookies("user_avatar")
+    const user_name = getCookies("username")
+    const user_avatar = getCookies("avatar")
 
     const ret = await CommentApi.reply_comment({
         content: content,
         article_id:props.article_id,
-        author_id: user_id,
-        author_name: user_name,
-        parent_id: parentID,
+        user_id: user_id,
+        username: user_name,
+        parent_id: parentcomment_id,
         root_id: root_id,
         parent_name: parent_name,
-        author_avatar: user_avatar,
+        user_avatar: user_avatar,
     })
     if (ret?.data?.code !== 200) ElMessage.warning(ret?.data?.message ?? 'Something went wrong, please try again.')
     else ElMessage.success(ret?.data?.message ?? 'success')
@@ -98,21 +92,21 @@ const reply_comment = async (content: string, parentID: number, root_id: number,
 get_last_seven_comments()
 </script>
 <template>
-    <div v-for="item in comments" :key="item.ID" class="comment-container">
+    <div v-for="item in comments" :key="item.comment_id" class="comment-container">
         <div class="avatar-container">
-            <el-image :src="item.author_avatar" class="avatar"></el-image>
+            <el-avatar :src="item.user_avatar" class="avatar"></el-avatar>
         </div>
         <div class="content-container">
-            <div><b style="font-size: 14px">{{ item.author_name }}</b></div>
+            <div><b style="font-size: 14px">{{ item.username }}</b></div>
             <div class="content" v-html="renderMarkdown(item.content)" />
             <div class="info">
                 <span>{{ item.CreatedAt }}</span>
                 <el-button link type="primary" style="margin-left: 20px"
                     @click="item.replyIsVisible = !item.replyIsVisible">回复</el-button>
             </div>
-            <div v-if="item.children.length" class="reply-container">
-                <div v-for="chl in item.children" :key="chl.ID" class="reply">
-                    {{ chl.author_name }} reply {{ chl.parent_name }}: {{ chl.content }}
+            <!-- <div v-if="item.children.length" class="reply-container">
+                <div v-for="chl in item.children" :key="chl.comment_id" class="reply">
+                    {{ chl.username }} reply {{ chl.parent_name }}: {{ chl.content }}
                     <div class="reply-info">
                         <span>{{ chl.CreatedAt }}</span>
                         <el-button link type="primary" style="margin-left: 20px"
@@ -123,17 +117,17 @@ get_last_seven_comments()
                             <el-button link type="primary" style="margin-left: 20px"
                                 @click="chl.replyIsVisible = false">取消</el-button>
                             <el-button link type="primary" style="margin-left: 20px"
-                                @click="chl.replyIsVisible = false; reply_comment(chl.replyText, chl.ID, item.ID, chl.author_name)">确定</el-button>
+                                @click="chl.replyIsVisible = false; reply_comment(chl.replyText, chl.comment_id, item.comment_id, chl.username)">确定</el-button>
                         </div>
                     </div>
                 </div>
-            </div>
+            </div> -->
             <div v-if="item.replyIsVisible" class="reply-input-container">
                 <el-input v-model="item.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
                     placeholder="Please input"></el-input>
                 <el-button link type="primary" style="margin-left: 20px" @click="item.replyIsVisible = false">取消</el-button>
                 <el-button link type="primary" style="margin-left: 20px"
-                    @click="item.replyIsVisible = false; reply_comment(item.replyText, item.ID, item.ID, item.author_name)">确定</el-button>
+                    @click="item.replyIsVisible = false; reply_comment(item.replyText, item.comment_id, item.comment_id, item.username)">确定</el-button>
             </div>
         </div>
     </div>
