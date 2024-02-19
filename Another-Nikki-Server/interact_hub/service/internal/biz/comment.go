@@ -21,6 +21,7 @@ type PostCommentReq struct {
 	ParentId   int64  `db:"parent_id"`
 	RootId     int64  `db:"root_id"`
 	UserId     int64  `db:"user_id"`
+	ParentName string `db:"parent_name"`
 }
 
 type GetCommentsByArticleIdReq struct {
@@ -36,6 +37,7 @@ type Comments struct {
 	RootId      int64       `db:"root_id"`
 	CreatedTime time.Time   `db:"created_time"`
 	Children    []*Comments `db:"-"`
+	ParentName  string      `db:"parent_name"`
 }
 
 type GetCommentsByArticleIdResp struct {

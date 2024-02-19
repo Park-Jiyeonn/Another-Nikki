@@ -31,6 +31,7 @@ func (s *CommentService) PostComment(ctx context.Context, req *pb.PostCommentReq
 		UserAvatar: req.UserAvatar,
 		ParentId:   req.ParentId,
 		RootId:     req.RootId,
+		ParentName: req.ParentName,
 	})
 	return
 }
@@ -44,14 +45,28 @@ func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.Get
 	}
 	resp.Comments = make([]*pb.CommentDetail, len(comments.Comments))
 	for _, val := range comments.Comments {
-		resp.Comments = append(resp.Comments, &pb.CommentDetail{
+		comment := &pb.CommentDetail{
+			CommentId:   val.CommentId,
 			Content:     val.Content,
 			Username:    val.Username,
 			UserAvatar:  val.UserAvatar,
 			ParentId:    val.ParentId,
 			RootId:      val.RootId,
 			CreatedTime: val.CreatedTime.Format(time.DateTime),
-		})
+		}
+		for _, child := range val.Children {
+			comment.Children = append(comment.Children, &pb.CommentDetail{
+				CommentId:   child.CommentId,
+				Content:     child.Content,
+				Username:    child.Username,
+				UserAvatar:  child.UserAvatar,
+				ParentId:    child.ParentId,
+				RootId:      child.RootId,
+				CreatedTime: child.CreatedTime.Format(time.DateTime),
+				ParentName:  child.ParentName,
+			})
+		}
+		resp.Comments = append(resp.Comments, comment)
 	}
 	return
 }
@@ -84,6 +99,7 @@ func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLas
 				ParentId:    child.ParentId,
 				RootId:      child.RootId,
 				CreatedTime: child.CreatedTime.Format(time.DateTime),
+				ParentName:  child.ParentName,
 			})
 		}
 		resp.Comments = append(resp.Comments, comment)

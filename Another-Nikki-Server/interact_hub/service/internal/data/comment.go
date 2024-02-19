@@ -22,20 +22,21 @@ func NewCommentImpl(db *sqlx.DB) biz.CommentRepo {
 //    username VARCHAR(255) NOT NULL DEFAULT '',
 //    user_avatar VARCHAR(255) DEFAULT '',
 //    parent_id INT,
+//    parent_name VARCHAR(255) DEFAULT '',
 //    root_id INT,
 //    created_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 //    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // );
 
 func (s *CommentServiceImpl) PostComment(ctx context.Context, req *biz.PostCommentReq) (err error) {
-	_, err = s.db.ExecContext(ctx, "INSERT INTO comments (content, article_id, username, user_avatar, parent_id, root_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		req.Content, req.ArticleId, req.Username, req.UserAvatar, req.ParentId, req.RootId, req.UserId)
+	_, err = s.db.ExecContext(ctx, "INSERT INTO comments (content, article_id, username, user_avatar, parent_id, root_id, user_id, parent_name) VALUES (?, ?, ?, ?, ?, ?, ?, ?)",
+		req.Content, req.ArticleId, req.Username, req.UserAvatar, req.ParentId, req.RootId, req.UserId, req.ParentName)
 	return
 }
 
 func (s *CommentServiceImpl) getChildren(ctx context.Context, rootId int64) (resp []*biz.Comments, err error) {
 	resp = make([]*biz.Comments, 0)
-	rows, err := s.db.QueryxContext(ctx, "SELECT content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE root_id = ?", rootId)
+	rows, err := s.db.QueryxContext(ctx, "SELECT content, username, user_avatar, parent_id, root_id, created_time, parent_name FROM comments WHERE root_id = ?", rootId)
 	for rows.Next() {
 		var comment biz.Comments
 		err = rows.StructScan(&comment)

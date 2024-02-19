@@ -258,6 +258,7 @@ message PostCommentReq {
   int64 parent_id = 5;
   int64 root_id = 6;
   int64 user_id = 7;
+  string parent_name = 8;
 }
 message PostCommentResp {
 }
@@ -275,6 +276,7 @@ message CommentDetail {
   int64 user_id = 7;
   int64 comment_id = 8;
   repeated CommentDetail children = 9;
+  string parent_name = 10;
 }
 message GetCommentsByArticleIdResp {
   repeated CommentDetail comments = 1;
