@@ -48,7 +48,8 @@ func (s *articleImpl) GetArticleById(ctx context.Context, req *biz.GetArticleByI
 	return
 }
 func (s *articleImpl) GetArticleByPage(ctx context.Context, req *biz.GetArticleByPageReq) (resp *biz.GetArticleByPageResp, err error) {
-	rows, err := s.db.QueryxContext(ctx, "SELECT article_id, article_title, created_time FROM articles ORDER BY created_time DESC LIMIT ? OFFSET ?",
+	resp = new(biz.GetArticleByPageResp)
+	rows, err := s.db.QueryxContext(ctx, "SELECT article_id, article_title, created_time, article_description FROM articles ORDER BY created_time DESC LIMIT ? OFFSET ?",
 		req.PageSize, (req.PageNum-1)*req.PageSize)
 	if err != nil {
 		return nil, err

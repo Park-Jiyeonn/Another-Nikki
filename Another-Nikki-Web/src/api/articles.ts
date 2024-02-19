@@ -2,19 +2,18 @@ import { Article } from '@/types/Article';
 import HttpServer from '../http/index';
 
 const page_que = (data:{
-	page: number;
+	page_num: number;
+    page_size: number;
 }) => HttpServer.request<typeof data,Article[]>({
-    url: `/api/article/articles`,
+    url: `/api/article/${data.page_num}/${data.page_size}`,
     method: "GET",
-    data
 })
 
 const get_article = (data:{
-	ID: number;
+	article_id: number;
 }) => HttpServer.request<typeof data,Article>({
-    url: `/api/article`,
+    url: `/api/article/${data.article_id}`,
     method: "GET",
-    data
 })
 
 const update_article = (data:{
@@ -29,11 +28,12 @@ const update_article = (data:{
 })
 
 const post_article = (data:{
-    title: string;
-    content: string;
-    description:string, 
+    article_id: number,
+    article_title: string;
+    article_content: string;
+    article_description:string, 
 }) => HttpServer.request<typeof data,Article>({
-    url: `/api/article`,
+    url: `/api/article/post`,
     method: "POST",
     data
 }) 

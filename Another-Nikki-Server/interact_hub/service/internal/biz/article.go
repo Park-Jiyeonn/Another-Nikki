@@ -42,9 +42,10 @@ type GetArticleByPageReq struct {
 }
 
 type ArticlePageDetail struct {
-	ArticleId    int64     `db:"article_id"`
-	ArticleTitle string    `db:"article_title"`
-	CreatedTime  time.Time `db:"created_time"`
+	ArticleId          int64     `db:"article_id"`
+	ArticleTitle       string    `db:"article_title"`
+	CreatedTime        time.Time `db:"created_time"`
+	ArticleDescription string    `db:"article_description"`
 }
 
 type GetArticleByPageResp struct {

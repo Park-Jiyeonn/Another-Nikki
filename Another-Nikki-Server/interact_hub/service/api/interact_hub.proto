@@ -75,7 +75,7 @@ service Article {
   };
   rpc GetArticleByPage(GetArticleByPageReq) returns (GetArticleByPageResp){
     option (google.api.http) = {
-      get: "/api/article/{page_size}/{page_num}"
+      get: "/api/article/{page_num}/{page_size}"
     };
   };
 }
@@ -107,6 +107,7 @@ message ArticlePageDetail {
   int64 article_id = 1;
   string article_title = 2;
   string created_time = 3;
+  string article_description = 4;
 }
 message GetArticleByPageResp {
   repeated ArticlePageDetail articles = 1;

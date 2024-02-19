@@ -5,15 +5,11 @@ import { ArticleApi } from '@/api';
 import router from '@/router';
 const articles = ref<Article[]>([])
 
-const article_page_que = async (page: number) => {
-    const ret = await ArticleApi.page_que({page:page})
-    articles.value = ret.data.data
-    articles.value.forEach((article) => {
-        article.CreatedAt = article.CreatedAt.substring(0, 10) + " " +
-                            article.CreatedAt.substring(11, 16)
-    });
+const article_page_que = async (page_num: number, page_size: number) => {
+    const ret = await ArticleApi.page_que({page_num:page_num, page_size: page_size})
+    articles.value = ret.data.data.articles
 }
-article_page_que(1)
+article_page_que(1, 10)
 
 const toArticleDetail = (id:number) => {
     console.log(id)
@@ -23,16 +19,16 @@ const toArticleDetail = (id:number) => {
 </script>
 
 <template>
-    <el-card class="article-card" v-for="article in articles" @click="toArticleDetail(article.ID)">
+    <el-card class="article-card" v-for="article in articles" @click="toArticleDetail(article.article_id)">
         <el-row :gutter="24">
             <el-col :span="18">
                 <h3>
-                    {{ article.title }}
+                    {{ article.article_title }}
                 </h3>
-                <p class="article-description">{{article.description}}</p>
+                <p class="article-description">{{article.article_description}}</p>
                 <ul class="article-footer">
                     <li class="article-footer-li">
-                        <span class="li-title">{{article.CreatedAt}}</span>
+                        <span class="li-title">{{article.created_time}}</span>
                     </li>
                 </ul>
             </el-col>

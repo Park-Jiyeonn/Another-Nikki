@@ -1,7 +1,7 @@
 export interface Article {
-    ID:number,
-    title: string;
-    content: string;
-    description:string,
-    CreatedAt: string,
+    article_id:number,
+    article_title: string;
+    article_content: string;
+    article_description:string,
+    created_time: string,
 }

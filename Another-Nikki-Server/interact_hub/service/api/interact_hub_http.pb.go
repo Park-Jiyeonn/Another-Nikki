@@ -169,7 +169,7 @@ func RegisterArticleHTTPServer(s *http.Server, srv ArticleHTTPServer) {
 	r := s.Route("/")
 	r.POST("/api/article/post", _Article_PostArticle0_HTTP_Handler(srv))
 	r.GET("/api/article/{article_id}", _Article_GetArticleById0_HTTP_Handler(srv))
-	r.GET("/api/article/{page_size}/{page_num}", _Article_GetArticleByPage0_HTTP_Handler(srv))
+	r.GET("/api/article/{page_num}/{page_size}", _Article_GetArticleByPage0_HTTP_Handler(srv))
 }
 
 func _Article_PostArticle0_HTTP_Handler(srv ArticleHTTPServer) func(ctx http.Context) error {
@@ -267,7 +267,7 @@ func (c *ArticleHTTPClientImpl) GetArticleById(ctx context.Context, in *GetArtic
 
 func (c *ArticleHTTPClientImpl) GetArticleByPage(ctx context.Context, in *GetArticleByPageReq, opts ...http.CallOption) (*GetArticleByPageResp, error) {
 	var out GetArticleByPageResp
-	pattern := "/api/article/{page_size}/{page_num}"
+	pattern := "/api/article/{page_num}/{page_size}"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationArticleGetArticleByPage))
 	opts = append(opts, http.PathTemplate(pattern))

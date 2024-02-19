@@ -11,9 +11,9 @@ const loading = ref(false);
 
 const post_article = async () => {
     const ret = await ArticleApi.post_article({ 
-        title: article_title.value, 
-        description: article_description.value,
-        content:article_content.value
+        article_title: article_title.value, 
+        article_description: article_description.value,
+        article_content:article_content.value
     })
     // console.log(ret.data)
     if (ret.data.code == 200) {

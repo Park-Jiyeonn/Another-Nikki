@@ -63,9 +63,10 @@ func (s *ArticleService) GetArticleByPage(ctx context.Context, req *pb.GetArticl
 	resp.Articles = make([]*pb.ArticlePageDetail, 0, len(articles.Articles))
 	for _, val := range articles.Articles {
 		resp.Articles = append(resp.Articles, &pb.ArticlePageDetail{
-			ArticleId:    val.ArticleId,
-			ArticleTitle: val.ArticleTitle,
-			CreatedTime:  val.CreatedTime.Format(time.DateTime),
+			ArticleId:          val.ArticleId,
+			ArticleTitle:       val.ArticleTitle,
+			CreatedTime:        val.CreatedTime.Format(time.DateTime),
+			ArticleDescription: val.ArticleDescription,
 		})
 	}
 	return

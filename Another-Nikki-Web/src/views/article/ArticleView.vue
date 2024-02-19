@@ -5,7 +5,6 @@ import { ref } from 'vue'
 
 import { Article } from '@/types/Article';
 import { ArticleApi } from '@/api';
-// import 'highlight.js/styles/github-dark-dimmed.css'
 import { renderMarkdown } from '@/utils/markdown'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
 import CommentComponent from '@/components/CommentComponent.vue';
@@ -16,44 +15,44 @@ const route = useRoute();
 const router = useRouter();
 
 const article = ref<Article>({
-    ID: 1,
-    title: "title",
-    content: "content",
-    description: "description",
-    CreatedAt: "CreatedAt",
+    article_id: 1,
+    article_title: "title",
+    article_content: "content",
+    article_description: "description",
+    created_time: "CreatedAt",
 })
 
 const get_article = async (id: number) => {
-    const ret = await ArticleApi.get_article({ ID: id })
+    const ret = await ArticleApi.get_article({ article_id: id })
     if (ret.data.code < 200 || ret.data.code > 200) {
-        article.value.ID = -1
-        article.value.title = "请求错误捏, 请不要填奇奇怪怪的参数哦"
-        article.value.description = "空"
-        article.value.content = "空"
+        article.value.article_id = -1
+        article.value.article_title = "请求错误捏, 请不要填奇奇怪怪的参数哦"
+        article.value.article_description = "空"
+        article.value.article_content = "空"
         return
     }
     article.value = ret.data.data
 }
 
-const id: number = parseInt(String(route.params.id));
-get_article(id)
+const article_id: number = parseInt(String(route.params.id));
+get_article(article_id)
 
 const update_article = () => {
-    router.push(`/article/update/${id}`)
+    router.push(`/article/update/${article_id}`)
 }
 
 </script>
 <template>
     <ContentBase>
         <h2>
-            {{ article.title }}
+            {{ article.article_title }}
         </h2>
         <el-divider />
         <div>
-            {{ article.description }}
+            {{ article.article_description }}
         </div>
         <el-divider />
-        <div class="content markdown-body" v-html="renderMarkdown(article.content)" />
+        <div class="content markdown-body" v-html="renderMarkdown(article.article_content)" />
 
         <div v-if="isLoggedIn" style="text-align: center; margin-top: 10px;">
             <el-button class="button" type="primary" @click="update_article()">
@@ -66,7 +65,7 @@ const update_article = () => {
             评论区：
         </div>
 
-        <CommentComponent :article_id=id />
+        <CommentComponent :article_id=article_id />
     </ContentBase>
 </template>
 
