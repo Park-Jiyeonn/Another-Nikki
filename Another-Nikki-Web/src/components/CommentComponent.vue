@@ -104,7 +104,7 @@ get_last_seven_comments()
                 <el-button link type="primary" style="margin-left: 20px"
                     @click="item.replyIsVisible = !item.replyIsVisible">回复</el-button>
             </div>
-            <!-- <div v-if="item.children.length" class="reply-container">
+            <div v-if="item.children && item.children.length" class="reply-container">
                 <div v-for="chl in item.children" :key="chl.comment_id" class="reply">
                     {{ chl.username }} reply {{ chl.parent_name }}: {{ chl.content }}
                     <div class="reply-info">
@@ -121,7 +121,7 @@ get_last_seven_comments()
                         </div>
                     </div>
                 </div>
-            </div> -->
+            </div>
             <div v-if="item.replyIsVisible" class="reply-input-container">
                 <el-input v-model="item.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
                     placeholder="Please input"></el-input>
