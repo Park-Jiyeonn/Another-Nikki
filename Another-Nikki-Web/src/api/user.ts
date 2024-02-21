@@ -59,6 +59,13 @@ const get_user_by_id = (data: {
     method: "GET",
 })
 
+const create_tourist_account = (data:{
+}) => HttpServer.request<typeof data, UserType>({
+    url: `/api/user/create/tourist`,
+    method: "POST",
+    data
+})
+
 export {
 	login,
     register,
@@ -67,4 +74,5 @@ export {
     update,
     get_commit_by_id,
     get_user_by_id,
+    create_tourist_account,
 }

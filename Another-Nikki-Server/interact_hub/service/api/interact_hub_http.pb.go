@@ -291,6 +291,7 @@ func (c *ArticleHTTPClientImpl) PostArticle(ctx context.Context, in *PostArticle
 	return &out, err
 }
 
+const OperationUserCreateTouristAccount = "/service.problem.api.User/CreateTouristAccount"
 const OperationUserGetUserById = "/service.problem.api.User/GetUserById"
 const OperationUserGetUserCommitRecordByPage = "/service.problem.api.User/GetUserCommitRecordByPage"
 const OperationUserGetUserSumCommit = "/service.problem.api.User/GetUserSumCommit"
@@ -299,6 +300,7 @@ const OperationUserRegister = "/service.problem.api.User/Register"
 const OperationUserUpdateUser = "/service.problem.api.User/UpdateUser"
 
 type UserHTTPServer interface {
+	CreateTouristAccount(context.Context, *CreateTouristAccountReq) (*CreateTouristAccountResp, error)
 	GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error)
 	GetUserCommitRecordByPage(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error)
 	GetUserSumCommit(context.Context, *GetUserSumCommitReq) (*GetUserSumCommitResp, error)
@@ -315,6 +317,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.GET("/api/user/profile/{user_id}/commit-record/{page_num}/{page_size}", _User_GetUserCommitRecordByPage0_HTTP_Handler(srv))
 	r.GET("/api/user/profile/{user_id}/commit-record/sum", _User_GetUserSumCommit0_HTTP_Handler(srv))
 	r.POST("/api/user/update", _User_UpdateUser0_HTTP_Handler(srv))
+	r.POST("/api/user/create/tourist", _User_CreateTouristAccount0_HTTP_Handler(srv))
 }
 
 func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -449,7 +452,30 @@ func _User_UpdateUser0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) e
 	}
 }
 
+func _User_CreateTouristAccount0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in CreateTouristAccountReq
+		if err := ctx.Bind(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserCreateTouristAccount)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.CreateTouristAccount(ctx, req.(*CreateTouristAccountReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*CreateTouristAccountResp)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
+	CreateTouristAccount(ctx context.Context, req *CreateTouristAccountReq, opts ...http.CallOption) (rsp *CreateTouristAccountResp, err error)
 	GetUserById(ctx context.Context, req *GetUserByIdReq, opts ...http.CallOption) (rsp *GetUserByIdResp, err error)
 	GetUserCommitRecordByPage(ctx context.Context, req *GetUserCommitRecordReq, opts ...http.CallOption) (rsp *GetUserCommitRecordResp, err error)
 	GetUserSumCommit(ctx context.Context, req *GetUserSumCommitReq, opts ...http.CallOption) (rsp *GetUserSumCommitResp, err error)
@@ -464,6 +490,19 @@ type UserHTTPClientImpl struct {
 
 func NewUserHTTPClient(client *http.Client) UserHTTPClient {
 	return &UserHTTPClientImpl{client}
+}
+
+func (c *UserHTTPClientImpl) CreateTouristAccount(ctx context.Context, in *CreateTouristAccountReq, opts ...http.CallOption) (*CreateTouristAccountResp, error) {
+	var out CreateTouristAccountResp
+	pattern := "/api/user/create/tourist"
+	path := binding.EncodeURL(pattern, in, false)
+	opts = append(opts, http.Operation(OperationUserCreateTouristAccount))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "POST", path, in, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
 }
 
 func (c *UserHTTPClientImpl) GetUserById(ctx context.Context, in *GetUserByIdReq, opts ...http.CallOption) (*GetUserByIdResp, error) {

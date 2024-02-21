@@ -149,6 +149,12 @@ service User {
       body: "*"
     };
   };
+  rpc CreateTouristAccount (CreateTouristAccountReq) returns (CreateTouristAccountResp) {
+    option (google.api.http) = {
+      post: "/api/user/create/tourist"
+      body: "*"
+    };
+  }
 }
 message LoginReq {
   string username = 1;
@@ -166,6 +172,8 @@ message RegisterReq {
   string username = 1;
   string password = 2;
   string confirm_password = 3;
+  string avatar = 4;
+  string description = 5;
 }
 message RegisterResp {
   string token = 1;
@@ -224,6 +232,16 @@ message UpdateUserReq {
   string description = 3;
 }
 message UpdateUserResp {
+}
+
+message CreateTouristAccountReq {
+}
+message CreateTouristAccountResp {
+  string token = 1;
+  string username = 2;
+  int64 user_id = 3;
+  string avatar = 4;
+  string description = 5;
 }
 
 service Comment {

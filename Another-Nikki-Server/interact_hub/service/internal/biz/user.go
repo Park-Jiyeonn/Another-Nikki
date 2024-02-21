@@ -15,8 +15,10 @@ type UserRepo interface {
 }
 
 type RegisterReq struct {
-	Username string
-	Password string
+	Username    string
+	Password    string
+	Avatar      string
+	Description string
 }
 
 type RegisterResp struct {

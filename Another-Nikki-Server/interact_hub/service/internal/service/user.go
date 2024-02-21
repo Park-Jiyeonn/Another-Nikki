@@ -3,24 +3,30 @@ package service
 import (
 	pb "Another-Nikki/interact_hub/service/api"
 	"Another-Nikki/interact_hub/service/internal/biz"
+	"Another-Nikki/interact_hub/service/internal/conf"
 	"Another-Nikki/pkg/jwt"
 	"Another-Nikki/pkg/log"
 	"context"
 	"database/sql"
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
+	"math/rand"
 	"time"
 )
 
 type UserService struct {
 	pb.UnimplementedUserServer
 
-	dao biz.UserRepo
+	dao    biz.UserRepo
+	rx     *rand.Rand
+	avatar []string
 }
 
-func NewUserService(dao biz.UserRepo) *UserService {
+func NewUserService(dao biz.UserRepo, c *conf.Avatars) *UserService {
 	return &UserService{
-		dao: dao,
+		dao:    dao,
+		rx:     rand.New(rand.NewSource(time.Now().UnixNano())),
+		avatar: c.Avatars,
 	}
 }
 
@@ -74,8 +80,10 @@ func (s *UserService) Register(ctx context.Context, req *pb.RegisterReq) (resp *
 		return nil, fmt.Errorf("注册失败，请换一个密码重试")
 	}
 	user, err := s.dao.Register(ctx, &biz.RegisterReq{
-		Username: req.Username,
-		Password: string(newPassword),
+		Username:    req.Username,
+		Password:    string(newPassword),
+		Avatar:      req.Avatar,
+		Description: req.Description,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("注册失败，请重试")
@@ -160,5 +168,31 @@ func (s *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (re
 		Avatar:      req.Avatar,
 		Description: req.Description,
 	})
+	return
+}
+
+func (s *UserService) CreateTouristAccount(ctx context.Context, _ *pb.CreateTouristAccountReq) (resp *pb.CreateTouristAccountResp, err error) {
+	resp = new(pb.CreateTouristAccountResp)
+	username := "user_"
+	avatar := s.avatar[s.rx.Intn(len(s.avatar))]
+	for i := 0; i < 8; i++ {
+		username += string(rune(s.rx.Intn(10) + '0'))
+	}
+	res, err := s.Register(ctx, &pb.RegisterReq{
+		Username:        username,
+		Password:        "1234",
+		ConfirmPassword: "1234",
+		Avatar:          avatar,
+		Description:     "lazy me, no description",
+	})
+	if err != nil {
+		log.Error(ctx, "CreateTouristAccount err: %v", err)
+		return
+	}
+	resp.Token = res.Token
+	resp.Username = username
+	resp.UserId = res.UserId
+	resp.Avatar = avatar
+	resp.Description = "lazy me, no description"
 	return
 }

@@ -30,7 +30,7 @@ func NewUserImpl(data *Data) biz.UserRepo {
 }
 
 func (s *userServiceImpl) Register(ctx context.Context, req *biz.RegisterReq) (resp *biz.RegisterResp, err error) {
-	ret, err := s.db.ExecContext(ctx, "INSERT INTO users (username, password) VALUES (?, ?)", req.Username, req.Password)
+	ret, err := s.db.ExecContext(ctx, "INSERT INTO users (username, password, avatar, description) VALUES (?, ?, ?, ?)", req.Username, req.Password, req.Avatar, req.Description)
 	if err != nil {
 		return
 	}
