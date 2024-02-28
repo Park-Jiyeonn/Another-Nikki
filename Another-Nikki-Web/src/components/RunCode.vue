@@ -1,15 +1,15 @@
 <script setup lang="ts">
 const props = defineProps<{
-    id?:                number,
-    problemName:        string,
-    messageDefault:     string,
-    inputAreaMinRow:    number,
-    inputAreaMaxRow:    number,
-    run:                boolean,
-    defaultCode:        boolean,
-    clearCode:          boolean,
-    submitCode:         boolean,
-    testCode:           boolean,
+    id: number,
+    problemName: string,
+    messageDefault: string,
+    inputAreaMinRow: number,
+    inputAreaMaxRow: number,
+    run: boolean,
+    defaultCode: boolean,
+    clearCode: boolean,
+    submitCode: boolean,
+    testCode: boolean,
 }>()
 import { ElMessage } from 'element-plus';
 
@@ -18,6 +18,14 @@ import { ref } from 'vue'
 import { CodeRet } from '@/types/runCode';
 import { RunCode } from '@/api'
 import { getCookies } from "@/hooks/useCookies";
+import { Codemirror } from "vue-codemirror";
+import { python } from "@codemirror/lang-python";
+import { go } from "@codemirror/lang-go";
+import { cpp } from "@codemirror/lang-cpp";
+import { java } from "@codemirror/lang-java";
+import { oneDark } from '@codemirror/theme-one-dark'
+
+const extensions = ref([cpp(), oneDark]);
 
 const textarea = ref('')
 const loading = ref(false);
@@ -88,7 +96,7 @@ const judgeCode = async (code: string) => {
         memory_used: "-",
         exit_code: "",
     }
-    const ret = await RunCode.judgeCode({ user_id:user_id,user_name:user_name,problem_id:props.id,problem_name:props.problemName,language: language.value, code:code})
+    const ret = await RunCode.judgeCode({ user_id: user_id, user_name: user_name, problem_id: props.id, problem_name: props.problemName, language: language.value, code: code })
 
     codeLoading.value = false
     codeMsg.value.message = "等待编译中..."
@@ -102,11 +110,25 @@ const judgeCode = async (code: string) => {
     }
 }
 
+const changeLanguage = (newLang: string) => {
+    if (newLang === 'Python') {
+        extensions.value = [python(),oneDark];
+    }
+    else if (newLang === "Java") {
+        extensions.value = [java(),oneDark];
+    }
+    else if (newLang === "Golang") {
+        extensions.value = [go(),oneDark];
+    }
+    else if (newLang === "Cpp") {
+        extensions.value = [cpp(),oneDark];
+    }
+};
 </script>
 
 <template>
     选择语言：
-    <el-select v-model="language" class="m-2" placeholder="Select" size="large">
+    <el-select v-model="language" class="m-2" placeholder="Select" size="large" @change="changeLanguage">
         <el-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
     </el-select>
     {{ messageDefault }}
@@ -115,8 +137,8 @@ const judgeCode = async (code: string) => {
         <el-col :span="2">
         </el-col>
         <el-col :span="20">
-            <el-input v-model="textarea" :autosize="{ minRows: 20, maxRows: 20 }" type="textarea" placeholder="Please input"
-                style="margin-top: 10px;" />
+            <Codemirror class="code" v-model="textarea" :style="{ height: '600px' }" :autofocus="true"
+                :extensions="extensions" :tabSize=4 style="font-size: 15px;"/>
         </el-col>
     </el-row>
 
@@ -124,14 +146,13 @@ const judgeCode = async (code: string) => {
         <el-row>
             <el-col :span="2"></el-col>
             <el-col :span="10">
-                <el-input v-model="inputArea" :autosize="{ minRows: inputAreaMinRow, maxRows: inputAreaMaxRow }" type="textarea" placeholder="自测输入"
-                    style="margin-top: 10px; margin-bottom: 10px;" />
+                <el-input v-model="inputArea" :autosize="{ minRows: inputAreaMinRow, maxRows: inputAreaMaxRow }"
+                    type="textarea" placeholder="自测输入" style="margin-top: 10px; margin-bottom: 10px;" />
             </el-col>
             <el-col :span="1"></el-col>
             <el-col :span="10">
                 <el-row v-if="submitCode" style="margin-top: 30px;">
-                    <el-button class="button" type="primary" :loading="codeLoading"
-                        @click="judgeCode(textarea)">
+                    <el-button class="button" type="primary" :loading="codeLoading" @click="judgeCode(textarea)">
                         提交代码
                     </el-button>
                 </el-row>

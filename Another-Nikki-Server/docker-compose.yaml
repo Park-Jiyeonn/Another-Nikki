@@ -43,7 +43,8 @@ services:
       # 两种方式查看自己本机的 ip
       # hostname -I
       # ip addr show eth0
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.2.32:9092
+      # ipconfig getifaddr en0
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.1.101:9092
       # 定义安全协议
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       # CONTROLLER 投票者地址

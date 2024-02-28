@@ -100,7 +100,7 @@ get_last_seven_comments()
             <div><b style="font-size: 14px">{{ item.username }}</b></div>
             <div class="content" v-html="renderMarkdown(item.content)" />
             <div class="info">
-                <span>{{ item.CreatedAt }}</span>
+                <span>{{ item.created_time }}</span>
                 <el-button link type="primary" style="margin-left: 20px"
                     @click="item.replyIsVisible = !item.replyIsVisible">回复</el-button>
             </div>
@@ -108,7 +108,7 @@ get_last_seven_comments()
                 <div v-for="chl in item.children" :key="chl.comment_id" class="reply">
                     {{ chl.username }} reply {{ chl.parent_name }}: {{ chl.content }}
                     <div class="reply-info">
-                        <span>{{ chl.CreatedAt }}</span>
+                        <span>{{ chl.created_time }}</span>
                         <el-button link type="primary" style="margin-left: 20px"
                             @click="chl.replyIsVisible = !chl.replyIsVisible">回复</el-button>
                         <div v-if="chl.replyIsVisible" class="reply-input-container">

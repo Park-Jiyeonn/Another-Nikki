@@ -14,7 +14,7 @@ const runCode = (data:{
 const judgeCode = (data:{
     user_id: string,
     user_name : string,
-    problem_id: string,
+    problem_id: number,
     problem_name:string,
     language: string,
     code: string, 
