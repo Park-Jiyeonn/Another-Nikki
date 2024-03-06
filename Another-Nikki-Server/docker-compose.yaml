@@ -30,8 +30,6 @@ services:
     ports:
       - '9092:9092'
       - '9093:9093'
-    env_file:
-      - local.env
     environment:
       ### 通用配置
       # 允许使用kraft，即Kafka替代Zookeeper
@@ -46,7 +44,7 @@ services:
       # hostname -I
       # ip addr show eth0
       # ipconfig getifaddr en0
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://${KAFKA_LISTENER}:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.177.161:9092
       # 定义安全协议
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       # CONTROLLER 投票者地址
