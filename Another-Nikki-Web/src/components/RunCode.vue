@@ -24,6 +24,7 @@ import { go } from "@codemirror/lang-go";
 import { cpp } from "@codemirror/lang-cpp";
 import { java } from "@codemirror/lang-java";
 import { oneDark } from '@codemirror/theme-one-dark'
+import router from '@/router';
 
 const extensions = ref([cpp(), oneDark]);
 
@@ -88,6 +89,10 @@ const runCode = async (code: string, input: string) => {
     }
 }
 const judgeCode = async (code: string) => {
+    if (typeof user_id === 'undefined' || user_id == -1) {
+        router.push(`/auth/login`)
+        return
+    }
     codeLoading.value = true
     codeMsg.value = {
         state: "",

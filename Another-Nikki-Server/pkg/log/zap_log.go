@@ -8,6 +8,7 @@ import (
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/net/context"
+	"os"
 )
 
 func Init(env, serviceName string) log.Logger {
@@ -33,6 +34,9 @@ func Init(env, serviceName string) log.Logger {
 		"service.name", serviceName,
 		"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
+		"ip", GetIP(),
+		"platform", GetPlatform(),
+		"url", GetRequestUrl(),
 	)
 	//log.SetLogger(logger)
 
@@ -47,6 +51,8 @@ type Logger struct {
 func NewZapLogger(encoder zapcore.EncoderConfig, level zap.AtomicLevel, opts ...zap.Option) *Logger {
 	client, err := elastic.NewTypedClient(elastic.Config{
 		Addresses: []string{"http://47.116.20.160:9200"},
+		Username:  os.Getenv("ELASTIC_SEARCH_USER"),
+		Password:  os.Getenv("ELASTIC_SEARCH_PASS"),
 	})
 	if err != nil {
 		panic(err)
@@ -97,4 +103,32 @@ func Warn(ctx context.Context, msg string, filed ...interface{}) {
 
 func Error(ctx context.Context, msg string, filed ...interface{}) {
 	log.Context(ctx).Errorf(msg, filed...)
+}
+
+func GetIP() log.Valuer {
+	return func(ctx context.Context) interface{} {
+		ip := ctx.Value("ip")
+		if ret, ok := ip.(string); ok {
+			return ret
+		}
+		return ""
+	}
+}
+func GetRequestUrl() log.Valuer {
+	return func(ctx context.Context) interface{} {
+		url := ctx.Value("url")
+		if ret, ok := url.(string); ok {
+			return ret
+		}
+		return ""
+	}
+}
+func GetPlatform() log.Valuer {
+	return func(ctx context.Context) interface{} {
+		platform := ctx.Value("platform")
+		if ret, ok := platform.(string); ok {
+			return ret
+		}
+		return ""
+	}
 }

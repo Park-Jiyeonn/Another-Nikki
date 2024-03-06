@@ -25,6 +25,9 @@ const get_commits_by_page = async (page : number, user_id : number) => {
 }
 const get_count = async(user_id : number) => {
     const ret = await User.count({user_id:user_id})
+    if (ret.data.code != 200) {
+        return
+    }
     sum.value = ret.data.data.sum
 }
 const get_user = async(user_id : number) => {

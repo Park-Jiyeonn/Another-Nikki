@@ -17,7 +17,11 @@ const login = async () => {
         setCookies("username", ret.data.data.username)
         setCookies("avatar", ret.data.data.avatar)
         setCookies("description", ret.data.data.description)
-        return ElMessage.success("登录成功")
+        ElMessage.success("登录成功")
+        router.push(`/problems/`).then(() => {
+            // 跳转后刷新页面
+            window.location.href = '/problems/';
+        });
     }
     else {
         return ElMessage.warning(ret.data.message ?? 'Something went wrong, please try again.')
@@ -33,8 +37,10 @@ const create_tourist_account = async () => {
         setCookies("avatar", ret.data.data.avatar)
         setCookies("description", ret.data.data.description) 
         ElMessage.success("一键登录成功")
-        router.push(`/problems/`)
-        return window.location.reload();
+        router.push(`/problems/`).then(() => {
+            // 跳转后刷新页面
+            window.location.href = '/problems/';
+        });
     }
     else {
         return ElMessage.warning(ret.data.message ?? 'Something went wrong, please try again.')

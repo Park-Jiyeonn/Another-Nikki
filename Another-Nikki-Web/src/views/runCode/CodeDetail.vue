@@ -4,7 +4,7 @@ import { useRoute } from 'vue-router';
 import { ElMessage } from 'element-plus';
 import { ref } from 'vue'
 import { User  } from '@/api';
-import { Commit } from '@types/User';
+import { Commit } from '@/types/User';
 import { renderMarkdown } from '@/utils/markdown'
 import router from '@/router';
 const route = useRoute();

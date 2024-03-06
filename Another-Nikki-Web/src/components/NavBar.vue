@@ -10,7 +10,7 @@
             Articles
         </el-menu-item>
         <div class="flex-grow" />
-        <el-menu-item index="4" @click="router.push(`/profile/${user_id}`)">
+        <el-menu-item index="4" @click="get_user()">
             <el-dropdown trigger="click">
                 <el-avatar :src="user_avatar"/>
                 <template #dropdown> <el-dropdown-menu>
@@ -55,8 +55,8 @@ const router = useRouter()
 const isLoggedIn = useIsLoggedIn()
 const user_id : number = getCookies("user_id")
 const user_avatar = ref(getCookies("avatar"))
-const username = ref<string>(getCookies("username").toString())
-const description = ref<string>(getCookies("description").toString())
+const username = ref<string>(getCookies("username"))
+const description = ref<string>(getCookies("description"))
 const dialogFormVisible = ref(false)
 const formLabelWidth = '140px'
 const form = reactive({
@@ -64,11 +64,16 @@ const form = reactive({
   avatar_url: user_avatar.value,
   description: description.value,
 })
-const logout = async () => {
-    removeCookies("username")
-    removeCookies("avatar")
-    removeCookies("user_id")
-    removeCookies("token")
+function logout()  {
+    // removeCookies("username")
+    // removeCookies("avatar")
+    // removeCookies("user_id")
+    // removeCookies("token")
+    setCookies("token", "")
+    setCookies("user_id", -1)
+    setCookies("username", "")
+    setCookies("avatar", "")
+    setCookies("description", "")
     location.reload();
 }
 const update_user = async() => {
@@ -87,6 +92,13 @@ const update_user = async() => {
         form.description = description.value
         return ElMessage.error(ret.data.message)
     }
+}
+const get_user = async() => {
+    if (typeof user_id !== 'undefined' && user_id != -1) {
+        router.push(`/profile/${user_id}`)
+        return
+    }
+    router.push(`/auth/login`) 
 }
 </script>
 

@@ -10,6 +10,7 @@ import { Comment } from '@/types/Comment';
 import { CommentApi } from '@/api'
 import { getCookies } from "@/hooks/useCookies";
 import { renderMarkdown } from '@/utils/markdown'
+import router from '@/router';
 
 const comments = ref<Comment[]>([])
 const loading = ref(false);
@@ -45,6 +46,10 @@ const post_comment = async (content: string) => {
     const user_name = getCookies("username")
     const user_avatar = getCookies("avatar")
 
+    if (typeof user_id === 'undefined' || user_id == -1) {
+        router.push(`/auth/login`)
+        return
+    }
     const ret = await CommentApi.post_comment({
         content: content,
         article_id:props.article_id,
@@ -71,6 +76,11 @@ const reply_comment = async (content: string, parentcomment_id: number, root_id:
     const user_id = getCookies("user_id")
     const user_name = getCookies("username")
     const user_avatar = getCookies("avatar")
+
+    if (typeof user_id === 'undefined' || user_id == -1) {
+        router.push(`/auth/login`)
+        return
+    }
 
     const ret = await CommentApi.reply_comment({
         content: content,

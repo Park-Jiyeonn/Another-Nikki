@@ -7,11 +7,13 @@ import (
 	pkg_jwt "Another-Nikki/pkg/jwt"
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
+	"github.com/go-kratos/kratos/v2/middleware"
 	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
+	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/goccy/go-json"
 	jwt2 "github.com/golang-jwt/jwt/v4"
@@ -29,6 +31,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
+			getip(),
 			tracing.Server(),
 			logging.Server(logger),
 			selector.Server(
@@ -107,17 +110,71 @@ func ErrorEncoder(w http.ResponseWriter, r *http.Request, err error) {
 	w.Write(body)
 }
 
+type set struct {
+	mp map[string]struct{}
+}
+
+func (s *set) insert(x ...string) {
+	for i := 0; i < len(x); i++ {
+		s.mp[x[i]] = struct{}{}
+	}
+}
+func (s *set) count(x string) bool {
+	_, ok := s.mp[x]
+	return ok
+}
+func newSet() *set {
+	return &set{mp: make(map[string]struct{})}
+}
+
 // NewWhiteListMatcher 白名单不需要token验证的接口
 func NewWhiteListMatcher() selector.MatchFunc {
-	whiteList := make(map[string]struct{})
-	whiteList["/service.problem.api.Problem/GetProblemById"] = struct{}{}
-	whiteList["/service.problem.api.Problem/GetProblemByPage"] = struct{}{}
-	whiteList["/service.problem.api.User/Register"] = struct{}{}
-	whiteList["/service.problem.api.User/Login"] = struct{}{}
+	whiteList := newSet()
+
+	// problem
+	whiteList.insert("/service.problem.api.Problem/GetProblemById",
+		"/service.problem.api.Problem/GetProblemByPage",
+	)
+	// user
+	whiteList.insert("/service.problem.api.User/Register",
+		"/service.problem.api.User/Login",
+		"/service.problem.api.User/CreateTouristAccount",
+		"/service.problem.api.User/GetUserById",
+		"/service.problem.api.User/GetUserCommitRecordByPage",
+		"/service.problem.api.User/GetUserSumCommit",
+	)
+	// article
+	whiteList.insert("/service.problem.api.Article/GetArticleById",
+		"/service.problem.api.Article/GetArticleByPage",
+		"/service.problem.api.Comment/GetCommentsByArticleId",
+		"/service.problem.api.Comment/GetLastSevenComment",
+	)
+
 	return func(ctx context.Context, operation string) bool {
-		if _, ok := whiteList[operation]; ok {
+		if whiteList.count(operation) {
 			return false
 		}
 		return true
+	}
+}
+
+func getip() middleware.Middleware {
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req interface{}) (reply interface{}, err error) {
+			if tr, ok := transport.FromServerContext(ctx); ok {
+				// 断言成HTTP的Transport可以拿到特殊信息
+				if ht, ok := tr.(*http.Transport); ok {
+					//fmt.Println(ht.Request())
+					//fmt.Println(ht.Request().Header)
+					//fmt.Printf("%v\n", ht.Request().RemoteAddr)
+					//fmt.Println(ht.Request().Header.Get("Sec-Ch-Ua-Platform"))
+					//fmt.Println(ht.Request().RequestURI)
+					ctx = context.WithValue(ctx, "ip", ht.Request().RemoteAddr)
+					ctx = context.WithValue(ctx, "platform", ht.Request().Header.Get("Sec-Ch-Ua-Platform"))
+					ctx = context.WithValue(ctx, "url", ht.Request().RequestURI)
+				}
+			}
+			return handler(ctx, req)
+		}
 	}
 }
