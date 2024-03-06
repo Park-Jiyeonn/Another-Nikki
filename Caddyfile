@@ -7,7 +7,7 @@ jiyeon.club {
   encode zstd gzip # 启用压缩
   
   handle @api {
-	reverse_proxy 127.0.0.1:8888
+	reverse_proxy 127.0.0.1:8000
   }
 
   handle {
