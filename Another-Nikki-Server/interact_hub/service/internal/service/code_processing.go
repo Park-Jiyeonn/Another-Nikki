@@ -29,6 +29,9 @@ func (s *CodeProcessingService) SubmitCode(ctx context.Context, req *pb.SubmitCo
 	if len(req.Code) > maxCodeLength {
 		return nil, fmt.Errorf("代码过长, 请化简以后重新提交")
 	}
+	if len(req.Code) == 0 {
+		return nil, fmt.Errorf("代码长度不可以为 0")
+	}
 	err = s.dao.CreateCode(ctx, &biz.CreateCodeReq{
 		UserId:      req.UserId,
 		UserName:    req.UserName,

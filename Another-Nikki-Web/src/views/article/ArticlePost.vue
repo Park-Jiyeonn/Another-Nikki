@@ -11,6 +11,7 @@ const loading = ref(false);
 
 const post_article = async () => {
     const ret = await ArticleApi.post_article({ 
+        article_id : 0,
         article_title: article_title.value, 
         article_description: article_description.value,
         article_content:article_content.value

@@ -10,8 +10,8 @@ const loading = ref(false);
 
 const post_problem = async () => {
     const ret = await ProblemApi.post_problem({ 
-        name: problem_name.value, 
-        content:problem_content.value
+        problem_title: problem_name.value, 
+        problem_content:problem_content.value
     })
     // console.log(ret.data)
     if (ret.data.code == 200) {
