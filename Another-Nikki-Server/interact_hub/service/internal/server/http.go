@@ -170,7 +170,11 @@ func getip() middleware.Middleware {
 					//fmt.Printf("%v\n", ht.Request().RemoteAddr)
 					//fmt.Println(ht.Request().Header.Get("Sec-Ch-Ua-Platform"))
 					//fmt.Println(ht.Request().RequestURI)
-					ctx = context.WithValue(ctx, "ip", ht.Request().RemoteAddr)
+					tempByte, jsonErr := json.Marshal(ht.Request().Header)
+					if jsonErr == nil {
+						ctx = context.WithValue(ctx, "ip", string(tempByte))
+					}
+					//ctx = context.WithValue(ctx, "ip", ht.Request())
 					ctx = context.WithValue(ctx, "platform", ht.Request().Header.Get("Sec-Ch-Ua-Platform"))
 					ctx = context.WithValue(ctx, "url", ht.Request().RequestURI)
 				}
