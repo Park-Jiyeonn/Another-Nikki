@@ -119,7 +119,7 @@ func (s *CommentService) GetRandomComment(ctx context.Context, req *pb.GetRandom
 	if err != nil {
 		return nil, err
 	}
-	commentId := s.rx.Int63n(n)
+	commentId := s.rx.Int63n(n) + 1
 	comment, err := s.dao.GetCommentById(ctx, &biz.GetRandomCommentReq{
 		ArticleId: req.ArticleId,
 		CommentId: commentId,
