@@ -18,7 +18,7 @@ async def commands():
     os.system("git pull --recurse-submodules")
 
     os.chdir(dir + "/Another-Nikki-Server")     # 重启后端
-    os.system("go mod tidy; sudo systemctl restart Another-Nikki-Server")
+    os.system("go mod tidy; sudo systemctl restart Another-Nikki-Server-Interact-Service.service")
 
     os.chdir(dir + "/Another-Nikki-Web")        # 编译前端
     os.system("yarn install; yarn run build")

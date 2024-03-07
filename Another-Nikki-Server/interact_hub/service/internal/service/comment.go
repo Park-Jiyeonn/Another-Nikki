@@ -3,6 +3,7 @@ package service
 import (
 	"Another-Nikki/interact_hub/service/internal/biz"
 	"context"
+	"fmt"
 	"math/rand"
 	"time"
 
@@ -24,6 +25,12 @@ func NewCommentService(dao biz.CommentRepo) *CommentService {
 
 func (s *CommentService) PostComment(ctx context.Context, req *pb.PostCommentReq) (resp *pb.PostCommentResp, err error) {
 	resp = new(pb.PostCommentResp)
+	if len(req.Content) == 0 {
+		return nil, fmt.Errorf("发布的留言或评论不可以空空~")
+	}
+	if len(req.Content) > 400 {
+		return nil, fmt.Errorf("发布的留言或评论太长啦~")
+	}
 	err = s.dao.PostComment(ctx, &biz.PostCommentReq{
 		Content:    req.Content,
 		ArticleId:  req.ArticleId,

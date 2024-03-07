@@ -1,7 +1,7 @@
 <template>
     <el-menu mode="horizontal" :ellipsis="false">
         <el-menu-item v-if="isLoggedIn" index="1" @click="router.push('/jelly')">
-            Jelly
+            Message Board
         </el-menu-item>
         <el-menu-item index="2" @click="router.push('/problems')">
             Problem
