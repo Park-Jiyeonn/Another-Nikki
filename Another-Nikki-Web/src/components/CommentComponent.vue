@@ -152,10 +152,6 @@ get_last_seven_comments()
     </el-row>
 
     <div style="display: flex; justify-content: center;  margin-top: 10px;">
-        <el-upload v-model:file-list="fileList" class="upload-demo" action="https://jiyeon.club/api/upload"
-            :on-preview="handlePictureCardPreview" :on-remove="handleRemove" :on-success="handleUpload" list-type="picture">
-            <el-button type="primary">上传图片</el-button>
-        </el-upload>
         <el-button class="button" style="margin-left: 10px;" type="primary" :loading="loading"
             @click="post_comment(textarea)">
             发布

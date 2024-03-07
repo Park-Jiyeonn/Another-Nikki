@@ -9,10 +9,12 @@ import { renderMarkdown } from '@/utils/markdown'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
 import CommentComponent from '@/components/CommentComponent.vue';
 import ContentBase from '@/components/ContentBase.vue';
+import { getCookies } from "@/hooks/useCookies";
 
 const isLoggedIn = useIsLoggedIn()
 const route = useRoute();
 const router = useRouter();
+const user_id : number = getCookies("user_id")
 
 const article = ref<Article>({
     article_id: 1,
@@ -54,7 +56,7 @@ const update_article = () => {
         <el-divider />
         <div class="content markdown-body" v-html="renderMarkdown(article.article_content)" />
 
-        <div v-if="isLoggedIn" style="text-align: center; margin-top: 10px;">
+        <div v-if="isLoggedIn && user_id == 1" style="text-align: center; margin-top: 10px;">
             <el-button class="button" type="primary" @click="update_article()">
                 编辑
             </el-button>

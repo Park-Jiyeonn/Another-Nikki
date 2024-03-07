@@ -9,11 +9,13 @@ import { ProblemApi } from '@/api';
 import { renderMarkdown } from '@/utils/markdown'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
 import RunCode from '@/components/RunCode.vue';
-
 import ContentBase from '@/components/ContentBase.vue';
+import { getCookies } from "@/hooks/useCookies";
+
 const isLoggedIn = useIsLoggedIn()
 const route = useRoute();
 const router = useRouter();
+const user_id : number = getCookies("user_id")
 
 const problem = ref<Problem>({
     problem_id: 1,
@@ -61,7 +63,7 @@ const update_problem = () => {
     :testCode=true
             />
         <el-divider />
-        <div v-if="isLoggedIn" style="text-align: center; margin-top: 10px;">
+        <div v-if="isLoggedIn && user_id == 1" style="text-align: center; margin-top: 10px;">
             <el-button class="button" type="primary" @click="update_problem()">
                 编辑
             </el-button>
