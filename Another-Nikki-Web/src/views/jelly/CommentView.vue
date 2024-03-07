@@ -14,10 +14,8 @@ const get_random_comment = async () => {
     const ret = await CommentApi.get_random_comment()
     laoding_random.value = false
 
-    random_comments.value = ret.data.data
-    random_comments.value.forEach((blog) => {
-        blog.CreatedAt = blog.CreatedAt.substring(5, 10) + " " + blog.CreatedAt.substring(11, 16)
-    });
+    random_comments.value = [ret.data.data.comment]
+    console.log(random_comments.value)
 }
 
 </script>
@@ -36,9 +34,9 @@ const get_random_comment = async () => {
         <div style=" margin-top: 10px; ">
             随机展示留言板：
             <el-table :data="random_comments" stripe style="margin-top: 20px;">
-                <el-table-column prop="ID" label="#" width="70" />
+                <el-table-column prop="comment_id" label="#" width="70" />
                 <el-table-column prop="content" label="留言" width="300" />
-                <el-table-column prop="CreatedAt" label="时间" width="150" />
+                <el-table-column prop="created_time" label="时间" width="300" />
             </el-table>
         </div>
 

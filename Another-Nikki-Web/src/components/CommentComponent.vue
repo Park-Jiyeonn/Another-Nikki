@@ -18,22 +18,6 @@ const textarea = ref('')
 
 const fileList = ref<UploadUserFile[]>([])
 
-const dialogImageUrl = ref('')
-
-const handleRemove: UploadProps['onRemove'] = (uploadFile, uploadFiles) => {
-    console.log(uploadFile, uploadFiles)
-}
-
-const handlePictureCardPreview: UploadProps['onPreview'] = (uploadFile) => {
-    dialogImageUrl.value = uploadFile.url!
-}
-
-const handleUpload: UploadProps['onSuccess'] = (response, uploadFile) => {
-    console.log(response)
-    console.log(uploadFile)
-    uploadFile.url = response.data
-}
-
 const post_comment = async (content: string) => {
     fileList.value.forEach((file) => {
         content += `\n\n<img src="${file.url}" width="55%" height="55%">`

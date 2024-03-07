@@ -99,7 +99,7 @@ func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.G
 
 func (s *CommentServiceImpl) GetCommentById(ctx context.Context, req *biz.GetRandomCommentReq) (*biz.GetRandomCommentResp, error) {
 	var comment biz.Comments
-	err := s.db.GetContext(ctx, &comment, "SELECT content, username, user_avatar, parent_id, root_id FROM comments WHERE article_id = ? and comment_id = ?",
+	err := s.db.GetContext(ctx, &comment, "SELECT content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and comment_id = ?",
 		req.ArticleId,
 		req.CommentId,
 	)

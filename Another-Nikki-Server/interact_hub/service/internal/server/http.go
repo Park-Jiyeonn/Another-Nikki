@@ -148,6 +148,7 @@ func NewWhiteListMatcher() selector.MatchFunc {
 		"/service.problem.api.Article/GetArticleByPage",
 		"/service.problem.api.Comment/GetCommentsByArticleId",
 		"/service.problem.api.Comment/GetLastSevenComment",
+		"/service.problem.api.Comment/GetRandomComment",
 	)
 
 	return func(ctx context.Context, operation string) bool {
