@@ -44,7 +44,7 @@ services:
       # hostname -I
       # ip addr show eth0
       # ipconfig getifaddr en0
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://192.168.177.161:9092
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://10.0.16.10:9092
       # 定义安全协议
       - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
       # CONTROLLER 投票者地址
