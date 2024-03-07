@@ -1,6 +1,9 @@
 <template>
     <el-menu mode="horizontal" :ellipsis="false">
-        <el-menu-item v-if="isLoggedIn" index="1" @click="router.push('/jelly')">
+        <el-menu-item v-if="(user_id == 1 || user_id == 2)" index="1" @click="router.push('/jelly')">
+            Jelly
+        </el-menu-item>
+        <el-menu-item index="5" @click="router.push('/message-board')">
             Message Board
         </el-menu-item>
         <el-menu-item index="2" @click="router.push('/problems')">
@@ -48,7 +51,7 @@
 import { reactive,ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useIsLoggedIn } from '@/hooks/userIsLogin'
-import { getCookies, removeCookies, setCookies } from "@/hooks/useCookies";
+import { getCookies, setCookies } from "@/hooks/useCookies";
 import { ElMessage } from 'element-plus';
 import { User  } from '@/api';
 const router = useRouter()

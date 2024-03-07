@@ -9,8 +9,8 @@ type CommentRepo interface {
 	PostComment(ctx context.Context, req *PostCommentReq) error
 	GetCommentsByArticleId(ctx context.Context, req *GetCommentsByArticleIdReq) (*GetCommentsByArticleIdResp, error)
 	GetLastSevenComment(ctx context.Context, req *GetLastSevenCommentReq) (*GetLastSevenCommentResp, error)
-	GetCommentById(ctx context.Context, req *GetRandomCommentReq) (*GetRandomCommentResp, error)
-	GetCommentSum(ctx context.Context) (sum int64, err error)
+	GetCommentByOffset(ctx context.Context, req *GetRandomCommentReq) (*GetRandomCommentResp, error)
+	GetCommentSum(ctx context.Context, req *GetCommentSumReq) (sum int64, err error)
 }
 
 type PostCommentReq struct {
@@ -54,10 +54,14 @@ type GetLastSevenCommentResp struct {
 }
 
 type GetRandomCommentReq struct {
-	ArticleId int64 `db:"article_id"`
-	CommentId int64 `db:"comment_id"`
+	ArticleId     int64 `db:"article_id"`
+	CommentOffset int64
 }
 
 type GetRandomCommentResp struct {
 	Comments *Comments `db:"comments"`
+}
+
+type GetCommentSumReq struct {
+	ArticleId int64 `db:"article_id"`
 }

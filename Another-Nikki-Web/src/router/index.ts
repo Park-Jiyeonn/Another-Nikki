@@ -88,6 +88,13 @@ const systemRoutes = [
 			},
 		],
 	},
+	{
+		path:'/message-board',
+		component: () => import('@/views/jelly/OtherView.vue'),
+		meta: {
+			requiresAuth: true,
+		},
+	},
 ]
 
 const RunCodeRoutes = [
@@ -104,7 +111,7 @@ const RunCodeRoutes = [
 const privateRoutes = [
 	{
 		path:'/jelly',
-		component: () => import('@/views/jelly/CommentView.vue'),
+		component: () => import('@/views/jelly/JellyView.vue'),
 		meta: {
 			requiresAuth: true,
 		},

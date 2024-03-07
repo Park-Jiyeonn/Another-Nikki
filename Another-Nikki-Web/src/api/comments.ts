@@ -39,8 +39,12 @@ const get_last_seven_comments = (data:{
     method: "GET",
 })
 
-const get_random_comment = () => HttpServer.request<null, Comment[]>({
-    url: `/api/comment/random/0`,
+const get_random_comment = (
+    data:{
+        article_id:         number; 
+    }
+) => HttpServer.request<null, Comment[]>({
+    url: `/api/comment/random/${data.article_id}`,
     method: "GET",
 })
 

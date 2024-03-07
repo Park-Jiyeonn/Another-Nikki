@@ -11,7 +11,7 @@ const laoding_random = ref(false)
 
 const get_random_comment = async () => {
     laoding_random.value = !laoding_random.value
-    const ret = await CommentApi.get_random_comment()
+    const ret = await CommentApi.get_random_comment({article_id:114514})
     laoding_random.value = false
 
     random_comments.value = [ret.data.data.comment]
@@ -29,7 +29,7 @@ const get_random_comment = async () => {
 
         <HelloWorld msg="Another Nikki" />
 
-        <CommentComponent :article_id="0"/>
+        <CommentComponent :article_id="114514"/>
 
         <div style=" margin-top: 10px; ">
             随机展示留言板：

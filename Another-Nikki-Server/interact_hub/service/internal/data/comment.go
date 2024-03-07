@@ -73,7 +73,7 @@ func (s *CommentServiceImpl) GetCommentsByArticleId(ctx context.Context, req *bi
 }
 
 func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.GetLastSevenCommentReq) (*biz.GetLastSevenCommentResp, error) {
-	rows, err := s.db.QueryxContext(ctx, "SELECT comment_id, content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and root_id = 0 ORDER BY created_time DESC LIMIT ?", req.ArticleId, req.NumLimit)
+	rows, err := s.db.QueryxContext(ctx, "SELECT comment_id, content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and root_id = 0 ORDER BY created_time LIMIT ?", req.ArticleId, req.NumLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -97,11 +97,11 @@ func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.G
 	return &biz.GetLastSevenCommentResp{Comments: comments}, nil
 }
 
-func (s *CommentServiceImpl) GetCommentById(ctx context.Context, req *biz.GetRandomCommentReq) (*biz.GetRandomCommentResp, error) {
+func (s *CommentServiceImpl) GetCommentByOffset(ctx context.Context, req *biz.GetRandomCommentReq) (*biz.GetRandomCommentResp, error) {
 	var comment biz.Comments
-	err := s.db.GetContext(ctx, &comment, "SELECT content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and comment_id = ?",
+	err := s.db.GetContext(ctx, &comment, "SELECT content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? ORDER BY comment_id LIMIT 1 OFFSET ?",
 		req.ArticleId,
-		req.CommentId,
+		req.CommentOffset,
 	)
 	if err != nil {
 		return nil, err
@@ -110,7 +110,7 @@ func (s *CommentServiceImpl) GetCommentById(ctx context.Context, req *biz.GetRan
 	return &biz.GetRandomCommentResp{Comments: &comment}, nil
 }
 
-func (s *CommentServiceImpl) GetCommentSum(ctx context.Context) (sum int64, err error) {
-	err = s.db.QueryRowContext(ctx, "SELECT COUNT(comment_id) from comments").Scan(&sum)
+func (s *CommentServiceImpl) GetCommentSum(ctx context.Context, req *biz.GetCommentSumReq) (sum int64, err error) {
+	err = s.db.QueryRowContext(ctx, "SELECT COUNT(comment_id) from comments where article_id = ?", req.ArticleId).Scan(&sum)
 	return
 }

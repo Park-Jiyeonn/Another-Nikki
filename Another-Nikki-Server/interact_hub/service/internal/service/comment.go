@@ -115,18 +115,18 @@ func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLas
 }
 func (s *CommentService) GetRandomComment(ctx context.Context, req *pb.GetRandomCommentReq) (resp *pb.GetRandomCommentResp, err error) {
 	resp = new(pb.GetRandomCommentResp)
-	n, err := s.dao.GetCommentSum(ctx)
+	n, err := s.dao.GetCommentSum(ctx, &biz.GetCommentSumReq{ArticleId: req.ArticleId})
 	if err != nil {
 		return nil, err
 	}
-	commentId := s.rx.Int63n(n) + 1
-	comment, err := s.dao.GetCommentById(ctx, &biz.GetRandomCommentReq{
-		ArticleId: req.ArticleId,
-		CommentId: commentId,
+	commentOffset := s.rx.Int63n(n)
+	comment, err := s.dao.GetCommentByOffset(ctx, &biz.GetRandomCommentReq{
+		ArticleId:     req.ArticleId,
+		CommentOffset: commentOffset,
 	})
 	time.Sleep(time.Millisecond * 100)
 	resp.Comment = &pb.CommentDetail{
-		CommentId:   commentId,
+		CommentId:   commentOffset + 1,
 		Content:     comment.Comments.Content,
 		Username:    comment.Comments.Username,
 		UserAvatar:  comment.Comments.UserAvatar,
