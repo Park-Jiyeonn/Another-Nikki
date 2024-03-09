@@ -80,11 +80,16 @@ func (s *JudgeBinlogConsumer) judge(ctx context.Context, data *Judge) (err error
 	}
 
 	var judgeResp *judge.JudgeResp
-	judgeResp, err = s.judgeClient.Judge(ctx, &judge.JudgeReq{
-		Code:        data.Code,
-		Language:    judge.Language(judge.Language_value[data.Language]),
-		ProblemName: data.ProblemId + "." + data.ProblemName,
-	})
+	for i := 1; i <= 3; i++ {
+		judgeResp, err = s.judgeClient.Judge(ctx, &judge.JudgeReq{
+			Code:        data.Code,
+			Language:    judge.Language(judge.Language_value[data.Language]),
+			ProblemName: data.ProblemId + "." + data.ProblemName,
+		})
+		if err == nil {
+			break
+		}
+	}
 	if err != nil {
 		log.Error(ctx, "judge err: %v", err)
 		_, _ = s.codeProcessingClient.UpdateCodeCompileStatus(ctx, &codeService.UpdateCodeCompileStatusReq{
