@@ -32,7 +32,7 @@ func (s *CodeProcessingService) SubmitCode(ctx context.Context, req *pb.SubmitCo
 	if len(req.Code) == 0 {
 		return nil, fmt.Errorf("代码长度不可以为 0")
 	}
-	err = s.dao.CreateCode(ctx, &biz.CreateCodeReq{
+	submitResp, err := s.dao.CreateCode(ctx, &biz.CreateCodeReq{
 		UserId:      req.UserId,
 		UserName:    req.UserName,
 		ProblemId:   req.ProblemId,
@@ -40,6 +40,7 @@ func (s *CodeProcessingService) SubmitCode(ctx context.Context, req *pb.SubmitCo
 		Language:    req.Language,
 		Code:        req.Code,
 	})
+	resp.LastSubmitId = submitResp.LastInsertId
 	return resp, err
 }
 

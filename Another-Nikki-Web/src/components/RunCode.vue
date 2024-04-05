@@ -25,6 +25,7 @@ import { cpp } from "@codemirror/lang-cpp";
 import { java } from "@codemirror/lang-java";
 import { oneDark } from '@codemirror/theme-one-dark'
 import router from '@/router';
+import { User  } from '@/api';
 
 const extensions = ref([cpp(), oneDark]);
 
@@ -79,13 +80,35 @@ const judgeCode = async (code: string) => {
 
     codeLoading.value = false
     codeMsg.value.message = "等待编译中..."
+    let judge_id = 0
+    judge_id = ret.data.data.last_submit_id
     if (ret.data.code == 200) {
-        return ElMessage.success(ret?.data?.message ?? 'success')
+        ElMessage.success(ret?.data?.message ?? 'success')
     }
     else {
         codeMsg.value.message = ret.data.message
-        codeMsg.value.state = "编译错误"
-        return ElMessage.error("运行失败！")
+        codeMsg.value.state = "提交错误"
+        ElMessage.error("提交失败！")
+    }
+
+    for (let i = 1; i <= 100; i ++) {
+        const get_commit_ret = await User.get_commit_by_id({ judge_id: judge_id })
+        codeMsg.value.cpu_time_used = get_commit_ret.data.data.cpu_time_used
+        codeMsg.value.memory_used = get_commit_ret.data.data.memory_used
+        codeMsg.value.state = get_commit_ret.data.data.judge_status
+        codeMsg.value.message = get_commit_ret.data.data.judge_status
+        if (get_commit_ret.data.data.judge_status === '-') {
+            codeMsg.value.message = get_commit_ret.data.data.compile_status
+            codeMsg.value.state = get_commit_ret.data.data.compile_log
+        }
+        if (get_commit_ret.data.data.compile_status !== 'in queue' && get_commit_ret.data.data.compile_status !== 'Compiling') {
+            break
+        }
+        console.log(get_commit_ret)
+        function sleep(ms: number): Promise<void> {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        await sleep(i * 1000 / 4)
     }
 }
 

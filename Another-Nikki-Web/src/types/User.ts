@@ -16,6 +16,7 @@ export interface Commits {
     language: string,
     created_time: string,
     problem_id :number,
+    compile_log: string,
 }
 
 export interface Commit {
@@ -30,4 +31,5 @@ export interface Commit {
     code: string,
     user_id:number,
     username:string,
+    compile_log: string,
 }

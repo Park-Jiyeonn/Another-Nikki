@@ -7,7 +7,7 @@ import (
 )
 
 type CodeDataRepo interface {
-	CreateCode(ctx context.Context, req *CreateCodeReq) (err error)
+	CreateCode(ctx context.Context, req *CreateCodeReq) (resp *CreateCodeResp, err error)
 	UpdateCodeCompileStatus(ctx context.Context, req *UpdateCodeCompileStatusReq) (err error)
 	UpdateCodeJudgeStatus(ctx context.Context, req *UpdateCodeJudgeStatusReq) (err error)
 	GetCommitByJudgeId(ctx context.Context, req *GetCommitByJudgeIdReq) (resp *GetCommitByJudgeIdResp, err error)
@@ -20,6 +20,10 @@ type CreateCodeReq struct {
 	ProblemName string `db:"problem_name"`
 	Language    string `db:"language"`
 	Code        string `db:"code"`
+}
+
+type CreateCodeResp struct {
+	LastInsertId int64 `db:"last_insert_id"`
 }
 
 type UpdateCodeCompileStatusReq struct {

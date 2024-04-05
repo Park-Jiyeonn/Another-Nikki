@@ -11,7 +11,7 @@ const route = useRoute();
 const judge_id: number = parseInt(String(route.params.judge_id));
 const commit = ref<Commit>({
 })
-const get_commit_byId = async (page : number) => {
+const get_commit_byId = async () => {
     const ret = await User.get_commit_by_id({ judge_id: judge_id })
     if (ret.data.code == 200) {
         commit.value = ret.data.data
@@ -22,7 +22,7 @@ const get_commit_byId = async (page : number) => {
         return ElMessage.error(ret.data.message)
     }
 }
-get_commit_byId(judge_id)
+get_commit_byId()
 </script>
 
 <template>

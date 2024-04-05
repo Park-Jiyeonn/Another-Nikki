@@ -34,9 +34,10 @@ func NewCodeProcessingImpl(data *Data) biz.CodeDataRepo {
 //    memory_used VARCHAR(255) NOT NULL DEFAULT '-'
 // );
 
-func (c *codeProcessingImpl) CreateCode(ctx context.Context, req *biz.CreateCodeReq) (err error) {
+func (c *codeProcessingImpl) CreateCode(ctx context.Context, req *biz.CreateCodeReq) (resp *biz.CreateCodeResp, err error) {
+	resp = new(biz.CreateCodeResp)
 	const sqlStr = "INSERT INTO judges (user_id, user_name, problem_id, problem_name, language, code) VALUES (?, ?, ?, ?, ?, ?)"
-	_, err = c.db.ExecContext(ctx, sqlStr,
+	row, err := c.db.ExecContext(ctx, sqlStr,
 		req.UserId,
 		req.UserName,
 		req.ProblemId,
@@ -46,6 +47,12 @@ func (c *codeProcessingImpl) CreateCode(ctx context.Context, req *biz.CreateCode
 	)
 	if err != nil {
 		log.Error(ctx, "create judge code err: %v", err)
+		return
+	}
+	resp.LastInsertId, err = row.LastInsertId()
+	if err != nil {
+		log.Error(ctx, "get LastInsertId err: %v", err)
+		return
 	}
 	return
 }

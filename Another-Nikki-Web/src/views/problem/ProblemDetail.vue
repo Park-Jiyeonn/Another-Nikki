@@ -25,7 +25,6 @@ const problem = ref<Problem>({
 
 const get_problem = async (id: number) => {
     const ret = await ProblemApi.get_problem({ problem_id: id })
-    console.log(ret)
     if (ret.data.code < 200 || ret.data.code > 200) {
         problem.value.problem_id = -1
         problem.value.problem_title = "请求错误捏, 请不要填奇奇怪怪的参数哦"

@@ -341,6 +341,7 @@ message SubmitCodeReq {
   string code = 6;
 }
 message SubmitCodeResp {
+  int64 last_submit_id = 1;
 }
 
 message UpdateCodeCompileStatusReq {
