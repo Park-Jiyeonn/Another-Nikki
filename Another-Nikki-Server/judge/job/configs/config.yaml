@@ -1,10 +1,10 @@
 server:
   http:
     addr: 0.0.0.0:8000
-    timeout: 5s
+    timeout: 10s
   grpc:
     addr: 0.0.0.0:9002
-    timeout: 5s
+    timeout: 10s
 data:
   database:
     driver: mysql
