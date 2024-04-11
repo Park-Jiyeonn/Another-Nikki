@@ -230,6 +230,8 @@ message UpdateUserReq {
   string username = 1;
   string avatar = 2;
   string description = 3;
+  string old_password = 4;
+  string new_password = 5;
 }
 message UpdateUserResp {
 }

@@ -39,6 +39,8 @@ const update = (data:{
 	username: string,
     avatar: string,
     description: string,
+    old_password:string,
+    new_password:string,
 }) => HttpServer.request<typeof data, UserType>({
     url: `/api/user/update`,
     method: "POST",

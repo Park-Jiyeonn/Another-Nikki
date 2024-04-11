@@ -79,6 +79,7 @@ type UpdateUserReq struct {
 	Username    string
 	Avatar      string
 	Description string
+	Password    string
 }
 type UpdateUserResp struct {
 }

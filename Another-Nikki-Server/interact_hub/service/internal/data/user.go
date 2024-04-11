@@ -55,8 +55,8 @@ func (s *userServiceImpl) GetUserByUserName(ctx context.Context, req *biz.GetUse
 }
 
 func (s *userServiceImpl) GetUserById(ctx context.Context, req *biz.GetUserByIdReq) (*biz.GetUserByIdResp, error) {
-	var username, avatar, description string
-	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, description FROM users WHERE user_id = ?", req.UserId).Scan(&username, &avatar, &description)
+	var username, avatar, description, password string
+	err := s.db.QueryRowContext(ctx, "SELECT username, avatar, description, password FROM users WHERE user_id = ?", req.UserId).Scan(&username, &avatar, &description, &password)
 	if err != nil {
 		return nil, err
 	}
@@ -64,6 +64,7 @@ func (s *userServiceImpl) GetUserById(ctx context.Context, req *biz.GetUserByIdR
 		Username:    username,
 		Avatar:      avatar,
 		Description: description,
+		Password:    password,
 	}, nil
 }
 
@@ -93,7 +94,7 @@ func (s *userServiceImpl) GetUserSumCommit(ctx context.Context, req *biz.GetUser
 
 func (s *userServiceImpl) UpdateUser(ctx context.Context, req *biz.UpdateUserReq) (resp *biz.UpdateUserResp, err error) {
 	resp = new(biz.UpdateUserResp)
-	sqlStr := "UPDATE users set username = ?, avatar = ?, description = ? where user_id = ?"
-	_, err = s.db.ExecContext(ctx, sqlStr, req.Username, req.Avatar, req.Description, req.UserId)
+	sqlStr := "UPDATE users set username = ?, avatar = ?, description = ?, password = ? where user_id = ?"
+	_, err = s.db.ExecContext(ctx, sqlStr, req.Username, req.Avatar, req.Description, req.Password, req.UserId)
 	return
 }

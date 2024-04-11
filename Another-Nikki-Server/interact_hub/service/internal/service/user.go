@@ -11,6 +11,7 @@ import (
 	"fmt"
 	"golang.org/x/crypto/bcrypt"
 	"math/rand"
+	"strconv"
 	"time"
 )
 
@@ -162,11 +163,27 @@ func (s *UserService) GetUserSumCommit(ctx context.Context, req *pb.GetUserSumCo
 func (s *UserService) UpdateUser(ctx context.Context, req *pb.UpdateUserReq) (resp *pb.UpdateUserResp, err error) {
 	resp = new(pb.UpdateUserResp)
 	userId, _ := jwt.GetUserFromCtx(ctx)
+	user, err := s.dao.GetUserById(ctx, &biz.GetUserByIdReq{UserId: strconv.Itoa(int(userId))})
+	if err == sql.ErrNoRows {
+		return nil, fmt.Errorf("用户不存在")
+	}
+	if err != nil {
+		return nil, err
+	}
+	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(req.OldPassword))
+	if err != nil {
+		return nil, fmt.Errorf("原密码错误，请重试")
+	}
+	newPassword, err := bcrypt.GenerateFromPassword([]byte(req.NewPassword), bcrypt.DefaultCost)
+	if err != nil {
+		return nil, fmt.Errorf("修改失败，请换一个密码重试")
+	}
 	_, err = s.dao.UpdateUser(ctx, &biz.UpdateUserReq{
 		UserId:      userId,
 		Username:    req.Username,
 		Avatar:      req.Avatar,
 		Description: req.Description,
+		Password:    string(newPassword),
 	})
 	return
 }

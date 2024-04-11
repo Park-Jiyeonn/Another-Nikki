@@ -35,6 +35,12 @@
             <el-form-item label="个性签名" :label-width="formLabelWidth">
                 <el-input v-model="form.description" autocomplete="off" />
             </el-form-item>
+            <el-form-item label="旧密码" :label-width="formLabelWidth">
+                <el-input v-model="form.old_password" autocomplete="off" show-password />
+            </el-form-item>
+            <el-form-item label="新密码" :label-width="formLabelWidth">
+                <el-input v-model="form.new_password" autocomplete="off" show-password />
+            </el-form-item>
         </el-form>
         <template #footer>
           <div class="dialog-footer">
@@ -66,6 +72,8 @@ const form = reactive({
   name: username.value,
   avatar_url: user_avatar.value,
   description: description.value,
+  old_password:"",
+  new_password:"",
 })
 function logout()  {
     // removeCookies("username")
@@ -80,7 +88,7 @@ function logout()  {
     location.reload();
 }
 const update_user = async() => {
-    const ret = await User.update({username : form.name, avatar: form.avatar_url, description: form.description})
+    const ret = await User.update({username : form.name, avatar: form.avatar_url, description: form.description, old_password:form.old_password, new_password:form.new_password})
     dialogFormVisible.value = false
     if (ret.data.code == 200) {
         setCookies("username", form.name)

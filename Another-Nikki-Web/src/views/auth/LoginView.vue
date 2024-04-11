@@ -5,6 +5,7 @@ import { ElMessage } from 'element-plus';
 import { User } from '@/api';
 import { setCookies } from '@/hooks/useCookies';
 import router from '@/router';
+import ContentBase from '@/components/ContentBase.vue';
 
 const username = ref('')
 const password = ref('')
@@ -50,8 +51,10 @@ const create_tourist_account = async () => {
 </script>
 
 <template>
-    <el-input v-model="username" placeholder="Please input" />
-    <el-input v-model="password" type="password" placeholder="Please input password" show-password />
-    <el-button type="primary" @click="login">登录</el-button>
-    <el-button type="primary" @click="create_tourist_account">一键登录</el-button> 
+    <ContentBase>
+        <el-input v-model="username" placeholder="Please input" />
+        <el-input v-model="password" type="password" placeholder="Please input password" show-password />
+        <el-button type="primary" @click="login">登录</el-button>
+        <el-button type="primary" @click="create_tourist_account">一键登录</el-button>
+    </ContentBase>
 </template>
