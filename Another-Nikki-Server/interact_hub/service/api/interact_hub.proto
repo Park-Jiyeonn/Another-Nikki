@@ -155,6 +155,11 @@ service User {
       body: "*"
     };
   }
+  rpc GetUserWrongProblem (GetUserWrongProblemReq) returns (GetUserWrongProblemResp) {
+    option (google.api.http) = {
+      get: "/api/user/profile/wrong-answer/{user_id}"
+    };
+  }
 }
 message LoginReq {
   string username = 1;
@@ -244,6 +249,17 @@ message CreateTouristAccountResp {
   int64 user_id = 3;
   string avatar = 4;
   string description = 5;
+}
+
+message GetUserWrongProblemReq {
+  int64 user_id = 1;
+}
+message GetUserWrongProblemResp {
+  repeated UserWrongProblem user_wrong_problem = 1;
+}
+message UserWrongProblem {
+  int64 problem_id = 1;
+  string problem_name = 2;
 }
 
 service Comment {

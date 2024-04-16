@@ -19,6 +19,7 @@
                 <template #dropdown> <el-dropdown-menu>
                     <el-dropdown-item @click="dialogFormVisible=true"> 修改资料 </el-dropdown-item>
                     <el-dropdown-item @click="logout()"> 退出登录 </el-dropdown-item>
+                    <el-dropdown-item @click="wrong_ans()"> 我的错题 </el-dropdown-item>
                   </el-dropdown-menu> </template>
             </el-dropdown>
         </el-menu-item>
@@ -107,6 +108,13 @@ const update_user = async() => {
 const get_user = async() => {
     if (typeof user_id !== 'undefined' && user_id != -1) {
         router.push(`/profile/${user_id}`)
+        return
+    }
+    router.push(`/auth/login`) 
+}
+const wrong_ans = async() => {
+    if (typeof user_id !== 'undefined' && user_id != -1) {
+        router.push(`/wrong_answer/${user_id}`)
         return
     }
     router.push(`/auth/login`) 

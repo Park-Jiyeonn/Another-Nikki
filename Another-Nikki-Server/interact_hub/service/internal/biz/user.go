@@ -12,6 +12,7 @@ type UserRepo interface {
 	GetUserCommitRecord(ctx context.Context, req *GetUserCommitRecordReq) (resp []*GetUserCommitRecordResp, err error)
 	GetUserSumCommit(ctx context.Context, req *GetUserSumCommitReq) (resp *GetUserSumCommitResp, err error)
 	UpdateUser(ctx context.Context, req *UpdateUserReq) (resp *UpdateUserResp, err error)
+	GetUserWrongProblem(ctx context.Context, req *GetUserWrongProblemReq) (resp []*GetUserWrongProblemResp, err error)
 }
 
 type RegisterReq struct {
@@ -82,4 +83,12 @@ type UpdateUserReq struct {
 	Password    string
 }
 type UpdateUserResp struct {
+}
+
+type GetUserWrongProblemReq struct {
+	UserId int64
+}
+type GetUserWrongProblemResp struct {
+	ProblemId   int64  `db:"problem_id"`
+	ProblemName string `db:"problem_name"`
 }

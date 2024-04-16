@@ -355,6 +355,7 @@ const (
 	User_GetUserSumCommit_FullMethodName          = "/service.problem.api.User/GetUserSumCommit"
 	User_UpdateUser_FullMethodName                = "/service.problem.api.User/UpdateUser"
 	User_CreateTouristAccount_FullMethodName      = "/service.problem.api.User/CreateTouristAccount"
+	User_GetUserWrongProblem_FullMethodName       = "/service.problem.api.User/GetUserWrongProblem"
 )
 
 // UserClient is the client API for User service.
@@ -369,6 +370,7 @@ type UserClient interface {
 	GetUserSumCommit(ctx context.Context, in *GetUserSumCommitReq, opts ...grpc.CallOption) (*GetUserSumCommitResp, error)
 	UpdateUser(ctx context.Context, in *UpdateUserReq, opts ...grpc.CallOption) (*UpdateUserResp, error)
 	CreateTouristAccount(ctx context.Context, in *CreateTouristAccountReq, opts ...grpc.CallOption) (*CreateTouristAccountResp, error)
+	GetUserWrongProblem(ctx context.Context, in *GetUserWrongProblemReq, opts ...grpc.CallOption) (*GetUserWrongProblemResp, error)
 }
 
 type userClient struct {
@@ -451,6 +453,15 @@ func (c *userClient) CreateTouristAccount(ctx context.Context, in *CreateTourist
 	return out, nil
 }
 
+func (c *userClient) GetUserWrongProblem(ctx context.Context, in *GetUserWrongProblemReq, opts ...grpc.CallOption) (*GetUserWrongProblemResp, error) {
+	out := new(GetUserWrongProblemResp)
+	err := c.cc.Invoke(ctx, User_GetUserWrongProblem_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // UserServer is the server API for User service.
 // All implementations must embed UnimplementedUserServer
 // for forward compatibility
@@ -463,6 +474,7 @@ type UserServer interface {
 	GetUserSumCommit(context.Context, *GetUserSumCommitReq) (*GetUserSumCommitResp, error)
 	UpdateUser(context.Context, *UpdateUserReq) (*UpdateUserResp, error)
 	CreateTouristAccount(context.Context, *CreateTouristAccountReq) (*CreateTouristAccountResp, error)
+	GetUserWrongProblem(context.Context, *GetUserWrongProblemReq) (*GetUserWrongProblemResp, error)
 	mustEmbedUnimplementedUserServer()
 }
 
@@ -493,6 +505,9 @@ func (UnimplementedUserServer) UpdateUser(context.Context, *UpdateUserReq) (*Upd
 }
 func (UnimplementedUserServer) CreateTouristAccount(context.Context, *CreateTouristAccountReq) (*CreateTouristAccountResp, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateTouristAccount not implemented")
+}
+func (UnimplementedUserServer) GetUserWrongProblem(context.Context, *GetUserWrongProblemReq) (*GetUserWrongProblemResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetUserWrongProblem not implemented")
 }
 func (UnimplementedUserServer) mustEmbedUnimplementedUserServer() {}
 
@@ -651,6 +666,24 @@ func _User_CreateTouristAccount_Handler(srv interface{}, ctx context.Context, de
 	return interceptor(ctx, in, info, handler)
 }
 
+func _User_GetUserWrongProblem_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetUserWrongProblemReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(UserServer).GetUserWrongProblem(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: User_GetUserWrongProblem_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(UserServer).GetUserWrongProblem(ctx, req.(*GetUserWrongProblemReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // User_ServiceDesc is the grpc.ServiceDesc for User service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -689,6 +722,10 @@ var User_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "CreateTouristAccount",
 			Handler:    _User_CreateTouristAccount_Handler,
+		},
+		{
+			MethodName: "GetUserWrongProblem",
+			Handler:    _User_GetUserWrongProblem_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

@@ -295,6 +295,7 @@ const OperationUserCreateTouristAccount = "/service.problem.api.User/CreateTouri
 const OperationUserGetUserById = "/service.problem.api.User/GetUserById"
 const OperationUserGetUserCommitRecordByPage = "/service.problem.api.User/GetUserCommitRecordByPage"
 const OperationUserGetUserSumCommit = "/service.problem.api.User/GetUserSumCommit"
+const OperationUserGetUserWrongProblem = "/service.problem.api.User/GetUserWrongProblem"
 const OperationUserLogin = "/service.problem.api.User/Login"
 const OperationUserRegister = "/service.problem.api.User/Register"
 const OperationUserUpdateUser = "/service.problem.api.User/UpdateUser"
@@ -304,6 +305,7 @@ type UserHTTPServer interface {
 	GetUserById(context.Context, *GetUserByIdReq) (*GetUserByIdResp, error)
 	GetUserCommitRecordByPage(context.Context, *GetUserCommitRecordReq) (*GetUserCommitRecordResp, error)
 	GetUserSumCommit(context.Context, *GetUserSumCommitReq) (*GetUserSumCommitResp, error)
+	GetUserWrongProblem(context.Context, *GetUserWrongProblemReq) (*GetUserWrongProblemResp, error)
 	Login(context.Context, *LoginReq) (*LoginResp, error)
 	Register(context.Context, *RegisterReq) (*RegisterResp, error)
 	UpdateUser(context.Context, *UpdateUserReq) (*UpdateUserResp, error)
@@ -318,6 +320,7 @@ func RegisterUserHTTPServer(s *http.Server, srv UserHTTPServer) {
 	r.GET("/api/user/profile/{user_id}/commit-record/sum", _User_GetUserSumCommit0_HTTP_Handler(srv))
 	r.POST("/api/user/update", _User_UpdateUser0_HTTP_Handler(srv))
 	r.POST("/api/user/create/tourist", _User_CreateTouristAccount0_HTTP_Handler(srv))
+	r.GET("/api/user/profile/wrong-answer/{user_id}", _User_GetUserWrongProblem0_HTTP_Handler(srv))
 }
 
 func _User_Login0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
@@ -474,11 +477,34 @@ func _User_CreateTouristAccount0_HTTP_Handler(srv UserHTTPServer) func(ctx http.
 	}
 }
 
+func _User_GetUserWrongProblem0_HTTP_Handler(srv UserHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetUserWrongProblemReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationUserGetUserWrongProblem)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetUserWrongProblem(ctx, req.(*GetUserWrongProblemReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetUserWrongProblemResp)
+		return ctx.Result(200, reply)
+	}
+}
+
 type UserHTTPClient interface {
 	CreateTouristAccount(ctx context.Context, req *CreateTouristAccountReq, opts ...http.CallOption) (rsp *CreateTouristAccountResp, err error)
 	GetUserById(ctx context.Context, req *GetUserByIdReq, opts ...http.CallOption) (rsp *GetUserByIdResp, err error)
 	GetUserCommitRecordByPage(ctx context.Context, req *GetUserCommitRecordReq, opts ...http.CallOption) (rsp *GetUserCommitRecordResp, err error)
 	GetUserSumCommit(ctx context.Context, req *GetUserSumCommitReq, opts ...http.CallOption) (rsp *GetUserSumCommitResp, err error)
+	GetUserWrongProblem(ctx context.Context, req *GetUserWrongProblemReq, opts ...http.CallOption) (rsp *GetUserWrongProblemResp, err error)
 	Login(ctx context.Context, req *LoginReq, opts ...http.CallOption) (rsp *LoginResp, err error)
 	Register(ctx context.Context, req *RegisterReq, opts ...http.CallOption) (rsp *RegisterResp, err error)
 	UpdateUser(ctx context.Context, req *UpdateUserReq, opts ...http.CallOption) (rsp *UpdateUserResp, err error)
@@ -536,6 +562,19 @@ func (c *UserHTTPClientImpl) GetUserSumCommit(ctx context.Context, in *GetUserSu
 	pattern := "/api/user/profile/{user_id}/commit-record/sum"
 	path := binding.EncodeURL(pattern, in, true)
 	opts = append(opts, http.Operation(OperationUserGetUserSumCommit))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}
+
+func (c *UserHTTPClientImpl) GetUserWrongProblem(ctx context.Context, in *GetUserWrongProblemReq, opts ...http.CallOption) (*GetUserWrongProblemResp, error) {
+	var out GetUserWrongProblemResp
+	pattern := "/api/user/profile/wrong-answer/{user_id}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationUserGetUserWrongProblem))
 	opts = append(opts, http.PathTemplate(pattern))
 	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
 	if err != nil {

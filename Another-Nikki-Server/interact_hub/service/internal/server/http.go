@@ -143,6 +143,7 @@ func NewWhiteListMatcher() selector.MatchFunc {
 		"/service.problem.api.User/GetUserById",
 		"/service.problem.api.User/GetUserCommitRecordByPage",
 		"/service.problem.api.User/GetUserSumCommit",
+		"/service.problem.api.User/GetUserWrongProblem",
 	)
 	// article
 	whiteList.insert("/service.problem.api.Article/GetArticleById",

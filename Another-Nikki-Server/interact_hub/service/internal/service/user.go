@@ -213,3 +213,18 @@ func (s *UserService) CreateTouristAccount(ctx context.Context, _ *pb.CreateTour
 	resp.Description = "lazy me, no description"
 	return
 }
+
+func (s *UserService) GetUserWrongProblem(ctx context.Context, req *pb.GetUserWrongProblemReq) (resp *pb.GetUserWrongProblemResp, err error) {
+	resp = new(pb.GetUserWrongProblemResp)
+	userWrongAnswerProblems, err := s.dao.GetUserWrongProblem(ctx, &biz.GetUserWrongProblemReq{UserId: req.UserId})
+	if err != nil {
+		return
+	}
+	for _, val := range userWrongAnswerProblems {
+		resp.UserWrongProblem = append(resp.UserWrongProblem, &pb.UserWrongProblem{
+			ProblemId:   val.ProblemId,
+			ProblemName: val.ProblemName,
+		})
+	}
+	return
+}

@@ -105,6 +105,16 @@ const RunCodeRoutes = [
 	{
 		path: '/user/code/:judge_id',
 		component: () => import('@/views/runCode/CodeDetail.vue'),
+		meta: {
+			requiresAuth: true,
+		},
+	},
+	{
+		path: '/wrong_answer/:user_id',
+		component: () => import('@/views/runCode/WrongAns.vue'),
+		meta: {
+			requiresAuth: true,
+		},
 	}
 ]
 

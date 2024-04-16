@@ -2,6 +2,7 @@ package data
 
 import (
 	"Another-Nikki/interact_hub/service/internal/biz"
+	"Another-Nikki/pkg/log"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/net/context"
 )
@@ -96,5 +97,35 @@ func (s *userServiceImpl) UpdateUser(ctx context.Context, req *biz.UpdateUserReq
 	resp = new(biz.UpdateUserResp)
 	sqlStr := "UPDATE users set username = ?, avatar = ?, description = ?, password = ? where user_id = ?"
 	_, err = s.db.ExecContext(ctx, sqlStr, req.Username, req.Avatar, req.Description, req.Password, req.UserId)
+	return
+}
+
+func (s *userServiceImpl) GetUserWrongProblem(ctx context.Context, req *biz.GetUserWrongProblemReq) (resp []*biz.GetUserWrongProblemResp, err error) {
+	sqlStr := "SELECT problem_id, problem_name from judges where user_id = ?"
+	rows, err := s.db.QueryxContext(ctx, sqlStr, req.UserId)
+	if err != nil {
+		return nil, err
+	}
+
+	resp = make([]*biz.GetUserWrongProblemResp, 0)
+	f := make(map[int64]struct{})
+	for rows.Next() {
+		var res biz.GetUserWrongProblemResp
+		err = rows.StructScan(&res)
+		if err != nil {
+			log.Error(ctx, "StructScan from GetUserWrongProblemResp err: %v", err)
+			continue
+		}
+		queAcStr := "SELECT compile_status from judges where user_id = ? and problem_id = ? and judge_status = ?"
+		acRows, _ := s.db.QueryxContext(ctx, queAcStr, req.UserId, res.ProblemId, "Accept")
+		if err != nil || acRows.Next() {
+			continue
+		}
+		if _, ok := f[res.ProblemId]; ok {
+			continue
+		}
+		f[res.ProblemId] = struct{}{}
+		resp = append(resp, &res)
+	}
 	return
 }

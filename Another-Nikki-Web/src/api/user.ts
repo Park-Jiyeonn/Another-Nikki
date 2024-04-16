@@ -68,6 +68,13 @@ const create_tourist_account = (data:{
     data
 })
 
+const get_user_wrong_answer = (data: {
+    user_id : number,
+}) => HttpServer.request<typeof data, Commits>({
+    url: `/api/user/profile/wrong-answer/${data.user_id}`,
+    method: "GET",
+})
+
 export {
 	login,
     register,
@@ -77,4 +84,5 @@ export {
     get_commit_by_id,
     get_user_by_id,
     create_tourist_account,
+    get_user_wrong_answer,
 }
