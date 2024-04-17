@@ -32,9 +32,14 @@ func NewProblemRepo(data *Data) biz.ProblemRepo {
 //    updated_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 // );
 
-func (s *problemImpl) PostProblem(ctx context.Context, req *biz.PostProblemReq) (err error) {
-	_, err = s.db.ExecContext(ctx, "INSERT INTO problems (problem_title, problem_description, problem_content) VALUES (?, ?, ?)",
+func (s *problemImpl) PostProblem(ctx context.Context, req *biz.PostProblemReq) (resp *biz.PostProblemResp, err error) {
+	resp = new(biz.PostProblemResp)
+	ret, err := s.db.ExecContext(ctx, "INSERT INTO problems (problem_title, problem_description, problem_content) VALUES (?, ?, ?)",
 		req.ProblemTitle, req.ProblemDescription, req.ProblemContent)
+	if err != nil {
+		return
+	}
+	resp.ProblemId, err = ret.LastInsertId()
 	return
 }
 func (s *problemImpl) UpdateProblem(ctx context.Context, req *biz.UpdateProblemReq) (err error) {

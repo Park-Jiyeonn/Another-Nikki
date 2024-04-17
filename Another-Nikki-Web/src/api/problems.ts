@@ -1,5 +1,6 @@
 import { GetProblemByPageResp, GetProblemByIdResp, Problem } from '@/types/Problem';
 import HttpServer from '../http/index';
+import axios from 'axios';
 
 const page_que = (data:{
 	page_size: number,
@@ -20,6 +21,8 @@ const update_problem = (data:{
     problem_title: string;
 	problem_id: number;
     problem_content: string;
+    data_in: string
+    data_out: string
 }) => HttpServer.request<typeof data,Problem>({
     url: `/api/problem/post`,
     method: "POST",
@@ -29,6 +32,8 @@ const update_problem = (data:{
 const post_problem = (data:{
     problem_title: string;
     problem_content: string;
+    data_in: string
+    data_out: string
 }) => HttpServer.request<typeof data,Problem>({
     url: `/api/problem/post`,
     method: "POST",

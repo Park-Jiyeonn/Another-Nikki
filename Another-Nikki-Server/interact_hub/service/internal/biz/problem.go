@@ -12,7 +12,7 @@ type Problems struct {
 }
 
 type ProblemRepo interface {
-	PostProblem(ctx context.Context, req *PostProblemReq) (err error)
+	PostProblem(ctx context.Context, req *PostProblemReq) (resp *PostProblemResp, err error)
 	UpdateProblem(ctx context.Context, req *UpdateProblemReq) (err error)
 	GetProblemById(ctx context.Context, req *GetProblemByIdReq) (*GetProblemByIdResp, error)
 	GetProblemByPage(ctx context.Context, req *GetProblemByPageReq) (*GetProblemByPageResp, error)
@@ -22,6 +22,9 @@ type PostProblemReq struct {
 	ProblemTitle       string `db:"problem_title"`
 	ProblemDescription string `db:"problem_description"`
 	ProblemContent     string `db:"problem_content"`
+}
+type PostProblemResp struct {
+	ProblemId int64 `db:"problem_id"`
 }
 
 type UpdateProblemReq struct {
