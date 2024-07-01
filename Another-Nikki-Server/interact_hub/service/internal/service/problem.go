@@ -116,6 +116,7 @@ func (s *ProblemService) GetProblemById(ctx context.Context, req *pb.GetProblemB
 
 func (s *ProblemService) GetProblemByPage(ctx context.Context, req *pb.GetProblemByPageReq) (resp *pb.GetProblemByPageResp, err error) {
 	resp = new(pb.GetProblemByPageResp)
+	req.PageSize = 100
 	problems, err := s.dao.GetProblemByPage(ctx, &biz.GetProblemByPageReq{
 		PageNum:  req.PageNum,
 		PageSize: req.PageSize,

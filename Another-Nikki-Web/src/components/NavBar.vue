@@ -4,13 +4,13 @@
             Jelly
         </el-menu-item>
         <el-menu-item index="5" @click="router.push('/message-board')">
-            Message Board
+            留言板
         </el-menu-item>
         <el-menu-item index="2" @click="router.push('/problems')">
-            Problem
+            题目集
         </el-menu-item>
         <el-menu-item index="3" @click="router.push('/articles')">
-            Articles
+            文章与题解
         </el-menu-item>
         <div class="flex-grow" />
         <el-menu-item index="4" @click="get_user()">
