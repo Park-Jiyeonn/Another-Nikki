@@ -25,3 +25,6 @@ avatars:
     - https://cdn.acwing.com/media/user/profile/photo/210988_md_15643b620b.jpg
     - https://cdn.acwing.com/media/user/profile/photo/214436_md_7c210e4453.PNG
     - https://cdn.acwing.com/media/user/profile/photo/225147_md_967700a846.jpg
+
+client_timeout:
+  timeout: 10s

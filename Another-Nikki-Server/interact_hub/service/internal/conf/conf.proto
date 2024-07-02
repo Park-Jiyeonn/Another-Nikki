@@ -11,6 +11,7 @@ message Bootstrap {
   Server server = 1;
   Data data = 2;
   Avatars avatars = 3;
+  ClientTimeout client_timeout = 4;
 }
 
 message Server {
@@ -43,6 +44,12 @@ message Data {
   Redis redis = 2;
 }
 
+// 有一些默认头像写在了配置里面
 message Avatars {
   repeated string avatars = 1;
+}
+
+// 配置 rpc client 的超时时间
+message ClientTimeout {
+  google.protobuf.Duration timeout = 1;
 }

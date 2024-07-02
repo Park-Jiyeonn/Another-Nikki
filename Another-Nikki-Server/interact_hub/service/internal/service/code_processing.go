@@ -20,7 +20,7 @@ type CodeProcessingService struct {
 	judgeClient judge.JudgeClient
 }
 
-const maxCodeLength = 400 * 100
+const maxCodeLength = 600 * 100
 
 func NewCodeProcessingService(globalGrpc *data.GlobalGrpcClient, dao biz.CodeDataRepo) *CodeProcessingService {
 	return &CodeProcessingService{

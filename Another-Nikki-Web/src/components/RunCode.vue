@@ -71,7 +71,7 @@ const judgeCode = async (code: string) => {
     codeLoading.value = true
     codeMsg.value = {
         state: "",
-        message: "提交中...",
+        message: "docker 正在努力运行中...",
         cpu_time_used: "-",
         memory_used: "-",
         exit_code: "",

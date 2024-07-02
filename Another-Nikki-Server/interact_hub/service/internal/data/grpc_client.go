@@ -12,9 +12,9 @@ type GlobalGrpcClient struct {
 	JudgeClient judge.JudgeClient
 }
 
-func NewGlobalGrpcClient(c *conf.Data, r registry.Discovery) *GlobalGrpcClient {
+func NewGlobalGrpcClient(c *conf.Data, r registry.Discovery, timeout *conf.ClientTimeout) *GlobalGrpcClient {
 	globalGrpcClient := &GlobalGrpcClient{}
-	globalGrpcClient.JudgeClient = judge.NewClientJudge(r)
+	globalGrpcClient.JudgeClient = judge.NewClientJudge(r, timeout.Timeout.AsDuration())
 	return globalGrpcClient
 }
 

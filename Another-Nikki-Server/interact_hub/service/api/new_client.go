@@ -6,11 +6,12 @@ import (
 	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/grpc"
 	"golang.org/x/net/context"
+	"time"
 )
 
 const InteractHubAppID = "Another-Nikki.Interact-Service"
 
-func NewClientCodeProcessing(r registry.Discovery) CodeProcessingClient {
+func NewClientCodeProcessing(r registry.Discovery, timeout time.Duration) CodeProcessingClient {
 	connGRPC, err := grpc.DialInsecure(
 		context.Background(),
 		grpc.WithEndpoint("discovery://default/"+InteractHubAppID), // 服务发现
@@ -19,7 +20,7 @@ func NewClientCodeProcessing(r registry.Discovery) CodeProcessingClient {
 			tracing.Client(),
 			recovery.Recovery(),
 		),
-		//grpc.WithTimeout(2*time.Second),
+		grpc.WithTimeout(timeout),
 		//grpc.WithOptions(grpcx.WithStatsHandler(&tracing.ClientHandler{})),
 	)
 	if err != nil {

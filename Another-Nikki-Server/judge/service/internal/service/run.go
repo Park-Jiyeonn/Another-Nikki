@@ -13,7 +13,7 @@ const (
 	GolangAppName = "golang"
 )
 
-const runCmd = "docker exec oj sh -c 'cd tmp-%s; ../judger -i data.in -o data.out "
+const runCmd = "docker exec oj sh -c 'cd tmp-%s; ../judger -i data.in -o data.out -T 5000 "
 
 func run(ctx context.Context, ID string, language api.Language) (err error) {
 	defer func() {
@@ -39,7 +39,7 @@ func run(ctx context.Context, ID string, language api.Language) (err error) {
 	return
 }
 
-const judgeCmd = "docker exec oj sh -c 'cd tmp-%s; ../judger -i ../problemData/%s/input.in -a ../problemData/%s/output.out -o out.out "
+const judgeCmd = "docker exec oj sh -c 'cd tmp-%s; ../judger -i ../problemData/%s/input.in -a ../problemData/%s/output.out -o out.out -T 5000 "
 
 func judge(ctx context.Context, ID, problemName string, language api.Language) (err error) {
 	defer func() {
