@@ -3,9 +3,8 @@
 <p align="center">
    <a target="_blank" href="#">
       <img style="display: inline-block;" src="https://img.shields.io/badge/Go-1.20-blue"/>
-      <img style="display: inline-block;" src="https://img.shields.io/badge/Gin-v1.9.1-blue"/>
+      <img style="display: inline-block;" src="https://img.shields.io/badge/Kratos-v2.7.2-blue"/>
       <img style="display: inline-block;" src="https://img.shields.io/badge/mysql-8.0-blue"/>
-      <img style="display: inline-block;" src="https://img.shields.io/badge/GORM-v1.25.1-blue"/>
       <img style="display: inline-block;" src="https://img.shields.io/badge/vue-v3.X-green"/>
     </a>
 </p>
@@ -14,8 +13,8 @@
 ## What's inside
 个人网站。
  * $OnlineJudge$（我出过的题大多都在里面。目前支持 $Cpp$, $Python$, $Java$, $Golang$）
- * 博客（一些题解）
- * 留言（暂未开放权限）
+ * 博客、一些题解
+ * 留言
  * 日志（只对个人开放权限）
 
 ## How to run
@@ -63,8 +62,20 @@
         docker build -t oj:1 .
         ```
 
-        启动：
+        启动评测姬容器：
         ```
+        docker run -d -i -m 256m --name oj -v $(pwd)/onlineJudge:/dox oj:1
+        ```
+    * 后端分为两个微服务：（$main$ 的版本作为朴素的毕设，有三个，必须依赖众多第三方中间件 $Canal$、$Kafka$、$Elastic-Search$、$Kibana$），新的 $mq-less$ 分支剔除了运行内存庞大的第三方中间件。
+        启动 $Interact-Hub$：
+        ```
+        cd interact_hub/service/cmd
+        go run .
+        ```
+
+        启动 $Judge$ 服务:
+        ```
+        cd judge/service/cmd
         go run .
         ```
  
