@@ -893,3 +893,61 @@ func (c *CodeProcessingHTTPClientImpl) SubmitCode(ctx context.Context, in *Submi
 	}
 	return &out, err
 }
+
+const OperationLogsGetLogs = "/service.problem.api.Logs/GetLogs"
+
+type LogsHTTPServer interface {
+	GetLogs(context.Context, *GetLogsReq) (*GetLogsResp, error)
+}
+
+func RegisterLogsHTTPServer(s *http.Server, srv LogsHTTPServer) {
+	r := s.Route("/")
+	r.GET("/api/log/{page_size}/{page_num}", _Logs_GetLogs0_HTTP_Handler(srv))
+}
+
+func _Logs_GetLogs0_HTTP_Handler(srv LogsHTTPServer) func(ctx http.Context) error {
+	return func(ctx http.Context) error {
+		var in GetLogsReq
+		if err := ctx.BindQuery(&in); err != nil {
+			return err
+		}
+		if err := ctx.BindVars(&in); err != nil {
+			return err
+		}
+		http.SetOperation(ctx, OperationLogsGetLogs)
+		h := ctx.Middleware(func(ctx context.Context, req interface{}) (interface{}, error) {
+			return srv.GetLogs(ctx, req.(*GetLogsReq))
+		})
+		out, err := h(ctx, &in)
+		if err != nil {
+			return err
+		}
+		reply := out.(*GetLogsResp)
+		return ctx.Result(200, reply)
+	}
+}
+
+type LogsHTTPClient interface {
+	GetLogs(ctx context.Context, req *GetLogsReq, opts ...http.CallOption) (rsp *GetLogsResp, err error)
+}
+
+type LogsHTTPClientImpl struct {
+	cc *http.Client
+}
+
+func NewLogsHTTPClient(client *http.Client) LogsHTTPClient {
+	return &LogsHTTPClientImpl{client}
+}
+
+func (c *LogsHTTPClientImpl) GetLogs(ctx context.Context, in *GetLogsReq, opts ...http.CallOption) (*GetLogsResp, error) {
+	var out GetLogsResp
+	pattern := "/api/log/{page_size}/{page_num}"
+	path := binding.EncodeURL(pattern, in, true)
+	opts = append(opts, http.Operation(OperationLogsGetLogs))
+	opts = append(opts, http.PathTemplate(pattern))
+	err := c.cc.Invoke(ctx, "GET", path, nil, &out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return &out, err
+}

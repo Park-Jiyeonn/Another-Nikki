@@ -28,13 +28,17 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	userService *service.UserService,
 	articleService *service.ArticleService,
 	commentService *service.CommentService,
+	logService *service.LogsService,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
 			recovery.Recovery(),
 			getip(),
 			tracing.Server(),
-			logging.Server(logger),
+			// 日志相关的 api 不要记录日志
+			selector.Server(
+				logging.Server(logger),
+			).Match(NotMatchLog()).Build(),
 			selector.Server(
 				jwt.Server(func(token *jwt2.Token) (interface{}, error) {
 					return []byte(pkg_jwt.JwtSecret), nil
@@ -65,6 +69,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 	api.RegisterUserHTTPServer(srv, userService)
 	api.RegisterArticleHTTPServer(srv, articleService)
 	api.RegisterCommentHTTPServer(srv, commentService)
+	api.RegisterLogsHTTPServer(srv, logService)
 	return srv
 }
 
@@ -183,5 +188,11 @@ func getip() middleware.Middleware {
 			}
 			return handler(ctx, req)
 		}
+	}
+}
+
+func NotMatchLog() selector.MatchFunc {
+	return func(ctx context.Context, operation string) bool {
+		return !(strings.Contains(operation, "Log") || strings.Contains(operation, "log"))
 	}
 }

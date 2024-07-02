@@ -6,6 +6,9 @@
         <el-menu-item index="5" @click="router.push('/message-board')">
             留言板
         </el-menu-item>
+        <el-menu-item v-if="(user_id == 1 || user_id == 2)" index="6" @click="router.push('/logs')">
+            日志
+        </el-menu-item>
         <el-menu-item index="2" @click="router.push('/problems')">
             题目集
         </el-menu-item>
@@ -57,12 +60,12 @@
 <script lang="ts" setup>
 import { reactive,ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { useIsLoggedIn } from '@/hooks/userIsLogin'
+// import { useIsLoggedIn } from '@/hooks/userIsLogin'
 import { getCookies, setCookies } from "@/hooks/useCookies";
 import { ElMessage } from 'element-plus';
 import { User  } from '@/api';
 const router = useRouter()
-const isLoggedIn = useIsLoggedIn()
+// const isLoggedIn = useIsLoggedIn()
 const user_id : number = getCookies("user_id")
 const user_avatar = ref(getCookies("avatar"))
 const username = ref<string>(getCookies("username"))

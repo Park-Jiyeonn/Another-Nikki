@@ -40,8 +40,10 @@ func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, av
 	globalGrpcClient := data.NewGlobalGrpcClient(confData, discovery)
 	codeDataRepo := data.NewCodeProcessingImpl(dataData)
 	codeProcessingService := service.NewCodeProcessingService(globalGrpcClient, codeDataRepo)
-	grpcServer := server.NewGRPCServer(confServer, logger, problemService, articleService, commentService, userService, codeProcessingService)
-	httpServer := server.NewHTTPServer(confServer, logger, problemService, codeProcessingService, userService, articleService, commentService)
+	logsRepo := data.NewLogsRepoImpl(dataData)
+	logsService := service.NewLogsService(logsRepo)
+	grpcServer := server.NewGRPCServer(confServer, logger, problemService, articleService, commentService, userService, codeProcessingService, logsService)
+	httpServer := server.NewHTTPServer(confServer, logger, problemService, codeProcessingService, userService, articleService, commentService, logsService)
 	registrar := data.NewRegistry()
 	app := newApp(logger, grpcServer, httpServer, registrar)
 	return app, func() {

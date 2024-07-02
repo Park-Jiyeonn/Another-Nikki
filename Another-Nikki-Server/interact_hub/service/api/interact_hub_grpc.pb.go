@@ -1133,3 +1133,93 @@ var CodeProcessing_ServiceDesc = grpc.ServiceDesc{
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "interact_hub.proto",
 }
+
+const (
+	Logs_GetLogs_FullMethodName = "/service.problem.api.Logs/GetLogs"
+)
+
+// LogsClient is the client API for Logs service.
+//
+// For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
+type LogsClient interface {
+	GetLogs(ctx context.Context, in *GetLogsReq, opts ...grpc.CallOption) (*GetLogsResp, error)
+}
+
+type logsClient struct {
+	cc grpc.ClientConnInterface
+}
+
+func NewLogsClient(cc grpc.ClientConnInterface) LogsClient {
+	return &logsClient{cc}
+}
+
+func (c *logsClient) GetLogs(ctx context.Context, in *GetLogsReq, opts ...grpc.CallOption) (*GetLogsResp, error) {
+	out := new(GetLogsResp)
+	err := c.cc.Invoke(ctx, Logs_GetLogs_FullMethodName, in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// LogsServer is the server API for Logs service.
+// All implementations must embed UnimplementedLogsServer
+// for forward compatibility
+type LogsServer interface {
+	GetLogs(context.Context, *GetLogsReq) (*GetLogsResp, error)
+	mustEmbedUnimplementedLogsServer()
+}
+
+// UnimplementedLogsServer must be embedded to have forward compatible implementations.
+type UnimplementedLogsServer struct {
+}
+
+func (UnimplementedLogsServer) GetLogs(context.Context, *GetLogsReq) (*GetLogsResp, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetLogs not implemented")
+}
+func (UnimplementedLogsServer) mustEmbedUnimplementedLogsServer() {}
+
+// UnsafeLogsServer may be embedded to opt out of forward compatibility for this service.
+// Use of this interface is not recommended, as added methods to LogsServer will
+// result in compilation errors.
+type UnsafeLogsServer interface {
+	mustEmbedUnimplementedLogsServer()
+}
+
+func RegisterLogsServer(s grpc.ServiceRegistrar, srv LogsServer) {
+	s.RegisterService(&Logs_ServiceDesc, srv)
+}
+
+func _Logs_GetLogs_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetLogsReq)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(LogsServer).GetLogs(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: Logs_GetLogs_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(LogsServer).GetLogs(ctx, req.(*GetLogsReq))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+// Logs_ServiceDesc is the grpc.ServiceDesc for Logs service.
+// It's only intended for direct use with grpc.RegisterService,
+// and not to be introspected or modified (even as a copy)
+var Logs_ServiceDesc = grpc.ServiceDesc{
+	ServiceName: "service.problem.api.Logs",
+	HandlerType: (*LogsServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetLogs",
+			Handler:    _Logs_GetLogs_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "interact_hub.proto",
+}

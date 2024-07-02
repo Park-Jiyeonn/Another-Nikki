@@ -3,8 +3,11 @@ package service
 import (
 	"Another-Nikki/interact_hub/service/internal/biz"
 	"Another-Nikki/interact_hub/service/internal/data"
+	judge "Another-Nikki/judge/service/api"
+	"Another-Nikki/pkg/log"
 	"context"
 	"fmt"
+	"strconv"
 	"time"
 
 	pb "Another-Nikki/interact_hub/service/api"
@@ -13,14 +16,60 @@ import (
 type CodeProcessingService struct {
 	pb.UnimplementedCodeProcessingServer
 
-	dao biz.CodeDataRepo
+	dao         biz.CodeDataRepo
+	judgeClient judge.JudgeClient
 }
 
 const maxCodeLength = 400 * 100
 
 func NewCodeProcessingService(globalGrpc *data.GlobalGrpcClient, dao biz.CodeDataRepo) *CodeProcessingService {
 	return &CodeProcessingService{
-		dao: dao,
+		dao:         dao,
+		judgeClient: globalGrpc.JudgeClient,
+	}
+}
+
+func (s *CodeProcessingService) judgeCode(ctx context.Context, req *pb.SubmitCodeReq, judgeId int64) {
+	_, err := s.UpdateCodeCompileStatus(ctx, &pb.UpdateCodeCompileStatusReq{
+		JudgeId:       judgeId,
+		CompileStatus: "Compiling",
+		CompileLog:    "",
+	})
+	if err != nil {
+		log.Error(ctx, "modify compile status err: %v", err)
+		return
+	}
+
+	var judgeResp *judge.JudgeResp
+	for i := 1; i <= 3; i++ {
+		judgeResp, err = s.judgeClient.Judge(ctx, &judge.JudgeReq{
+			Code:        req.Code,
+			Language:    judge.Language(judge.Language_value[req.Language]),
+			ProblemName: strconv.Itoa(int(req.ProblemId)) + "." + req.ProblemName,
+		})
+		if err == nil {
+			break
+		}
+	}
+	if judgeResp.IsCompileError {
+		_, _ = s.UpdateCodeCompileStatus(ctx, &pb.UpdateCodeCompileStatusReq{
+			JudgeId:       judgeId,
+			CompileStatus: judgeResp.CompileState,
+			CompileLog:    judgeResp.CompileLog,
+		})
+		return
+	}
+
+	_, err = s.UpdateCodeJudgeStatus(ctx, &pb.UpdateCodeJudgeStatusReq{
+		JudgeId:       judgeId,
+		CompileStatus: judgeResp.CompileState,
+		JudgeStatus:   judgeResp.JudgeResult,
+		CpuTimeUsed:   judgeResp.CpuTimeUsed,
+		MemoryUsed:    judgeResp.MemoryUsed,
+	})
+	if err != nil {
+		log.Error(ctx, "modify judge resp err: %v", err)
+		return
 	}
 }
 
@@ -41,6 +90,7 @@ func (s *CodeProcessingService) SubmitCode(ctx context.Context, req *pb.SubmitCo
 		Code:        req.Code,
 	})
 	resp.LastSubmitId = submitResp.LastInsertId
+	s.judgeCode(ctx, req, submitResp.LastInsertId)
 	return resp, err
 }
 

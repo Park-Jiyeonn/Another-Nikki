@@ -400,3 +400,33 @@ message GetCommitByJudgeIdResp {
   int64 user_id = 11;
   string compile_log = 12;
 }
+
+service Logs {
+  rpc GetLogs (GetLogsReq) returns (GetLogsResp) {
+    option (google.api.http) = {
+      get: "/api/log/{page_size}/{page_num}"
+    };
+  };
+}
+message GetLogsReq {
+  int64 page_num = 1;
+  int64 page_size = 2;
+}
+message LogDetail {
+  string level = 1;
+  string ts = 2;
+  string service_name = 3;
+  string trace_id = 4;
+  string ip = 5;
+  string platform = 6;
+  string url = 7;
+  string msg = 8;
+  string args = 9;
+  string stack = 10;
+  string code = 11;
+  int64 log_id = 12;
+}
+message GetLogsResp {
+  repeated LogDetail logs = 1;
+  int64 sum_log = 2;
+}

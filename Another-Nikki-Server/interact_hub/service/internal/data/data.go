@@ -15,6 +15,7 @@ var ProviderSet = wire.NewSet(NewData, NewGlobalGrpcClient, NewRegistry, NewDisc
 	NewCommentImpl,
 	NewUserImpl,
 	NewCodeProcessingImpl,
+	NewLogsRepoImpl,
 )
 
 type Data struct {

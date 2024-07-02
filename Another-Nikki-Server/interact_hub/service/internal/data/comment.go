@@ -4,6 +4,7 @@ import (
 	"Another-Nikki/interact_hub/service/internal/biz"
 	"github.com/jmoiron/sqlx"
 	"golang.org/x/net/context"
+	"sort"
 )
 
 type CommentServiceImpl struct {
@@ -34,9 +35,9 @@ func (s *CommentServiceImpl) PostComment(ctx context.Context, req *biz.PostComme
 	return
 }
 
-func (s *CommentServiceImpl) getChildren(ctx context.Context, rootId int64) (resp []*biz.Comments, err error) {
+func (s *CommentServiceImpl) getChildren(ctx context.Context, articleId, rootId int64) (resp []*biz.Comments, err error) {
 	resp = make([]*biz.Comments, 0)
-	rows, err := s.db.QueryxContext(ctx, "SELECT content, username, user_avatar, parent_id, root_id, created_time, parent_name FROM comments WHERE root_id = ?", rootId)
+	rows, err := s.db.QueryxContext(ctx, "SELECT content, username, user_avatar, parent_id, root_id, created_time, parent_name FROM comments WHERE article_id = ? and root_id = ?", articleId, rootId)
 	for rows.Next() {
 		var comment biz.Comments
 		err = rows.StructScan(&comment)
@@ -48,7 +49,7 @@ func (s *CommentServiceImpl) getChildren(ctx context.Context, rootId int64) (res
 	return
 }
 func (s *CommentServiceImpl) GetCommentsByArticleId(ctx context.Context, req *biz.GetCommentsByArticleIdReq) (*biz.GetCommentsByArticleIdResp, error) {
-	rows, err := s.db.QueryxContext(ctx, "SELECT content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and root_id = 0", req.ArticleId)
+	rows, err := s.db.QueryxContext(ctx, "SELECT comment_id, content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and root_id = 0", req.ArticleId)
 	if err != nil {
 		return nil, err
 	}
@@ -61,7 +62,7 @@ func (s *CommentServiceImpl) GetCommentsByArticleId(ctx context.Context, req *bi
 		if err != nil {
 			return nil, err
 		}
-		children, err := s.getChildren(ctx, comment.CommentId)
+		children, err := s.getChildren(ctx, req.ArticleId, comment.CommentId)
 		if err != nil {
 			return nil, err
 		}
@@ -69,11 +70,14 @@ func (s *CommentServiceImpl) GetCommentsByArticleId(ctx context.Context, req *bi
 		comments = append(comments, &comment)
 	}
 
+	sort.Slice(comments, func(i, j int) bool {
+		return comments[i].CreatedTime.Unix() < comments[j].CreatedTime.Unix()
+	})
 	return &biz.GetCommentsByArticleIdResp{Comments: comments}, nil
 }
 
 func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.GetLastSevenCommentReq) (*biz.GetLastSevenCommentResp, error) {
-	rows, err := s.db.QueryxContext(ctx, "SELECT comment_id, content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and root_id = 0 ORDER BY created_time LIMIT ?", req.ArticleId, req.NumLimit)
+	rows, err := s.db.QueryxContext(ctx, "SELECT comment_id, content, username, user_avatar, parent_id, root_id, created_time FROM comments WHERE article_id = ? and root_id = 0 ORDER BY created_time DESC LIMIT ?", req.ArticleId, req.NumLimit)
 	if err != nil {
 		return nil, err
 	}
@@ -86,7 +90,7 @@ func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.G
 		if err != nil {
 			return nil, err
 		}
-		children, err := s.getChildren(ctx, comment.CommentId)
+		children, err := s.getChildren(ctx, req.ArticleId, comment.CommentId)
 		if err != nil {
 			return nil, err
 		}
@@ -94,6 +98,9 @@ func (s *CommentServiceImpl) GetLastSevenComment(ctx context.Context, req *biz.G
 		comments = append(comments, &comment)
 	}
 
+	sort.Slice(comments, func(i, j int) bool {
+		return comments[i].CreatedTime.Unix() < comments[j].CreatedTime.Unix()
+	})
 	return &biz.GetLastSevenCommentResp{Comments: comments}, nil
 }
 

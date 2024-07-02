@@ -2,6 +2,7 @@ package service
 
 import (
 	"Another-Nikki/interact_hub/service/internal/biz"
+	"Another-Nikki/pkg/jwt"
 	"context"
 	"fmt"
 	"math/rand"
@@ -28,7 +29,8 @@ func (s *CommentService) PostComment(ctx context.Context, req *pb.PostCommentReq
 	if len(req.Content) == 0 {
 		return nil, fmt.Errorf("发布的留言或评论不可以空空~")
 	}
-	if len(req.Content) > 400 {
+	userId, _ := jwt.GetUserFromCtx(ctx)
+	if len(req.Content) > 400 && userId > 2 {
 		return nil, fmt.Errorf("发布的留言或评论太长啦~")
 	}
 	err = s.dao.PostComment(ctx, &biz.PostCommentReq{
@@ -50,7 +52,7 @@ func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.Get
 	if err != nil {
 		return nil, err
 	}
-	resp.Comments = make([]*pb.CommentDetail, len(comments.Comments))
+	resp.Comments = make([]*pb.CommentDetail, 0, len(comments.Comments))
 	for _, val := range comments.Comments {
 		comment := &pb.CommentDetail{
 			CommentId:   val.CommentId,

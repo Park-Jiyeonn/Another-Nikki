@@ -4,15 +4,15 @@ const props = defineProps<{
 }>()
 import { ref } from 'vue'
 import { ElMessage } from 'element-plus';
-import type { UploadProps, UploadUserFile } from 'element-plus'
+import type { UploadUserFile } from 'element-plus'
 
-import { Comment } from '@/types/Comment';
+import { comments } from '@/types/Comment';
 import { CommentApi } from '@/api'
 import { getCookies } from "@/hooks/useCookies";
 import { renderMarkdown } from '@/utils/markdown'
 import router from '@/router';
 
-const comments = ref<Comment[]>([])
+const comments = ref<comments[]>([])
 const loading = ref(false);
 const textarea = ref('')
 
@@ -46,13 +46,23 @@ const post_comment = async (content: string) => {
     })
 
     loading.value = false
-    get_last_seven_comments()
+    if (props.article_id == 0 || props.article_id == 114514) {
+        get_last_seven_comments()
+    }
+    else {
+        get_comments_by_article()
+    }
     if (ret?.data?.code !== 200) return ElMessage.warning(ret?.data?.message ?? 'Something went wrong, please try again.')
     else return ElMessage.success(ret?.data?.message ?? 'success')
 }
 
 const get_last_seven_comments = async () => {
     const ret = await CommentApi.get_last_seven_comments({ num: 7, article_id:props.article_id, })
+    comments.value = ret.data.data.comments
+}
+
+const get_comments_by_article = async () => {
+    const ret = await CommentApi.get_comments_by_article({ num: 7, article_id:props.article_id, })
     comments.value = ret.data.data.comments
 }
 
@@ -80,10 +90,20 @@ const reply_comment = async (content: string, parentcomment_id: number, root_id:
     else ElMessage.success(ret?.data?.message ?? 'success')
 
     loading.value = false
-    await get_last_seven_comments()
+    if (props.article_id == 0 || props.article_id == 114514) {
+        get_last_seven_comments()
+    }
+    else {
+        get_comments_by_article()
+    }
 }
 
-get_last_seven_comments()
+if (props.article_id == 0 || props.article_id == 114514) {
+    get_last_seven_comments()
+}
+else {
+    get_comments_by_article()
+}
 </script>
 <template>
     <div v-for="item in comments" :key="item.comment_id" class="comment-container">

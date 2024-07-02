@@ -1,4 +1,4 @@
-export interface Comment {
+export interface comments {
     comment_id: number,
     created_time: string,
     content: string,
@@ -7,7 +7,7 @@ export interface Comment {
     root_id: number,
     parent_id: number,
     parent_name: string,
-    children: Comment[],
+    children: comments[],
     author_avatar: string,
 
     // 

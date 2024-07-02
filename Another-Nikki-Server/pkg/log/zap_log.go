@@ -2,13 +2,11 @@ package log
 
 import (
 	"fmt"
-	elastic "github.com/elastic/go-elasticsearch/v8"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
 	"golang.org/x/net/context"
-	"os"
 )
 
 func Init(env, serviceName string) log.Logger {
@@ -49,20 +47,10 @@ type Logger struct {
 }
 
 func NewZapLogger(encoder zapcore.EncoderConfig, level zap.AtomicLevel, opts ...zap.Option) *Logger {
-	client, err := elastic.NewTypedClient(elastic.Config{
-		Addresses: []string{"http://47.116.20.160:9200"},
-		Username:  os.Getenv("ELASTIC_SEARCH_USER"),
-		Password:  os.Getenv("ELASTIC_SEARCH_PASS"),
-	})
-	if err != nil {
-		panic(err)
-	}
-	elasticHook, err := NewElasticsearchHook(client, "test-1")
-	// 设置 zapcore
 	core := zapcore.NewCore(
 		zapcore.NewJSONEncoder(encoder),
 		zapcore.NewMultiWriteSyncer(
-			zapcore.AddSync(elasticHook),
+			zapcore.AddSync(NewMySqlHook()),
 		), level)
 	//  new 一个 *zap.Logger
 	zapLogger := zap.New(core, opts...)
@@ -78,7 +66,7 @@ func (l *Logger) Log(level log.Level, keyvals ...interface{}) error {
 	// 按照 KV 传入的时候,使用的 zap.Field
 	var data []zap.Field
 	for i := 0; i < len(keyvals); i += 2 {
-		data = append(data, zap.Any(fmt.Sprint(keyvals[i]), fmt.Sprint(keyvals[i+1])))
+		data = append(data, zap.String(fmt.Sprint(keyvals[i]), fmt.Sprint(keyvals[i+1])))
 	}
 	switch level {
 	case log.LevelDebug:
