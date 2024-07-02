@@ -51,6 +51,10 @@ func (s *CodeProcessingService) judgeCode(ctx context.Context, req *pb.SubmitCod
 			break
 		}
 	}
+	if err != nil || judgeResp == nil {
+		log.Error(ctx, "err = %v, judgeResp = %+v", err, judgeResp)
+		return
+	}
 	if judgeResp.IsCompileError {
 		_, _ = s.UpdateCodeCompileStatus(ctx, &pb.UpdateCodeCompileStatusReq{
 			JudgeId:       judgeId,
