@@ -69,14 +69,14 @@
     * 后端分为两个微服务：（$main$ 的版本作为朴素的毕设，有三个，必须依赖众多第三方中间件 $Canal$、$Kafka$、$Elastic-Search$、$Kibana$），新的 $mq-less$ 分支剔除了运行内存庞大的第三方中间件。
         启动 $Interact-Hub$：
         ```
-        cd interact_hub/service/cmd
-        go run .
+        cd interact_hub/service
+        go run ./cmd
         ```
 
         启动 $Judge$ 服务:
         ```
-        cd judge/service/cmd
-        go run .
+        cd judge/service
+        go run ./cmd
         ```
  
  * 对于 $Web$，

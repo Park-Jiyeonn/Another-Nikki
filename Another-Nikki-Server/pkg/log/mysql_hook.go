@@ -29,23 +29,6 @@ func NewMySqlHook() *MySqlHook {
 	return &MySqlHook{db: newMySql()}
 }
 
-//CREATE TABLE logs (
-//	log_id SERIAL PRIMARY KEY,
-//	level VARCHAR(50),
-//	ts TIMESTAMP,
-//	service_name VARCHAR(100),
-//	trace_id VARCHAR(100),
-//	ip VARCHAR(45),
-//	platform VARCHAR(50),
-//	url TEXT NOT NULL,
-//	msg TEXT NOT NULL,
-//	args TEXT NOT NULL,
-//	stack TEXT NOT NULL,
-//	code VARCHAR(50)
-//);
-
-//ALTER TABLE comments ADD COLUMN code VARCHAR(50);
-
 func newMySql() *sqlx.DB {
 	return sqlx.MustConnect("mysql", "jiyeon:1234@tcp(127.0.0.1:3307)/Another_Nikki?charset=utf8mb4&parseTime=True&loc=Local")
 }

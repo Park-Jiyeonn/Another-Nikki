@@ -10,20 +10,22 @@ type logsImpl struct {
 	db *sqlx.DB
 }
 
-// CREATE TABLE logs (
+//CREATE TABLE logs (
 //	log_id SERIAL PRIMARY KEY,
 //	level VARCHAR(50),
 //	ts TIMESTAMP,
 //	service_name VARCHAR(100),
 //	trace_id VARCHAR(100),
 //	ip VARCHAR(45),
-//	platform VARCHAR(50),
+//	platform VARCHAR(500);
 //	url TEXT NOT NULL,
 //	msg TEXT NOT NULL,
 //	args TEXT NOT NULL,
 //	stack TEXT NOT NULL,
 //	code VARCHAR(50)
 //);
+
+// ALTER TABLE logs MODIFY COLUMN platform VARCHAR(500);
 
 func NewLogsRepoImpl(data *Data) biz.LogsRepo {
 	return &logsImpl{

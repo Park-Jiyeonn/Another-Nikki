@@ -182,7 +182,23 @@ func getip() middleware.Middleware {
 					xForwardedFor = strings.ReplaceAll(xForwardedFor, "]", "")
 					xForwardedFor = strings.ReplaceAll(xForwardedFor, "\"", "")
 					ctx = context.WithValue(ctx, "ip", xForwardedFor)
-					ctx = context.WithValue(ctx, "platform", ht.Request().Header.Get("Sec-Ch-Ua-Platform"))
+					platform := ht.Request().Header.Get("Sec-Ch-Ua-Platform")
+					if platform == "" {
+						platform = ht.Request().Header.Get("User-Agent")
+						n := len(platform)
+						for i := 0; i < n; i++ {
+							if platform[i] != '(' {
+								continue
+							}
+							j := i
+							for j+1 < n && platform[j+1] != ')' {
+								j++
+							}
+							platform = platform[i+1 : j+1]
+							break
+						}
+					}
+					ctx = context.WithValue(ctx, "platform", platform)
 					ctx = context.WithValue(ctx, "url", ht.Request().RequestURI)
 				}
 			}
