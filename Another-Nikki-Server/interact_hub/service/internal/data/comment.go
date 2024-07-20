@@ -17,7 +17,7 @@ func NewCommentImpl(db *sqlx.DB) biz.CommentRepo {
 
 // CREATE TABLE comments (
 //    comment_id SERIAL PRIMARY KEY,
-//    content VARCHAR(255) NOT NULL DEFAULT '',
+//    content TEXT NOT NULL,
 //    article_id INT NOT NULL,
 //	  user_id INT NOT NULL,
 //    username VARCHAR(255) NOT NULL DEFAULT '',

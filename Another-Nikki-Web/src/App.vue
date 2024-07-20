@@ -11,6 +11,7 @@ import NavBar from '@/components/NavBar.vue';
     <div>Copyright © 2024 by @Jiyeon. All rights reserved.</div>
     <div> Github: <a href="https://github.com/Park-Jiyeonn/Another-Nikki"> Jiyeon </a></div>
     <div> Email: jiyeonnn2@icloud.com </div>
+    <a href="https://beian.miit.gov.cn/" target="_blank">皖ICP备2023010781号-2</a>
   </el-footer>
 </template>
 
