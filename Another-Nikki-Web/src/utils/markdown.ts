@@ -5,6 +5,7 @@ import markdownItAttrs from 'markdown-it-attrs'
 import mdKatex from 'markdown-it-katex'
 
 import 'highlight.js/styles/atom-one-dark.css'
+import { ElMessage } from 'element-plus';
 
 export const md = new MarkdownIt({
 	html: true, // 在源码中启用HTML标签
@@ -30,8 +31,26 @@ const highlightFormatCode = (str: string, lang: string): string => {
 }
 
 const codeBlockStyle = (val: string): string => {
-	return `<pre class="hljs" style="padding: 10px;border-radius: 10px;"><code>${val}</code></pre>`
-}
+    return `
+        <div class="code-block-container" style="position: relative;">
+            <pre class="hljs" style="padding: 10px; border-radius: 10px;"><code>${val}</code></pre>
+            <button class="copy-code-button" style="position: absolute; top: 5px; right: 5px; background-color: #333; color: white; border: none; cursor: pointer;" onclick="copyCodeBlock(this)">复制代码</button>
+        </div>
+    `;
+};
+
+(window as any).copyCodeBlock = (button: HTMLButtonElement) => {
+    const codeElement = button.previousElementSibling?.querySelector('code');
+    if (codeElement) {
+        const codeText = codeElement.textContent || "";
+        navigator.clipboard.writeText(codeText).then(() => {
+            ElMessage.success('代码已复制到剪贴板');
+        }).catch(() => {
+            ElMessage.error('复制代码失败，请重试');
+        });
+    }
+};
+
 
 
 export const detectMarkdown = (text: string) => {

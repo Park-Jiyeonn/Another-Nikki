@@ -104,6 +104,15 @@ if (props.article_id == 0 || props.article_id == 114514) {
 else {
     get_comments_by_article()
 }
+
+const copyText = (text: string) => {
+    navigator.clipboard.writeText(text).then(() => {
+        ElMessage.success('内容已复制到剪贴板');
+    }).catch(() => {
+        ElMessage.error('复制失败，请重试');
+    });
+};
+
 </script>
 <template>
     <div v-for="item in comments" :key="item.comment_id" class="comment-container">
@@ -117,6 +126,7 @@ else {
                 <span>{{ item.created_time }}</span>
                 <el-button link type="primary" style="margin-left: 20px"
                     @click="item.replyIsVisible = !item.replyIsVisible">回复</el-button>
+                <el-button link type="primary" style="margin-left: 10px" @click="copyText(item.content)">复制内容</el-button>
             </div>
             <div v-if="item.children && item.children.length" class="reply-container">
                 <div v-for="chl in item.children" :key="chl.comment_id" class="reply">
@@ -125,6 +135,7 @@ else {
                         <span>{{ chl.created_time }}</span>
                         <el-button link type="primary" style="margin-left: 20px"
                             @click="chl.replyIsVisible = !chl.replyIsVisible">回复</el-button>
+                            <el-button link type="primary" style="margin-left: 10px" @click="copyText(item.content)">复制内容</el-button>
                         <div v-if="chl.replyIsVisible" class="reply-input-container">
                             <el-input v-model="chl.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
                                 placeholder="Please input"></el-input>
