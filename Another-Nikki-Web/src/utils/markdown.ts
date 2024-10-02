@@ -34,7 +34,7 @@ const codeBlockStyle = (val: string): string => {
     return `
         <div class="code-block-container" style="position: relative;">
             <pre class="hljs" style="padding: 10px; border-radius: 10px;"><code>${val}</code></pre>
-            <button class="copy-code-button" style="position: absolute; top: 5px; right: 5px; background-color: #333; color: white; border: none; cursor: pointer;" onclick="copyCodeBlock(this)">复制代码</button>
+            <button class="copy-code-button" style="position: absolute; top: 5px; left: 5px; background-color: #333; color: white; border: none; cursor: pointer;" onclick="copyCodeBlock(this)">复制代码</button>
         </div>
     `;
 };
