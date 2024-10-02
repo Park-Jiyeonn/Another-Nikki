@@ -113,8 +113,15 @@ const copyText = (text: string) => {
     });
 };
 
+const refreshPage = () => {
+    get_last_seven_comments();
+};
+
 </script>
 <template>
+    <div class="refresh-page" @click="refreshPage">
+        ⟳
+    </div>
     <div v-for="item in comments" :key="item.comment_id" class="comment-container">
         <div class="avatar-container">
             <el-avatar :src="item.user_avatar" class="avatar"></el-avatar>
@@ -226,4 +233,29 @@ const copyText = (text: string) => {
 .reply-input-container {
     margin-top: 10px;
 }
+.refresh-page {
+    position: fixed;
+    bottom: 110px;  /* 在滚动按钮之上 */
+    right: 20px;
+    background-color: #3498db;
+    color: white;
+    width: 50px;          /* 设置按钮宽度 */
+    height: 50px;         /* 设置按钮高度 */
+    border-radius: 50%;   /* 圆形 */
+    display: flex;        /* 使内容居中 */
+    align-items: center;  /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    cursor: pointer;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.refresh-page:hover {
+    background-color: #2980b9;
+}
+
+.refresh-page:active {
+    transform: scale(0.95);
+}
+
 </style>
