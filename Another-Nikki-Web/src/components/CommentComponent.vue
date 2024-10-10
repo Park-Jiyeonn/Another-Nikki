@@ -142,7 +142,7 @@ const refreshPage = () => {
                         <span>{{ chl.created_time }}</span>
                         <el-button link type="primary" style="margin-left: 20px"
                             @click="chl.replyIsVisible = !chl.replyIsVisible">回复</el-button>
-                            <el-button link type="primary" style="margin-left: 10px" @click="copyText(item.content)">复制内容</el-button>
+                            <el-button link type="primary" style="margin-left: 10px" @click="copyText(chl.content)">复制内容</el-button>
                         <div v-if="chl.replyIsVisible" class="reply-input-container">
                             <el-input v-model="chl.replyText" :autosize="{ minRows: 2, maxRows: 4 }" type="textarea"
                                 placeholder="Please input"></el-input>
