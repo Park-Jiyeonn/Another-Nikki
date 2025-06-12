@@ -3,9 +3,7 @@ package main
 import (
 	"Another-Nikki/judge/service/internal/conf"
 	zapLog "Another-Nikki/pkg/log"
-	"Another-Nikki/pkg/trace"
 	"flag"
-	"github.com/go-kratos/kratos/v2/registry"
 	"os"
 
 	"github.com/go-kratos/kratos/v2"
@@ -28,7 +26,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, r registry.Registrar) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server) *kratos.App {
 	return kratos.New(
 		kratos.Name(ServiceName),
 		kratos.Metadata(map[string]string{}),
@@ -36,13 +34,12 @@ func newApp(logger log.Logger, gs *grpc.Server, r registry.Registrar) *kratos.Ap
 		kratos.Server(
 			gs,
 		),
-		kratos.Registrar(r),
 	)
 }
 
 func main() {
 	flag.Parse()
-	trace.Init(Env, ServiceName)
+	//trace.Init(Env, ServiceName)
 	logger := zapLog.Init(Env, ServiceName)
 	c := config.New(
 		config.WithSource(

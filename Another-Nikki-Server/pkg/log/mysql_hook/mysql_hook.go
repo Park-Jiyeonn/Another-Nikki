@@ -1,4 +1,4 @@
-package log
+package mysql_hook
 
 import (
 	_ "github.com/go-sql-driver/mysql"

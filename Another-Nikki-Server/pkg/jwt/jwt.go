@@ -2,13 +2,19 @@ package jwt
 
 import (
 	"errors"
-	kratosJwt "github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/golang-jwt/jwt/v4"
 	"golang.org/x/net/context"
 	"time"
 )
 
 const JwtSecret = "Jiyeon_Hyomin_Jiyeon_Hyomin_hhhh"
+
+type ctxKey string
+
+const (
+	ContextUserIdKey   ctxKey = "user_id"
+	ContextUsernameKey ctxKey = "username"
+)
 
 type MyClaims struct {
 	UserId               int64  `json:"user_id"`
@@ -33,7 +39,7 @@ func GenToken(userid int64, username string) (aToken string, err error) {
 func ParseToken(tokenString string) (*MyClaims, error) {
 	var mc = new(MyClaims)
 	token, err := jwt.ParseWithClaims(tokenString, mc, func(token *jwt.Token) (i interface{}, err error) {
-		return JwtSecret, nil
+		return []byte(JwtSecret), nil
 	})
 	if err != nil {
 		if errors.Is(err, jwt.ErrTokenExpired) {
@@ -48,19 +54,7 @@ func ParseToken(tokenString string) (*MyClaims, error) {
 }
 
 func GetUserFromCtx(ctx context.Context) (userId int64, username string) {
-	c, ok := kratosJwt.FromContext(ctx)
-	if !ok {
-		return
-	}
-	C, ok := c.(jwt.MapClaims)
-	if !ok {
-		return
-	}
-	user_id, ok := C["user_id"].(float64)
-	if !ok {
-		return
-	}
-	userId = int64(user_id)
-	username = C["username"].(string)
-	return
+	id, _ := ctx.Value(ContextUserIdKey).(int64)
+	name, _ := ctx.Value(ContextUsernameKey).(string)
+	return id, name
 }

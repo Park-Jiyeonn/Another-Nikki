@@ -8,7 +8,6 @@ import (
 	"github.com/go-kratos/kratos/v2/errors"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware"
-	"github.com/go-kratos/kratos/v2/middleware/auth/jwt"
 	"github.com/go-kratos/kratos/v2/middleware/logging"
 	"github.com/go-kratos/kratos/v2/middleware/recovery"
 	"github.com/go-kratos/kratos/v2/middleware/selector"
@@ -16,7 +15,6 @@ import (
 	"github.com/go-kratos/kratos/v2/transport"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"github.com/goccy/go-json"
-	jwt2 "github.com/golang-jwt/jwt/v4"
 	"github.com/gorilla/handlers"
 	"golang.org/x/net/context"
 	"strings"
@@ -32,6 +30,7 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 ) *http.Server {
 	var opts = []http.ServerOption{
 		http.Middleware(
+			OptionalJWTMiddleware(),
 			recovery.Recovery(),
 			getip(),
 			tracing.Server(),
@@ -39,11 +38,11 @@ func NewHTTPServer(c *conf.Server, logger log.Logger,
 			selector.Server(
 				logging.Server(logger),
 			).Match(NotMatchLog()).Build(),
-			selector.Server(
-				jwt.Server(func(token *jwt2.Token) (interface{}, error) {
-					return []byte(pkg_jwt.JwtSecret), nil
-				}, jwt.WithSigningMethod(jwt2.SigningMethodHS256)),
-			).Match(NewWhiteListMatcher()).Build(),
+			//selector.Server(
+			//	jwt.Server(func(token *jwt2.Token) (interface{}, error) {
+			//		return []byte(pkg_jwt.JwtSecret), nil
+			//	}, jwt.WithSigningMethod(jwt2.SigningMethodHS256)),
+			//).Match(NewWhiteListMatcher()).Build(),
 		),
 		http.ResponseEncoder(responseEncoder),
 		http.ErrorEncoder(ErrorEncoder),
@@ -210,5 +209,28 @@ func getip() middleware.Middleware {
 func NotMatchLog() selector.MatchFunc {
 	return func(ctx context.Context, operation string) bool {
 		return !(strings.Contains(operation, "Log") || strings.Contains(operation, "log"))
+	}
+}
+
+// OptionalJWTMiddleware 是一个非强制验证 JWT 的中间件
+func OptionalJWTMiddleware() middleware.Middleware {
+	return func(handler middleware.Handler) middleware.Handler {
+		return func(ctx context.Context, req interface{}) (interface{}, error) {
+			// 从 transport 中拿到 HTTP 请求
+			if tr, ok := transport.FromServerContext(ctx); ok {
+				if ht, ok := tr.(*http.Transport); ok {
+					authHeader := ht.Request().Header.Get("Authorization")
+					if strings.HasPrefix(authHeader, "Bearer ") {
+						tokenStr := strings.TrimPrefix(authHeader, "Bearer ")
+						claims, err := pkg_jwt.ParseToken(tokenStr)
+						if err == nil && claims != nil {
+							ctx = context.WithValue(ctx, pkg_jwt.ContextUserIdKey, claims.UserId)
+							ctx = context.WithValue(ctx, pkg_jwt.ContextUsernameKey, claims.Username)
+						}
+					}
+				}
+			}
+			return handler(ctx, req)
+		}
 	}
 }

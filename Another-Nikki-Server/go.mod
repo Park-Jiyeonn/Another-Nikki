@@ -13,6 +13,7 @@ require (
 	github.com/google/wire v0.5.0
 	github.com/gorilla/handlers v1.5.2
 	github.com/jmoiron/sqlx v1.3.5
+	github.com/mattn/go-sqlite3 v1.14.6
 	github.com/pkg/errors v0.9.1
 	github.com/segmentio/kafka-go v0.4.47
 	go.etcd.io/etcd/client/v3 v3.5.12

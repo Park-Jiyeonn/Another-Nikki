@@ -11,6 +11,12 @@ import (
 	pb "Another-Nikki/interact_hub/service/api"
 )
 
+const (
+	jiyeonId        = 1
+	jellyId         = 2
+	jiyeonArticleId = 0
+)
+
 type CommentService struct {
 	pb.UnimplementedCommentServer
 	dao biz.CommentRepo
@@ -26,10 +32,14 @@ func NewCommentService(dao biz.CommentRepo) *CommentService {
 
 func (s *CommentService) PostComment(ctx context.Context, req *pb.PostCommentReq) (resp *pb.PostCommentResp, err error) {
 	resp = new(pb.PostCommentResp)
+	userId, _ := jwt.GetUserFromCtx(ctx)
+	if userId != jiyeonId && userId != jellyId && req.ArticleId == jiyeonArticleId {
+		err = fmt.Errorf("Not Jiyeon and not Jelly")
+		return
+	}
 	if len(req.Content) == 0 {
 		return nil, fmt.Errorf("发布的留言或评论不可以空空~")
 	}
-	userId, _ := jwt.GetUserFromCtx(ctx)
 	if len(req.Content) > 400 && userId > 2 {
 		return nil, fmt.Errorf("发布的留言或评论太长啦~")
 	}
@@ -46,6 +56,11 @@ func (s *CommentService) PostComment(ctx context.Context, req *pb.PostCommentReq
 }
 func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.GetCommentsByArticleIdReq) (resp *pb.GetCommentsByArticleIdResp, err error) {
 	resp = new(pb.GetCommentsByArticleIdResp)
+	userId, _ := jwt.GetUserFromCtx(ctx)
+	if userId != jiyeonId && userId != jellyId && req.ArticleId == jiyeonArticleId {
+		err = fmt.Errorf("Not Jiyeon and not Jelly")
+		return
+	}
 	comments, err := s.dao.GetCommentsByArticleId(ctx, &biz.GetCommentsByArticleIdReq{
 		ArticleId: req.GetArticleId(),
 	})
@@ -81,6 +96,11 @@ func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.Get
 }
 func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLastSevenCommentReq) (resp *pb.GetLastSevenCommentResp, err error) {
 	resp = new(pb.GetLastSevenCommentResp)
+	userId, _ := jwt.GetUserFromCtx(ctx)
+	if userId != jiyeonId && userId != jellyId && req.ArticleId == jiyeonArticleId {
+		err = fmt.Errorf("Not Jiyeon and not Jelly")
+		return
+	}
 	comments, err := s.dao.GetLastSevenComment(ctx, &biz.GetLastSevenCommentReq{
 		ArticleId: req.GetArticleId(),
 		NumLimit:  req.Num,
@@ -117,6 +137,11 @@ func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLas
 }
 func (s *CommentService) GetRandomComment(ctx context.Context, req *pb.GetRandomCommentReq) (resp *pb.GetRandomCommentResp, err error) {
 	resp = new(pb.GetRandomCommentResp)
+	userId, _ := jwt.GetUserFromCtx(ctx)
+	if userId != jiyeonId && userId != jellyId && req.ArticleId == jiyeonArticleId {
+		err = fmt.Errorf("Not Jiyeon and not Jelly")
+		return
+	}
 	n, err := s.dao.GetCommentSum(ctx, &biz.GetCommentSumReq{ArticleId: req.ArticleId})
 	if err != nil {
 		return nil, err

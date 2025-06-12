@@ -2,7 +2,7 @@ package service
 
 import (
 	"Another-Nikki/interact_hub/service/internal/biz"
-	"Another-Nikki/interact_hub/service/internal/data"
+	"Another-Nikki/interact_hub/service/internal/client"
 	judge "Another-Nikki/judge/service/api"
 	"Another-Nikki/pkg/log"
 	"context"
@@ -22,7 +22,7 @@ type CodeProcessingService struct {
 
 const maxCodeLength = 600 * 100
 
-func NewCodeProcessingService(globalGrpc *data.GlobalGrpcClient, dao biz.CodeDataRepo) *CodeProcessingService {
+func NewCodeProcessingService(globalGrpc *client.GlobalGrpcClient, dao biz.CodeDataRepo) *CodeProcessingService {
 	return &CodeProcessingService{
 		dao:         dao,
 		judgeClient: globalGrpc.JudgeClient,

@@ -1,15 +1,15 @@
-package data
+package data_sqlite
 
 import (
 	"Another-Nikki/interact_hub/service/internal/conf"
 	"Another-Nikki/pkg/log"
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/wire"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/mattn/go-sqlite3"
 	"golang.org/x/net/context"
 )
 
-var ProviderSet = wire.NewSet(NewData, NewMySql,
+var ProviderSet = wire.NewSet(NewData, NewSqliteDB,
 	NewProblemRepo,
 	NewArticleRepo,
 	NewCommentImpl,
@@ -33,6 +33,6 @@ func NewData(db *sqlx.DB) (*Data, func(), error) {
 	}, cleanup, nil
 }
 
-func NewMySql(c *conf.Data) *sqlx.DB {
+func NewSqliteDB(c *conf.Data) *sqlx.DB {
 	return sqlx.MustConnect(c.Database.Driver, c.Database.Source)
 }

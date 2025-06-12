@@ -7,8 +7,9 @@
 package main
 
 import (
+	"Another-Nikki/interact_hub/service/internal/client"
 	"Another-Nikki/interact_hub/service/internal/conf"
-	"Another-Nikki/interact_hub/service/internal/data"
+	"Another-Nikki/interact_hub/service/internal/data_sqlite"
 	"Another-Nikki/interact_hub/service/internal/server"
 	"Another-Nikki/interact_hub/service/internal/service"
 	"github.com/go-kratos/kratos/v2"
@@ -22,30 +23,28 @@ import (
 // Injectors from wire.go:
 
 // wireApp init kratos application.
-func wireApp(confServer *conf.Server, confData *conf.Data, logger log.Logger, avatars *conf.Avatars, clientTimeout *conf.ClientTimeout) (*kratos.App, func(), error) {
-	db := data.NewMySql(confData)
-	dataData, cleanup, err := data.NewData(db)
+func wireApp(confServer *conf.Server, data *conf.Data, logger log.Logger, avatars *conf.Avatars, clientTimeout *conf.ClientTimeout) (*kratos.App, func(), error) {
+	db := data_sqlite.NewSqliteDB(data)
+	data_sqliteData, cleanup, err := data_sqlite.NewData(db)
 	if err != nil {
 		return nil, nil, err
 	}
-	problemRepo := data.NewProblemRepo(dataData)
+	problemRepo := data_sqlite.NewProblemRepo(data_sqliteData)
 	problemService := service.NewProblemService(problemRepo)
-	articleRepo := data.NewArticleRepo(dataData)
+	articleRepo := data_sqlite.NewArticleRepo(data_sqliteData)
 	articleService := service.NewArticleService(articleRepo)
-	commentRepo := data.NewCommentImpl(db)
+	commentRepo := data_sqlite.NewCommentImpl(data_sqliteData)
 	commentService := service.NewCommentService(commentRepo)
-	userRepo := data.NewUserImpl(dataData)
+	userRepo := data_sqlite.NewUserImpl(data_sqliteData)
 	userService := service.NewUserService(userRepo, avatars)
-	discovery := data.NewDiscovery()
-	globalGrpcClient := data.NewGlobalGrpcClient(confData, discovery, clientTimeout)
-	codeDataRepo := data.NewCodeProcessingImpl(dataData)
+	globalGrpcClient := client.NewGlobalGrpcClient(data, clientTimeout)
+	codeDataRepo := data_sqlite.NewCodeProcessingImpl(data_sqliteData)
 	codeProcessingService := service.NewCodeProcessingService(globalGrpcClient, codeDataRepo)
-	logsRepo := data.NewLogsRepoImpl(dataData)
+	logsRepo := data_sqlite.NewLogsRepoImpl(data_sqliteData)
 	logsService := service.NewLogsService(logsRepo)
 	grpcServer := server.NewGRPCServer(confServer, logger, problemService, articleService, commentService, userService, codeProcessingService, logsService)
 	httpServer := server.NewHTTPServer(confServer, logger, problemService, codeProcessingService, userService, articleService, commentService, logsService)
-	registrar := data.NewRegistry()
-	app := newApp(logger, grpcServer, httpServer, registrar)
+	app := newApp(logger, grpcServer, httpServer)
 	return app, func() {
 		cleanup()
 	}, nil

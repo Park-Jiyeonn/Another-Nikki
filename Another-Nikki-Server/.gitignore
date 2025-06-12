@@ -46,3 +46,4 @@ dumped_hertz_remote_config.json
 /docker-conf/canal/conf/example/h2.mv.db
 /docker-conf/canal/conf/example/meta.dat
 /local.env
+/interact_hub/service/interact.db

@@ -42,6 +42,7 @@ message Data {
   }
   Database database = 1;
   Redis redis = 2;
+  string judgeServiceAddr = 3;
 }
 
 // 有一些默认头像写在了配置里面

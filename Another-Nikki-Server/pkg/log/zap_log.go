@@ -1,6 +1,7 @@
 package log
 
 import (
+	"Another-Nikki/pkg/log/sqlite_hook"
 	"fmt"
 	"github.com/go-kratos/kratos/v2/log"
 	"github.com/go-kratos/kratos/v2/middleware/tracing"
@@ -30,7 +31,7 @@ func Init(env, serviceName string) log.Logger {
 		"caller", log.Caller(5),
 		"service.id", env,
 		"service.name", serviceName,
-		"trace.id", tracing.TraceID(),
+		//"trace.id", tracing.TraceID(),
 		"span.id", tracing.SpanID(),
 		"ip", GetIP(),
 		"platform", GetPlatform(),
@@ -50,7 +51,9 @@ func NewZapLogger(encoder zapcore.EncoderConfig, level zap.AtomicLevel, opts ...
 	core := zapcore.NewCore(
 		zapcore.NewJSONEncoder(encoder),
 		zapcore.NewMultiWriteSyncer(
-			zapcore.AddSync(NewMySqlHook()),
+			zapcore.AddSync(
+				sqlite_hook.NewSqliteHook(),
+			),
 		), level)
 	//  new 一个 *zap.Logger
 	zapLogger := zap.New(core, opts...)

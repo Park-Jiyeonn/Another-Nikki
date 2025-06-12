@@ -1,0 +1,95 @@
+package data_sqlite
+
+import (
+	"Another-Nikki/interact_hub/service/internal/biz"
+	"github.com/jmoiron/sqlx"
+	"golang.org/x/net/context"
+	"time"
+)
+
+type ProblemDataSqlite struct {
+	ProblemId int64     `db:"problem_id"`
+	CreatedAt time.Time `db:"created_time"`
+	UpdatedAt time.Time `db:"updated_time"`
+}
+
+func InitProblemsTable(db *sqlx.DB) error {
+	const schema = `
+	CREATE TABLE IF NOT EXISTS problems (
+		problem_id INTEGER PRIMARY KEY AUTOINCREMENT,
+		problem_title TEXT NOT NULL,
+		problem_description TEXT,
+		problem_content TEXT,
+		created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+		updated_time DATETIME DEFAULT CURRENT_TIMESTAMP
+	);`
+	_, err := db.Exec(schema)
+	return err
+}
+
+type problemImpl struct {
+	db *sqlx.DB
+}
+
+func NewProblemRepo(data *Data) biz.ProblemRepo {
+	if err := InitProblemsTable(data.GlobalDB); err != nil {
+		panic(err)
+	}
+	return &problemImpl{
+		db: data.GlobalDB,
+	}
+}
+
+func (s *problemImpl) PostProblem(ctx context.Context, req *biz.PostProblemReq) (resp *biz.PostProblemResp, err error) {
+	resp = new(biz.PostProblemResp)
+	ret, err := s.db.ExecContext(ctx,
+		`INSERT INTO problems (problem_title, problem_description, problem_content, updated_time) 
+		 VALUES (?, ?, ?, CURRENT_TIMESTAMP)`,
+		req.ProblemTitle, req.ProblemDescription, req.ProblemContent)
+	if err != nil {
+		return
+	}
+	resp.ProblemId, err = ret.LastInsertId()
+	return
+}
+
+func (s *problemImpl) UpdateProblem(ctx context.Context, req *biz.UpdateProblemReq) (err error) {
+	sqlStr := `UPDATE problems 
+		SET problem_title = ?, problem_description = ?, problem_content = ?, updated_time = CURRENT_TIMESTAMP 
+		WHERE problem_id = ?`
+	_, err = s.db.ExecContext(ctx, sqlStr,
+		req.ProblemTitle, req.ProblemDescription, req.ProblemContent, req.ProblemId)
+	return
+}
+
+func (s *problemImpl) GetProblemById(ctx context.Context, req *biz.GetProblemByIdReq) (resp *biz.GetProblemByIdResp, err error) {
+	resp = new(biz.GetProblemByIdResp)
+	err = s.db.GetContext(ctx, resp,
+		`SELECT problem_title, problem_description, problem_content, created_time 
+		 FROM problems 
+		 WHERE problem_id = ?`, req.ProblemId)
+	return
+}
+
+func (s *problemImpl) GetProblemByPage(ctx context.Context, req *biz.GetProblemByPageReq) (resp *biz.GetProblemByPageResp, err error) {
+	resp = new(biz.GetProblemByPageResp)
+	rows, err := s.db.QueryxContext(ctx,
+		`SELECT problem_id, problem_title, created_time 
+		 FROM problems 
+		 ORDER BY created_time 
+		 LIMIT ? OFFSET ?`, req.PageSize, (req.PageNum-1)*req.PageSize)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var problem biz.ProblemPageDetail
+		err = rows.StructScan(&problem)
+		if err != nil {
+			return nil, err
+		}
+		resp.Problems = append(resp.Problems, &problem)
+	}
+	return
+}

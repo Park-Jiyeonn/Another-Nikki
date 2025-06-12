@@ -2,9 +2,7 @@ package main
 
 import (
 	"Another-Nikki/interact_hub/service/internal/conf"
-	"Another-Nikki/pkg/trace"
 	"flag"
-	"github.com/go-kratos/kratos/v2/registry"
 	"github.com/go-kratos/kratos/v2/transport/http"
 	"os"
 
@@ -30,7 +28,7 @@ func init() {
 	flag.StringVar(&flagconf, "conf", "configs", "config path, eg: -conf config.yaml")
 }
 
-func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, r registry.Registrar) *kratos.App {
+func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server) *kratos.App {
 	return kratos.New(
 		kratos.ID(Env),
 		kratos.Name(ServiceName),
@@ -40,14 +38,13 @@ func newApp(logger log.Logger, gs *grpc.Server, hs *http.Server, r registry.Regi
 			gs,
 			hs,
 		),
-		kratos.Registrar(r),
 	)
 }
 
 func main() {
 	flag.Parse()
 
-	trace.Init(Env, ServiceName)
+	//trace.Init(Env, ServiceName)
 	logger := zapLog.Init(Env, ServiceName)
 
 	c := config.New(
