@@ -76,7 +76,7 @@ func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.Get
 			UserAvatar:  val.UserAvatar,
 			ParentId:    val.ParentId,
 			RootId:      val.RootId,
-			CreatedTime: val.CreatedTime.Format(time.DateTime),
+			CreatedTime: val.CreatedTime.Local().Format(time.DateTime),
 		}
 		for _, child := range val.Children {
 			comment.Children = append(comment.Children, &pb.CommentDetail{
@@ -86,7 +86,7 @@ func (s *CommentService) GetCommentsByArticleId(ctx context.Context, req *pb.Get
 				UserAvatar:  child.UserAvatar,
 				ParentId:    child.ParentId,
 				RootId:      child.RootId,
-				CreatedTime: child.CreatedTime.Format(time.DateTime),
+				CreatedTime: child.CreatedTime.Local().Format(time.DateTime),
 				ParentName:  child.ParentName,
 			})
 		}
@@ -117,7 +117,7 @@ func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLas
 			UserAvatar:  val.UserAvatar,
 			ParentId:    val.ParentId,
 			RootId:      val.RootId,
-			CreatedTime: val.CreatedTime.Format(time.DateTime),
+			CreatedTime: val.CreatedTime.Local().Format(time.DateTime),
 		}
 		for _, child := range val.Children {
 			comment.Children = append(comment.Children, &pb.CommentDetail{
@@ -127,7 +127,7 @@ func (s *CommentService) GetLastSevenComment(ctx context.Context, req *pb.GetLas
 				UserAvatar:  child.UserAvatar,
 				ParentId:    child.ParentId,
 				RootId:      child.RootId,
-				CreatedTime: child.CreatedTime.Format(time.DateTime),
+				CreatedTime: child.CreatedTime.Local().Format(time.DateTime),
 				ParentName:  child.ParentName,
 			})
 		}
@@ -159,7 +159,7 @@ func (s *CommentService) GetRandomComment(ctx context.Context, req *pb.GetRandom
 		UserAvatar:  comment.Comments.UserAvatar,
 		ParentId:    comment.Comments.ParentId,
 		RootId:      comment.Comments.RootId,
-		CreatedTime: comment.Comments.CreatedTime.Format(time.DateTime),
+		CreatedTime: comment.Comments.CreatedTime.Local().Format(time.DateTime),
 	}
 	return
 }
