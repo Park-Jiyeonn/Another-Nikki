@@ -146,14 +146,15 @@ func (s *CommentService) GetRandomComment(ctx context.Context, req *pb.GetRandom
 	if err != nil {
 		return nil, err
 	}
-	commentOffset := s.rx.Int63n(n)
+	offset := int64(1165)
+	rx := s.rx.Int63n(n) % (n - offset) + offset
 	comment, err := s.dao.GetCommentByOffset(ctx, &biz.GetRandomCommentReq{
 		ArticleId:     req.ArticleId,
-		CommentOffset: commentOffset,
+		CommentOffset: rx,
 	})
 	time.Sleep(time.Millisecond * 100)
 	resp.Comment = &pb.CommentDetail{
-		CommentId:   commentOffset + 1,
+		CommentId:   rx + 1,
 		Content:     comment.Comments.Content,
 		Username:    comment.Comments.Username,
 		UserAvatar:  comment.Comments.UserAvatar,
